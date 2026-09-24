@@ -271,7 +271,8 @@ def Fattened.toPredicate {n : Nat} (fattened : Fattened n) : Predicate n :=
   Iff.rfl
 
 /-- The core entails its own fattening: every point of the core witnesses
-itself. -/
+itself. `selfEntailsNeighbourhood` in `Gimle/Forseti.lean` is the semantic
+counterpart, for `Neighbourhood`. -/
 theorem Fattened.core_entails {n : Nat} (fattened : Fattened n) :
     PredicateEntailment fattened.core.toPredicate fattened.toPredicate := by
   intro point hypothesis
