@@ -1,11 +1,8 @@
 ---
 title: Promote neighbourhood self-entailment to a named lemma
-state: ongoing
+state: closed
 priority: medium
 labels: [lemmas, predicates, search]
-claimed_by: claude-016
-claimed_at: 2026-09-24T13:30:00Z
-branch: feat/neighbourhood_self_lemma
 ---
 
 # Promote neighbourhood self-entailment to a named lemma
