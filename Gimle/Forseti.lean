@@ -491,6 +491,16 @@ def Neighbourhood {dimension : Nat} (core : Predicate dimension) (radius : ℝ) 
     Predicate dimension :=
   ⟨fun point => ∃ ideal, core.holds ideal ∧ LinfClose radius point ideal⟩
 
+/-- Every predicate entails its own neighbourhood at a non-negative radius:
+each point is its own witness, at distance zero.
+
+`Fattened.core_entails` in `Gimle/Forseti/Syntax.lean` is the syntactic
+counterpart, for a `Fattened` node. -/
+theorem selfEntailsNeighbourhood {dimension : Nat} {core : Predicate dimension}
+    {radius : ℝ} (nonnegative : 0 ≤ radius) :
+    PredicateEntailment core (Neighbourhood core radius) :=
+  fun point held => ⟨point, held, fun _ => by simpa using nonnegative⟩
+
 /-- A quantitative triple *is* an exact triple into a fattened postcondition.
 This is why `exactThenQuantitativeHoareSequential` needs no side condition: at
 that postcondition it is `exactHoareSequential`. -/
@@ -522,7 +532,7 @@ theorem canonicalSequential {inputDegree middleDegree outputDegree : Nat}
     QuantitativeHoare precondition (Circuit.compose first second)
       postcondition (amplified + targetError) :=
   quantitativeHoareSequential source target modulus
-    (fun point held => ⟨point, held, fun _ => by simpa using nonnegative⟩)
+    (selfEntailsNeighbourhood nonnegative)
     (fun input held => source input held)
 
 /-- Sequential composition paid for by **coverage** rather than by a modulus.

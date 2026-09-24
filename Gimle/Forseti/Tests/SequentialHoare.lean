@@ -302,4 +302,15 @@ theorem coverageExactVariant :
       exact ⟨by simp [coordinateOne], by simp [coordinateOne]⟩)
     squareOnBall
 
+/-- Every predicate entails its own neighbourhood, in one step from the named
+lemma: the goal that lemma-retrieving search could not reach while the fact
+existed only inline (task 016). -/
+theorem neighbourhoodSelfInOneStep {n : Nat} (p : Predicate n) (r : ℝ)
+    (h : 0 ≤ r) : PredicateEntailment p (Neighbourhood p r) :=
+  selfEntailsNeighbourhood h
+
+#print axioms selfEntailsNeighbourhood
+#print axioms canonicalSequential
+#print axioms neighbourhoodSelfInOneStep
+
 end Gimle.Forseti.Tests.SequentialHoare
