@@ -1,0 +1,36 @@
+name = "forseti"
+version = "0.7.0"
+defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Tests", "Checker"]
+
+[[require]]
+name = "asgard"
+git = "https://github.com/arnovich/asgard-lean.git"
+rev = "0a5b8f8c8f2d2bb4f6918f2ae25ddbf827efd08d"
+
+[[lean_lib]]
+name = "Gimle.Forseti"
+# globs for the same reason as Examples below: a module reached only through an
+# import line leaves the build silently when that line is dropped, and `lake
+# build` still exits 0. Note this does NOT widen the checker's audited foreign
+# interface, which gates on a candidate's declared imports, not on what exists.
+globs = ["Gimle.Forseti", "Gimle.Forseti.*"]
+
+# globs keeps the filesystem authoritative: every module under
+# Gimle/Forseti/Examples/ is built whether or not Examples.lean imports it.
+# Without it, dropping one import line silently drops a proof module from the
+# build and `lake build` still exits 0.
+[[lean_lib]]
+name = "Gimle.Forseti.Examples"
+globs = ["Gimle.Forseti.Examples.*"]
+
+[[lean_lib]]
+name = "Gimle.Forseti.Tests"
+globs = ["Gimle.Forseti.Tests", "Gimle.Forseti.Tests.*"]
+
+[[lean_exe]]
+name = "Checker"
+root = "Executables.Checker"
+
+[[lean_exe]]
+name = "equation_demo"
+root = "Executables.EquationDemo"
