@@ -40,30 +40,30 @@ empty preconditions remain logically valid but visibly vacuous.
 
 ## Outcome
 
-- [ ] Define the contract and separate projections for realizability, uniqueness
+- [x] Define the contract and separate projections for realizability, uniqueness
       and the property over the existing `Rel`. A property-only partial contract
       cannot silently be reported as a well-posed system theorem.
-- [ ] Prove consequence and relational-equivalence transport. Prove a pointwise
+- [x] Prove consequence and relational-equivalence transport. Prove a pointwise
       lift of existing real `ExactHoare` through `Dynamics.Circuit.lift` on the
       stated domain; do not extend that pointwise argument to integrators/trace.
-- [ ] Prove sequential wiring composition with intermediate signal contracts
+- [x] Prove sequential wiring composition with intermediate signal contracts
       and the explicit domain-respect assumptions needed to compose uniqueness.
       In particular, equality only on the time domain must suffice for the
       downstream circuit, or a stronger intermediate equality premise is needed.
       Parallel composition uses the same clock/domain and explicit port ownership.
-- [ ] Expose named rules that consume existing linear well-posedness and
+- [x] Expose named rules that consume existing linear well-posedness and
       `LinearEnergy` certificates to obtain a trajectory contract. Derivative
       inequalities alone cannot discharge existence or uniqueness.
-- [ ] Package the original compiled three-state feedback and observation circuit
+- [x] Package the original compiled three-state feedback and observation circuit
       into a contract proving `0 ≤ V ≤ 6` for every `t ≥ 2`. Reuse the existing
       model binding, existence/uniqueness, derivative and energy proofs. Bound 5
       is refuted by its admitted initial state, not by a failed proof attempt.
-- [ ] Tests separate endpoint from all-time safety, protect the declared start
+- [x] Tests separate endpoint from all-time safety, protect the declared start
       time and initial wires, reject unsafe alternative outputs, and show that
       an empty behavior relation satisfies a partial implication but cannot
       satisfy the total contract for a witnessed input. A trace receives no
       unconditional well-posedness rule.
-- [ ] `lake build` and an executable transitive axiom audit pass with only
+- [x] `lake build` and an executable transitive axiom audit pass with only
       `propext`, `Classical.choice`, `Quot.sound`. Update `docs/dynamics.md`
       at implementation time to mark only delivered judgments as checked;
       keep the wider PDE/stochastic specification distinct.
@@ -83,3 +83,19 @@ No new ODE solver, generic nonlinear existence theorem, time-concatenation/gluin
 rule, finite-horizon replacement of Asgard semantics, or stochastic probability
 calculus. Discrete induction remains in `Discrete.lean`; a common presentation
 must not erase its different semantics. Stream coefficients use task 018.
+
+## Conversation
+
+### note · claude/88c9ba9a · 2026-09-26T16:19:53Z
+
+Done in `Gimle/Forseti/Trajectory.lean`. `Contract` bundles `Realizable`,
+`Unique` (domain only) and `Holds` (every related output); `Holds` alone is the
+partial contract. Sequential composition takes an explicit `DomainRespecting`
+premise for the second stage (`lift` has it), since the first stage's outputs
+are unique only on the domain. Asgard's `close_correct` covers only constant
+initial wires, so `close_rel` generalises it here and `close_rel_reads_start`
+shows a loop reads its wires only at the start; it would sit naturally in
+asgard-lean later. The three-state contract is
+`Examples/ThreeStateContract.energy_contract`, with `five_refuted`. For
+gimle-forseti 112's ODE lane, `Contract.linear` and `Contract.energy` are the
+entry points, and the release pin must move to include this before 112 can use it.
