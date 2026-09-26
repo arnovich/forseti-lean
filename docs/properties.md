@@ -19,7 +19,14 @@ the budget measures. An infimum-distance test is not a substitute for the witnes
 comparisons, Boolean combinations, and coordinate products. `Formula.toPredicate`
 connects this syntax to the semantic core.
 
-- Coordinates are positional `Fin n`; ordered variable names remain planned work.
+- A bare `Formula n` addresses coordinates by position. [`Syntax/Context.lean`](../Gimle/Forseti/Syntax/Context.lean)
+  names them: a `Context` is an ordered list of distinct, non-blank names that
+  fixes the dimension, and a `NamedFormula` pairs a formula with one. Products
+  concatenate contexts and refuse shared names. A solver's answer is read back
+  by name (`Context.read`, proved sound by `read_mem`, round trip `read_assign`),
+  refusing a missing, repeated or unknown name. Coordinates are written by name
+  (`Context.var`, checked when the formula is built), and a `Goal` puts both
+  sides of an entailment over one context for a checker to bind.
 - Arbitrary predicates need not have a formula. No transcendental operations are included.
 - `Fattened` uses an existential witness and an exact nonnegative rational radius.
   Zero radius, radius monotonicity, and inclusion of the core are proved.

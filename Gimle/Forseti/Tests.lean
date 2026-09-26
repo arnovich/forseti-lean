@@ -4,6 +4,7 @@ import Gimle.Forseti.Tests.Discrete
 import Gimle.Forseti.Tests.Approximation
 import Gimle.Forseti.Tests.EquationWorkflow
 import Gimle.Forseti.Tests.Syntax
+import Gimle.Forseti.Tests.Context
 import Gimle.Forseti.Tests.SequentialHoare
 
 namespace Gimle.Forseti.Tests
