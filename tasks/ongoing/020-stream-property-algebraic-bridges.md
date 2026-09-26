@@ -1,6 +1,9 @@
 ---
 title: Lift polynomial certificates into stream and PDE properties
-state: open
+state: ongoing
+claimed_by: claude-020
+claimed_at: 2026-09-26T19:22:36Z
+branch: feat/stream_property_algebraic_bridges
 priority: high
 labels: [streams, predicates, certificates, pde]
 depends_on: ["017", "018"]
