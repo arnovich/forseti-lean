@@ -9,6 +9,8 @@ import Gimle.Forseti.Tests.Certificate
 import Gimle.Forseti.Tests.Trajectory
 import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
+import Gimle.Forseti.Tests.StreamObservation
+import Gimle.Forseti.Tests.FieldBound
 
 namespace Gimle.Forseti.Tests
 
