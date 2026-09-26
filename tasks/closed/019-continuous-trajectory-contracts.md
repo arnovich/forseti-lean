@@ -1,9 +1,6 @@
 ---
 title: Add reusable well-posed continuous trajectory contracts
-state: ongoing
-claimed_by: claude-f019
-claimed_at: 2026-09-26T16:09:59Z
-branch: feat/continuous_trajectory_contracts
+state: closed
 priority: high
 labels: [dynamics, predicates, hoare, foundations]
 related: ["018", "020"]
