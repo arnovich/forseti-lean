@@ -1,9 +1,6 @@
 ---
 title: Add total Hoare contracts over multidimensional formal streams
-state: ongoing
-claimed_by: claude-f018
-claimed_at: 2026-09-26T16:20:41Z
-branch: feat/formal_stream_hoare_contracts
+state: closed
 priority: high
 labels: [predicates, streams, hoare, foundations]
 related: ["017", "019", "020"]
