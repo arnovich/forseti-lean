@@ -1,9 +1,6 @@
 ---
 title: Bind field bounds to stream circuits through asgard-lean 024
-state: ongoing
-claimed_by: claude-021
-claimed_at: 2026-09-26T20:22:57Z
-branch: feat/evaluated_field_adapter
+state: closed
 priority: high
 labels: [streams, pde, certificates, fields]
 depends_on: ["020"]
@@ -31,24 +28,24 @@ field bound is not a property of Asgard's heat circuit.
 
 ## Outcome
 
-- [ ] Bump the asgard-lean pin to a release containing 024.
-- [ ] Define the evaluated-field predicate adapter from 024's finite-support
+- [x] Bump the asgard-lean pin to a release containing 024.
+- [x] Define the evaluated-field predicate adapter from 024's finite-support
       realization theorem: formula variables are space-time coordinates and
       fixed parameters; the claim names the original circuit, the full input
       streams, the initial profile, the finite polynomial solution class, the
       analytic interpretation and the stated domain. A finite-support witness
       for the whole stream is required; a window or prefix is not one.
-- [ ] Prove the adapter sound with reusable theorems, separate from the
+- [x] Prove the adapter sound with reusable theorems, separate from the
       coefficient rule: field positivity needs its own bridge theorem and
       hypotheses, never coefficient constraints alone.
-- [ ] Restate `HeatStripBound.strip_bound` for the actual heat solution with
+- [x] Restate `HeatStripBound.strip_bound` for the actual heat solution with
       initial profile `a·x² + c`, obtained through 024 (existence and uniqueness
       in the finite polynomial class only), with task 017 certificates for the
       algebraic leaves.
-- [ ] Lift the `(t, x) = (1, 1)` leaf counterexample for bound 2 into a root
+- [x] Lift the `(t, x) = (1, 1)` leaf counterexample for bound 2 into a root
       refutation only after Lean verifies an admissible full input, its related
       output and the failing root postcondition.
-- [ ] Negative tests: an altered initial profile, a narrowed domain reused as a
+- [x] Negative tests: an altered initial profile, a narrowed domain reused as a
       wider claim, a finite prefix presented as a full stream, and `u = x` at
       negative `x` against its nonnegative coefficients — each at the circuit
       level. All new declarations audited against `propext`,
