@@ -53,6 +53,42 @@ connects this syntax to the semantic core.
 - No general entailment solver, CAD/SMT proof-log checker, algebraic-number
   witness or serializer is supplied; producers live outside this repository.
 
+## Stream contracts
+
+[`Stream.lean`](../Gimle/Forseti/Stream.lean) states properties of Asgard's
+formal stream circuits (`Streams.Circuit basis d n m`: `n` ports of exact
+coefficient streams over `d` ordered axes, OGF or EGF). Their semantics is
+partial and deterministic, so `StreamHoare P c Q` is the **total** contract:
+every admitted input is in the domain and its output satisfies `Q`.
+`streamHoare_iff_rel` restates it as "an output exists and every related output
+satisfies `Q`". An undefined series substitution never makes it vacuous, even
+when its result is discarded or multiplied by zero.
+
+- Rules: `consequence`, `congr` (along `StreamEquality`), `route`, `identity`,
+  `compose` (wiring, not time), `parallel` and `pair` (explicit port blocks via
+  `Both`; `both_equals` reads them as one point), `and`, `or`, `substitute`
+  (along `Circuit.Equivalent`) and `expr` for compiled expressions.
+- Predicates: `Equals` (a full stream point), `Boundary` / `NamedBoundary` (a
+  port's whole zero slice along an axis) and `Window` (a finite coefficient
+  window, which never gives full equality). `boundary_reindex` and
+  `window_reindex` transport `Boundary` and `Window` through `reindex`.
+  `NamedBoundary.iff_boundary` resolves a named axis; an unresolved name makes
+  `NamedBoundary` false, so resolve it before using it as a precondition.
+- Operations: `StreamHoare.derivative`, `integral` / `integralFrom` (keeps the
+  whole boundary profile, reads only its zero slice, and inverts the
+  derivative), `product` (in the declared basis) and `seriesCompose` (only under
+  `CanCompose`). `eq_integral_of_boundary`: a stream is fixed by its derivative
+  along an axis and its zero slice there.
+- [`Examples/FormalHeatContract.lean`](../Gimle/Forseti/Examples/FormalHeatContract.lean)
+  restates Asgard's two-axis heat circuit as `heat_contract`, derived through
+  `pair`, `route`, `compose` and `integralFrom`: inputs `u`, any boundary port
+  with the declared zero slice, and anything; output `[u_xx, u]`, boundary kept
+  along `t`.
+
+This is exact formal coefficient reasoning only. Analytic realization of streams
+(asgard-lean 024), certified tails (025) and stream-to-algebraic bridges
+(task 020) are not checked here.
+
 ## Composition
 
 `Circuit.compose first second` runs `first` first.
