@@ -1,6 +1,9 @@
 ---
 title: Bind field bounds to stream circuits through asgard-lean 024
-state: open
+state: ongoing
+claimed_by: claude-021
+claimed_at: 2026-09-26T20:22:57Z
+branch: feat/evaluated_field_adapter
 priority: high
 labels: [streams, pde, certificates, fields]
 depends_on: ["020"]
