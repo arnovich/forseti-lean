@@ -1,9 +1,6 @@
 ---
 title: Check polynomial entailment certificates and rational counterexamples in Lean
-state: ongoing
-claimed_by: claude-f017
-claimed_at: 2026-09-26T15:57:41Z
-branch: feat/checked_predicate_certificates
+state: closed
 priority: medium
 labels: [predicates, certificates, lean, solvers]
 depends_on: ["015"]
