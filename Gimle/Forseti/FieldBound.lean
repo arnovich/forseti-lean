@@ -17,8 +17,8 @@ antecedent constraint, so a leaf can use it with constant multipliers.
 
 **Which field.** A theorem proved here is about the polynomial function written
 in the formula. That this function is the field some stream circuit represents
-— its evaluated output for given full input streams — is a separate bridge
-(task 021, through asgard-lean 024). Nonnegative coefficients do not by
+— its evaluated output for given full input streams — is a separate bridge,
+`FieldObservation` (through asgard-lean 024). Nonnegative coefficients do not by
 themselves make a field nonnegative: `Tests/FieldBound.lean` refutes it with
 `u = x` at `x = -1`.
 -/

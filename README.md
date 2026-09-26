@@ -29,6 +29,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
 | [Stream observations](Gimle/Forseti/Examples/StreamObservation.lean) | Polynomial certificates lifted to total contracts over Asgard's formal heat circuit |
+| [Heat field bound](Gimle/Forseti/Examples/HeatFieldBound.lean) | Bounds on the evaluated real field of the heat circuit's output, proved and refuted |
 
 Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 
@@ -40,5 +41,5 @@ Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 
 Optional numerical demo: `lake build equation_demo`, then
 `lake exe equation_demo /absolute/venv/bin/python`. It requires a separately
-supplied Asgard Python worker; see [worker setup](https://github.com/arnovich/asgard-lean/blob/10e743888648cba66b7dfe82bf1a1aa826fb3f35/docs/simulation.md).
+supplied Asgard Python worker; see [worker setup](https://github.com/arnovich/asgard-lean/blob/297215668e9d60fa06188de353a3467c9d1cbce2/docs/simulation.md).
 Its output is numerical observations, not proof evidence.

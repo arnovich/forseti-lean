@@ -11,6 +11,7 @@ import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
 import Gimle.Forseti.Tests.StreamObservation
 import Gimle.Forseti.Tests.FieldBound
+import Gimle.Forseti.Tests.FieldObservation
 
 namespace Gimle.Forseti.Tests
 
