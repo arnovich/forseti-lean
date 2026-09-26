@@ -39,5 +39,5 @@ Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 
 Optional numerical demo: `lake build equation_demo`, then
 `lake exe equation_demo /absolute/venv/bin/python`. It requires a separately
-supplied Asgard Python worker; see [worker setup](https://github.com/arnovich/asgard-lean/blob/0a5b8f8c8f2d2bb4f6918f2ae25ddbf827efd08d/docs/simulation.md).
+supplied Asgard Python worker; see [worker setup](https://github.com/arnovich/asgard-lean/blob/10e743888648cba66b7dfe82bf1a1aa826fb3f35/docs/simulation.md).
 Its output is numerical observations, not proof evidence.
