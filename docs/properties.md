@@ -85,8 +85,9 @@ when its result is discarded or multiplied by zero.
   with the declared zero slice, and anything; output `[u_xx, u]`, boundary kept
   along `t`.
 
-This is exact formal coefficient reasoning only. Analytic realization of streams
-(asgard-lean 024) and certified tails (025) are not checked here.
+This is exact formal coefficient reasoning only. The evaluated field of a
+polynomially realized output (asgard-lean 024) is read by the field transfer
+rule below; certified tails (025) are not checked here.
 
 ## From polynomial certificates to stream and field properties
 
@@ -127,10 +128,42 @@ Two transfer rules, for two different claims. Neither stands in for the other.
   `0 ≤ t ≤ T, -R ≤ x ≤ R`; at `a=1, c=0, R=T=1` bound `3` checks and bound `2` is
   refuted at `(1, 1)`. Widened domains, altered profiles and `u = x` at `x = -1`
   are refuted in `Tests/FieldBound.lean`.
-- These bound the **candidate** polynomial. Binding it to the stream circuit —
-  the evaluated field of its output for the full input streams and initial
-  profile, unique in the finite polynomial solution class — needs asgard-lean
-  024 and is task 021. Until then a field refutation refutes the candidate only.
+- These bound the **candidate** polynomial, and a refutation here refutes the
+  candidate only.
+
+**Values of a circuit's output field.** [`FieldObservation.lean`](../Gimle/Forseti/FieldObservation.lean)
+- A `FieldSpec` names the formula coordinates: the stream's axes in axis order,
+  fixed parameters, then the field value (`named`). `FieldSpec.Observes basis
+  port θ domain post` holds of an output point when that port is realized, as a
+  **whole** stream, by a rational polynomial `q` (asgard-lean 024's
+  `Realizes`, equivalently finite support) and `post` holds at `(x, θ, q(x))`
+  wherever `domain` does, `q(x)` being `Streams.field`. A window or prefix is not
+  a realization; an unrealized port fails the predicate (`not_observes`).
+- **Field transfer rule** `lift`: `StreamHoare pre c (port realized by q)` and a
+  bound on `q`'s field over the domain give `StreamHoare pre c (Observes …)`.
+  `leaf_bound` gets the bound from a 017 `leafGoal` (`post` with the value
+  coordinate replaced by an expression) plus two separate obligations: the
+  expression **is** `q`'s field (`agrees`), and the stated domain implies the
+  leaf antecedent (`strengthen`, e.g. `sq_le_sq_of_box`). `lift_certificate`
+  chains them from a certificate that checks. Coefficient constraints are never
+  an input: `u = x` has nonnegative coefficients and a negative field.
+- `refutes_root`: a field contract fails only through an input admitted by
+  `pre`, its related output with the port realized by `q`, and a domain point
+  where `q`'s field fails `post`. `refutes_root_answer` lifts a 017 leaf
+  counterexample that names `(z, θ, q(z))` through those same facts.
+- [Example](../Gimle/Forseti/Examples/HeatFieldBound.lean): `Solves basis p`
+  admits the inputs of Asgard's heat circuit whose boundary port is the full
+  profile `p` and whose port `0` the circuit reconstructs; `solves_iff` (024's
+  existence and uniqueness) makes port `0` exactly the constructed heat stream,
+  and `solution_realized` realizes output port `1` by `Heat.solution p`. For
+  `p = a·x² + c`, `field_solution` is `a·x² + c + 2·a·t` (from 024's
+  `field_unique`), and `heat_strip_bound` is the strip bound over the circuit,
+  in either basis. At `p = x²` on `[0, 1] × [-1, 1]`, `unit_heat_bound_three`
+  proves `0 ≤ u ≤ 3` and `unit_heat_bound_two_refuted` refutes `u ≤ 2` at
+  `(1, 1)` from the admitted input `[x² + 2t, x², 0]`.
+  `Tests/FieldObservation.lean` refutes, at the circuit level, an altered
+  profile, a wider domain, a boundary known only on a window, and `u = x` at
+  `x = -1`.
 
 ## Composition
 

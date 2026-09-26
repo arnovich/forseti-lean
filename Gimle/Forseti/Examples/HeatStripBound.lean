@@ -13,12 +13,12 @@ as constraints, among them the box bound `a·(R² - x²) ≥ 0`, which
 `FieldBound.box_constraint` derives; with it the upper bound is
 `a·(R² - x²) + 2·a·(T - t) ≥ 0`, with constant multipliers.
 
-**What this does not yet prove.** `candidate` is the polynomial function
-written here. That it is the evaluated field of Asgard's formal heat circuit on
-the full input streams with profile `p` — and the unique one in the finite
-polynomial solution class — is asgard-lean 024's theorem, and binding this bound
-to the circuit is task 021. Until then this is a bound on a candidate, and the
-refutation of bound `2` below refutes only the candidate, not the circuit.
+**What this proves.** `candidate` is the polynomial function written here, and
+the refutation of bound `2` below refutes only the candidate. That it is the
+evaluated field of Asgard's heat circuit on the full input streams with
+profile `p` — the unique one in the finite polynomial solution class — is
+asgard-lean 024's theorem; `HeatFieldBound` binds these bounds to the circuit
+(`heat_strip_bound`, `unit_heat_bound_three`, `unit_heat_bound_two_refuted`).
 -/
 
 namespace Gimle.Forseti.Examples.HeatStripBound
@@ -154,7 +154,7 @@ theorem unit_bound_two_refuted : ¬ (unitGoal 2).Entailment :=
 example : unitCertificate.check (unitGoal 2) = false := by decide +kernel
 
 /-- The candidate field itself exceeds `2` there. This refutes the candidate;
-it becomes a refutation of the circuit only through task 021. -/
+`HeatFieldBound.unit_heat_bound_two_refuted` refutes the circuit. -/
 example : 2 < candidate 1 0 1 1 := by norm_num [candidate]
 
 end Gimle.Forseti.Examples.HeatStripBound

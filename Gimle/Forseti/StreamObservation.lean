@@ -31,8 +31,8 @@ entailment (`leafGoal`), and `lift_certificate` chains the two.
 **What it does not give.** A postcondition is `Observes`: a statement about
 finitely many output coefficients. It never implies equality of whole streams
 (`Tests/StreamObservation.lean`), and it says nothing about the real function a
-stream represents: that is the evaluated-field adapter of task 021, which needs
-asgard-lean 024.
+stream represents: that is the evaluated-field adapter, `FieldObservation`,
+through asgard-lean 024.
 
 **Refutation.** A leaf counterexample refutes only the leaf. `refutes_root`
 turns one into `¬ StreamHoare` only given a full input stream that is admitted

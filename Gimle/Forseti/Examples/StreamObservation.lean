@@ -28,7 +28,7 @@ is a root refutation: an input with the altered initial profile `2x²`, admitted
 by the altered precondition, whose observed `u[t^0, x^2]` is `2`, not `1`.
 
 Everything here is about exact formal coefficients. The real field these
-streams represent is task 021's, through asgard-lean 024.
+streams represent is `HeatFieldBound`'s, through asgard-lean 024.
 -/
 
 namespace Gimle.Forseti.Examples.StreamObservation
