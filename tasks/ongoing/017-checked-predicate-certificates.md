@@ -61,36 +61,36 @@ must use the exact formulas and context of the requested goal.
 
 ## Outcome
 
-- [ ] Finite certificate and rational-point data types, computable validity
+- [x] Finite certificate and rational-point data types, computable validity
       checks, and proved soundness theorems yielding respectively
       `FormulaEntailment P Q` and `¬ FormulaEntailment P Q`. A failed validity
       check rejects evidence; it establishes neither truth nor falsity of the goal.
-- [ ] A verified exact polynomial identity check, reusing mathlib polynomial
+- [x] A verified exact polynomial identity check, reusing mathlib polynomial
       machinery where practical. Its interpretation theorem connects coefficient
       equality to Asgard's existing `Polynomial.Expr.eval`; syntax-tree equality
       alone is insufficient for algebraically equal expressions.
-- [ ] A computable rational formula evaluator and its real-interpretation
+- [x] A computable rational formula evaluator and its real-interpretation
       theorem, covering every existing formula constructor and boundary equality.
-- [ ] Public applications bind the expected ordered context, both original
+- [x] Public applications bind the expected ordered context, both original
       formulas, and complete evidence. Task 015's mapping is consumed rather
       than replaced by a second variable-context design.
-- [ ] Supplied exact certificates check for the unit-disk, quartic and box
+- [x] Supplied exact certificates check for the unit-disk, quartic and box
       cases in the shared corpus below. Rational points check the two false
       claims. These are checker fixtures; automatic discovery belongs to the external producer.
-- [ ] An example converts the checked unit-disk entailment through
+- [x] An example converts the checked unit-disk entailment through
       `Formula.toPredicate` and uses `hoareConsequence` to weaken an identity
       circuit's postcondition. The resulting theorem names the original circuit.
-- [ ] Regression tests reject negative weights, a one-coefficient perturbation,
+- [x] Regression tests reject negative weights, a one-coefficient perturbation,
       missing/extra identities or multipliers, wrong dimensions, and evidence
       reused against a changed goal for which it is invalid. Equivalent algebraic
       expressions check successfully after normalization, as does altered
       redundant/zero-weight evidence whose identity remains valid. Include empty
       conjunctions, zero polynomials, redundant constraints and an empty domain.
-- [ ] New generic soundness theorems and concrete accepted examples use only
+- [x] New generic soundness theorems and concrete accepted examples use only
       `propext`, `Classical.choice` and `Quot.sound`; add an executable assertion
       of the transitive axiom policy, not just `#print axioms` output. No `sorry`,
       custom solver axioms or `native_decide` authority shortcut.
-- [ ] `lake build` checks the new modules, examples and regressions with no new
+- [x] `lake build` checks the new modules, examples and regressions with no new
       warnings. Core checking imports no Python or external solver and
       works without any producer installed. Update `docs/properties.md`
       with the actual supported certificate fragment and a checked example.
@@ -126,3 +126,19 @@ No general CAD/SMT proof-log checker, SDP/SoS optimizer, quantifier elimination,
 algebraic-number witness implementation, transcendental extension, or elimination
 of metric fattening. No automatic sensitivity analysis or circuit translation.
 No change to existing external release pins or checker import enrollment.
+
+## Conversation
+
+### note · claude/88c9ba9a · 2026-09-26T16:06:21Z
+
+Done in `Gimle/Forseti/Syntax/Certificate.lean`, binding 015's `Goal` and
+`Context.read`. The identity check uses a small computable sparse normal
+form rather than Mathlib's `MvPolynomial`, which is noncomputable and so
+cannot be decided in the kernel; `Sparse.eval_ofExpr` is its only trusted link
+to `Polynomial.Expr.eval`. Evidence of the wrong dimension is unrepresentable
+(certificates are indexed by the goal's context), pinned with
+`#check_failure`. The axiom policy is asserted with `#guard_msgs`, verified to
+fail the build on a mismatch. For gimle-forseti 111: evidence enters as
+`EntailmentCertificate goal.context.dimension` or a named
+`Context.Assignment`, and the external release pin must move to a revision
+that contains 015 and 017 before 111 can replay them.

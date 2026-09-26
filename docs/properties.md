@@ -30,7 +30,28 @@ connects this syntax to the semantic core.
 - Arbitrary predicates need not have a formula. No transcendental operations are included.
 - `Fattened` uses an existential witness and an exact nonnegative rational radius.
   Zero radius, radius monotonicity, and inclusion of the core are proved.
-- No verified general entailment solver, solver-certificate checker, or serializer is supplied.
+- [`Syntax/Certificate.lean`](../Gimle/Forseti/Syntax/Certificate.lean) checks
+  evidence an untrusted producer supplies for a `Goal` `P ⊨ Q`:
+  - **Entailment certificates**, when both sides are conjunctions of `p ≤ 0` or
+    `p ≥ 0` (and `tru`): for each consequent constraint `q_j`, an identity
+    `−q_j = σ_j0 + Σ_i σ_ji · (−p_i)` with one multiplier per antecedent
+    constraint and every `σ` a nonnegatively weighted sum of squares. The
+    identity is decided by normalizing the difference to a sparse polynomial,
+    computably (Mathlib's `MvPolynomial` cannot be evaluated by `decide`), with
+    `Sparse.eval_ofExpr` tying the normal form to `Polynomial.Expr.eval`.
+    `EntailmentCertificate.sound` proves the goal from a check that passes. The
+    family is incomplete: no certificate means nothing.
+  - **Counterexamples**, for any quantifier-free goal: a rational point named
+    coordinate by coordinate and read through the goal's context, where the
+    antecedent holds and the consequent does not, decided exactly over ℚ
+    (`Formula.holdsQ_iff`). `refutes_sound` proves `¬ P ⊨ Q`.
+  - A failed check rejects the evidence and establishes nothing about the goal.
+    [Examples/PredicateCertificates.lean](../Gimle/Forseti/Examples/PredicateCertificates.lean)
+    checks the shared corpus and weakens a Hoare postcondition with a checked
+    entailment; `Tests/Certificate.lean` holds the hostile evidence and asserts
+    the axiom policy with `#guard_msgs`.
+- No general entailment solver, CAD/SMT proof-log checker, algebraic-number
+  witness or serializer is supplied; producers live outside this repository.
 
 ## Composition
 
