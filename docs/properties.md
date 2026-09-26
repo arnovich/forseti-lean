@@ -86,8 +86,51 @@ when its result is discarded or multiplied by zero.
   along `t`.
 
 This is exact formal coefficient reasoning only. Analytic realization of streams
-(asgard-lean 024), certified tails (025) and stream-to-algebraic bridges
-(task 020) are not checked here.
+(asgard-lean 024) and certified tails (025) are not checked here.
+
+## From polynomial certificates to stream and field properties
+
+Two transfer rules, for two different claims. Neither stands in for the other.
+
+**Coefficients of a formal output.** [`StreamObservation.lean`](../Gimle/Forseti/StreamObservation.lean)
+- An `Observation` is an Asgard lowering `Manifest` (ordered axis IDs, port IDs,
+  coefficient slots; basis in the type) with the `Context` naming each slot,
+  `u[t^0, x^2]`. The names are computed from the manifest (`named`), so a
+  formula written by name reads the slot the name describes.
+  `Observation.Observes φ` reads a 017 formula on those exact rational
+  coefficients cast into ℝ, and constrains nothing else (`observes_congr`).
+- `lift`: a point `ExactHoare` over the lowered circuit, plus a proof that every
+  input admitted by the full-stream precondition meets its precondition on the
+  dependency coefficients, gives `StreamHoare pre c (Observes φ)` for the
+  **original** circuit. Definedness comes from `lower_defined`, values from
+  asgard-lean 023's `lower_correct`; `pre` is kept.
+- `leafGoal` poses the leaf as a 017 `Goal` over the named input coefficients,
+  each output coordinate replaced by the polynomial the lowering computes
+  (`lower_spec`). `leaf_hoare` turns its entailment into the point triple, and
+  `lift_certificate` chains everything from a certificate that checks.
+- `refutes_root`: a leaf counterexample refutes the root only with a full input
+  admitted by `pre` whose named coefficients are the counterexample's values.
+- A finite observation is never a full stream (`observed_is_not_full`).
+- [Example](../Gimle/Forseti/Examples/StreamObservation.lean): the halo of `∂²/∂x²`
+  and a coefficient outside the output window that changes the observed result;
+  the formal heat circuit's observed output `x² + 2t` under task 018's
+  precondition (`heat_observed`); a leaf refutation that does not reach the root,
+  and an altered initial profile that does. Hostile cases (basis, axis, port and
+  slot swaps) are in `Tests/StreamObservation.lean`.
+
+**Values of the represented field.** [`FieldBound.lean`](../Gimle/Forseti/FieldBound.lean)
+- Formula variables are space-time coordinates and fixed parameters, read at
+  real points. `sq_le_sq_of_box` (`-R ≤ x ≤ R → x² ≤ R²`, including `R = 0`) and
+  `box_constraint` turn a box into constraints a certificate can use.
+- [Example](../Gimle/Forseti/Examples/HeatStripBound.lean): for rational
+  `a, c ≥ 0`, `strip_bound` proves `0 ≤ a·x² + c + 2·a·t ≤ c + a·R² + 2·a·T` on
+  `0 ≤ t ≤ T, -R ≤ x ≤ R`; at `a=1, c=0, R=T=1` bound `3` checks and bound `2` is
+  refuted at `(1, 1)`. Widened domains, altered profiles and `u = x` at `x = -1`
+  are refuted in `Tests/FieldBound.lean`.
+- These bound the **candidate** polynomial. Binding it to the stream circuit —
+  the evaluated field of its output for the full input streams and initial
+  profile, unique in the finite polynomial solution class — needs asgard-lean
+  024 and is task 021. Until then a field refutation refutes the candidate only.
 
 ## Composition
 
