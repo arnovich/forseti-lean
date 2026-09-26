@@ -32,18 +32,18 @@ between formula coordinates and solver variable names.
 
 ## Outcome
 
-- [ ] Formulas carry an ordered context of named coordinates, with the dimension
+- [x] Formulas carry an ordered context of named coordinates, with the dimension
   derived from it rather than supplied independently.
-- [ ] `Formula.product` composes contexts, and the resulting context records
+- [x] `Formula.product` composes contexts, and the resulting context records
   which original coordinate each position came from.
-- [ ] Two formulas of the same shape over different contexts are distinguishable;
+- [x] Two formulas of the same shape over different contexts are distinguishable;
   state and test what equality means in the presence of contexts.
-- [ ] A stated, tested round trip: a formula's coordinates can be named, sent,
+- [x] A stated, tested round trip: a formula's coordinates can be named, sent,
   and an answer matched back to the right coordinates without an unchecked
   convention in the caller.
-- [ ] Naming collisions, empty contexts and context/dimension mismatch are
+- [x] Naming collisions, empty contexts and context/dimension mismatch are
   rejected at construction with explicit errors.
-- [ ] Existing `Syntax.lean` theorems and `Tests/Syntax.lean` continue to hold;
+- [x] Existing `Syntax.lean` theorems and `Tests/Syntax.lean` continue to hold;
   `lake build` green and the axiom audit reports only `propext`,
   `Classical.choice` and `Quot.sound`.
 
@@ -54,3 +54,15 @@ a wrapper that pairs a `Formula n` with an `n`-vector of names. The wrapper is
 less invasive and keeps `DecidableEq` derivable on the bare formula; the indexed
 version makes mismatches unrepresentable. A non-uniform index
 can prevent deriving eliminators and decidable equality; preserve those capabilities.
+
+## Conversation
+
+### note · claude/88c9ba9a · 2026-09-26T15:57:16Z
+
+Done as a wrapper, per the Notes: `Gimle/Forseti/Syntax/Context.lean` adds
+`Context` (ordered, distinct, non-empty names; the dimension is their count),
+`NamedFormula`, name-checked products, `Context.read` with `read_mem` and
+`read_assign`, `Context.var` for writing coordinates by name, and `Goal`,
+both sides of an entailment over one context, which 017 should bind rather than
+pairing contexts a second way. Numerals on `Fin c.dimension` are deliberately
+not given an instance: they would wrap modulo the dimension.
