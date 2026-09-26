@@ -14,3 +14,4 @@ import Gimle.Forseti.Examples.ThreeState
 import Gimle.Forseti.Examples.ProofSearchContract
 import Gimle.Forseti.Examples.PredicateCertificates
 import Gimle.Forseti.Examples.ThreeStateContract
+import Gimle.Forseti.Examples.FormalHeatContract

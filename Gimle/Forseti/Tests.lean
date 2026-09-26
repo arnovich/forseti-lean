@@ -7,6 +7,7 @@ import Gimle.Forseti.Tests.Syntax
 import Gimle.Forseti.Tests.Context
 import Gimle.Forseti.Tests.Certificate
 import Gimle.Forseti.Tests.Trajectory
+import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
 
 namespace Gimle.Forseti.Tests
