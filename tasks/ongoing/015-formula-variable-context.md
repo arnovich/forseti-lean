@@ -1,6 +1,9 @@
 ---
 title: Give formulas an ordered variable context
-state: open
+state: ongoing
+claimed_by: claude-f015
+claimed_at: 2026-09-26T15:49:38Z
+branch: feat/formula_variable_context
 priority: medium
 labels: [predicates, foundations, solvers]
 ---
