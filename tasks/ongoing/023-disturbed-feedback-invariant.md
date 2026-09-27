@@ -49,3 +49,7 @@ into the invariant, making the certificate a later proof-search target.
 Starting the owner-requested hand-checked baseline. The existing homogeneous
 linear energy rule does not cover arbitrary continuous disturbances; the proof
 will include forced existence and uniqueness rather than a safety-only result.
+
+### note · codex/feedback_invariant · 2026-09-27T21:39:40Z
+
+The root Contract and all regressions pass the full 3501-job Lean build. The three-role review found no blocking issues; its suggestion to test a sinusoidal disturbance is included and checked. All new guarded axiom reports contain only propext, Classical.choice and Quot.sound. The required optional executable is compiling native dependency objects.
