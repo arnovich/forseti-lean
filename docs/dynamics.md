@@ -116,6 +116,15 @@ storage weights and replay a concrete proof. Building this example does not
 enroll it in the standalone checker's import interface or change Python
 Forseti's release pins.
 
+## A discovered invariant for nested feedback
+
+For a larger continuous example, [active suspension](active-suspension.md)
+combines a mechanical plant, controller and actuator through three traces.
+An exact search finds a common quadratic invariant for two actuator response
+rates; Lean checks the certificate and proves total travel, force and
+acceleration bounds for an independently specified input and initial region.
+The outer contract is shared by both implementations.
+
 ## Discrete invariants
 
 [`Discrete.lean`](../Gimle/Forseti/Discrete.lean) iterates a circuit with ordered

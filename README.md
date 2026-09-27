@@ -27,6 +27,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Compiled equations](Gimle/Forseti/Examples/EquationWorkflow.lean) | Properties of the same circuits produced by Asgard's equation compiler |
 | [Three-state model](Gimle/Forseti/Examples/ThreeState.lean) | Forward existence, uniqueness, and the compiled energy bound `0 ≤ V ≤ 6` |
 | [Disturbed feedback](Gimle/Forseti/Examples/DisturbedFeedback.lean) | Component storage identities compose through a trace to prove `\|x(t)\| ≤ 1` under continuous disturbances bounded by one |
+| [Active suspension](Gimle/Forseti/Examples/ActiveSuspension.lean) | A searched invariant proves travel, force and acceleration bounds through nested traces, shared by two actuator implementations |
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
 | [Stream observations](Gimle/Forseti/Examples/StreamObservation.lean) | Polynomial certificates lifted to total contracts over Asgard's formal heat circuit |
@@ -39,6 +40,7 @@ Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 
 - [Predicates and Hoare rules](docs/properties.md)
 - [Dynamics and safety certificates](docs/dynamics.md)
+- [Active suspension and exact invariant search](docs/active-suspension.md)
 - [Standalone proof checker](docs/checker.md)
 
 Optional numerical demo: `lake build equation_demo`, then
