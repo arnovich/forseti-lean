@@ -22,17 +22,17 @@ an actuator replacement without redoing the outer theorem.
 
 ## Outcome
 
-- [ ] Exact typed plant, controller and actuator circuits; actual nested feedback
+- [x] Exact typed plant, controller and actuator circuits; actual nested feedback
       traces with checked correspondence to the assembled state equations.
-- [ ] Reusable component behavior/storage contracts and a sound feedback rule
+- [x] Reusable component behavior/storage contracts and a sound feedback rule
       requiring independent existence and uniqueness, not circular admission.
-- [ ] A reproducible untrusted exact certificate search supplies a quadratic
+- [x] A reproducible untrusted exact certificate search supplies a quadratic
       invariant; Lean rechecks its rational square decompositions and every
       link to the original circuits.
-- [ ] A total root Contract gives forward existence, uniqueness, suspension
+- [x] A total root Contract gives forward existence, uniqueness, suspension
       travel, actuator force and body acceleration bounds under explicit input
       and initialization assumptions chosen independently of the certificate.
-- [ ] A second actuator implementation meets the same stated interface and
+- [x] A second actuator implementation meets the same stated interface and
       inherits the outer safety theorem.
 - [ ] Hostile regressions, all permitted-axiom guards, complete builds and a
       three-role review pass; docs distinguish the normalized mathematical model
@@ -59,3 +59,11 @@ an actuator replacement without redoing the outer theorem.
 
 Owner authorized the suspension example and asked to save nonlinear oscillators
 and vehicle chains for later; those are filed separately without queue ranks.
+
+### note · codex/suspension · 2026-09-27T22:22:12Z
+
+Steps 1–4 implemented in the isolated feature worktree. Both total output
+contracts compile using the same searched storage (19 candidates), with exact
+rate-specific supply decompositions. Full Lean and equation_demo builds passed.
+Three-role implementation review found no blockers; corrected a cancelling
+pre-start test and made replay byte-exact. Final validation and publication remain.
