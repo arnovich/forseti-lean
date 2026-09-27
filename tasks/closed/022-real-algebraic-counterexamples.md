@@ -1,9 +1,6 @@
 ---
 title: Check real-algebraic counterexamples to formula entailments
-state: ongoing
-claimed_by: claude-022
-claimed_at: 2026-09-27T18:46:08Z
-branch: feat/real_algebraic_counterexamples
+state: closed
 priority: low
 labels: [predicates, counterexamples, algebraic-numbers]
 depends_on: ["017"]
@@ -21,19 +18,19 @@ task is the checked half.
 
 ## Outcome
 
-- [ ] An algebraic witness is a box of rational intervals, one per coordinate,
+- [x] An algebraic witness is a box of rational intervals, one per coordinate,
       each coordinate with a univariate polynomial. The checker proves, by the
       intermediate value theorem, that each polynomial has a root in its
       interval, and by an enclosure of its derivative that excludes zero,
       that the root is the only one there. A wrong interval, an interval with
       two roots and a double root are rejected.
-- [ ] Every atom of the goal's antecedent and consequent is decided at the
+- [x] Every atom of the goal's antecedent and consequent is decided at the
       point by sound interval enclosure over the box (strict signs), or, for
       a zero, by a checked polynomial identity `q = Σ sᵢ · pᵢ(xᵢ)`. Nothing
       the producer claims about signs is trusted.
-- [ ] `algebraicRefutes goal witness = true → ¬ goal.Entailment`, with only
+- [x] `algebraicRefutes goal witness = true → ¬ goal.Entailment`, with only
       `propext`, `Classical.choice` and `Quot.sound`.
-- [ ] Tests: `x² = 2 ⊨ x < 0` refuted at `√2`; a negative root; shared and
+- [x] Tests: `x² = 2 ⊨ x < 0` refuted at `√2`; a negative root; shared and
       independent algebraic coordinates; equality on the boundary; rational
       coordinates as degenerate intervals; and each hostile case above
       rejected by `decide`.
