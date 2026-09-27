@@ -69,6 +69,53 @@ which constrains only the drivers and initial wires.
 PDE, stream and stochastic contracts are specified separately (tasks 018, 020)
 and are not checked here.
 
+## A disturbance invariant through trace
+
+[`Examples/DisturbedFeedback.lean`](../Gimle/Forseti/Examples/DisturbedFeedback.lean)
+is a hand-proved example of bottom-up reasoning about feedback. Two polynomial
+component circuits compute `x' = -x + 2u + d` and `z' = -z - v`. An explicit
+routing circuit connects `u = z` and `v = x`; `Dynamics.close` feeds their
+outputs through integrators and an actual two-wire trace.
+
+The open components have storage identities
+
+```text
+(x²)' = -2x² + 4xu + 2xd
+(z²)' = -2z² - 2zv
+```
+
+`storage_cancellation` combines the two identities with weights 1 and 2.
+After wiring, `V = x² + 2z²` satisfies `V' = -2V + 2xd`. For `|d| ≤ 1`,
+`storage_bound` proves `V' ≤ 1 - V`. The derivative of `exp(t)(V(t)-1)`
+is therefore nonpositive. Initial `V ≤ 1` implies `V(t) ≤ 1` at every forward
+time; the trace proof never assumes the invariant on an arbitrary feedback
+signal.
+
+`loop_contract` includes existence and forward uniqueness as well as this
+invariant. [`ForcedLinear.lean`](../Gimle/Forseti/ForcedLinear.lean) supplies
+existence by variation of constants for a continuous forcing; uniqueness
+reduces the difference of two trajectories to Asgard's homogeneous linear
+uniqueness theorem. These are analytic helpers for contracts, not new circuit
+semantics.
+
+`output_contract` composes the loop theorem with a typed projection to expose
+only `x`, proving `|x(t)| ≤ 1`. Its assumptions are explicit: the disturbance
+signal is continuous on ℝ and bounded by one on `t ≥ start`, and the initial
+state satisfies `x₀² + 2z₀² ≤ 1`. Initial wires are read only at `start` and
+uniqueness is only on the forward domain. This is a loop-specific proof, not
+an unrestricted trace rule or a treatment of discontinuous disturbances.
+
+The [regressions](../Gimle/Forseti/Tests/DisturbedFeedback.lean) also reject the
+unweighted-circle candidate: at `(x,z,d) = (3/5,4/5,1)`, `x²+z²=1` but its
+derivative is positive. Rejecting this candidate does not refute the root goal.
+The output bound `1/2`, however, is refuted by the admitted initial state `(1,0)`.
+
+The weights are supplied in this baseline, not discovered by an agent. A later
+search experiment can withhold the invariant, start from `(1,0)`, propose exact
+storage weights and replay a concrete proof. Building this example does not
+enroll it in the standalone checker's import interface or change Python
+Forseti's release pins.
+
 ## Discrete invariants
 
 [`Discrete.lean`](../Gimle/Forseti/Discrete.lean) iterates a circuit with ordered

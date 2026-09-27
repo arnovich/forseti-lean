@@ -1,11 +1,8 @@
 ---
 title: Compositional invariant for disturbed continuous feedback
-state: ongoing
+state: closed
 priority: medium
 labels: [proof, dynamics, example]
-claimed_by: codex/feedback_invariant
-claimed_at: 2026-09-27T21:28:24Z
-branch: feat/disturbed_feedback_invariant
 ---
 
 # Compositional invariant for disturbed continuous feedback
@@ -20,14 +17,14 @@ into the invariant, making the certificate a later proof-search target.
 
 ## Outcome
 
-- [ ] Typed component circuits and their wiring define the actual traced system.
-- [ ] Local storage identities combine into V = x² + 2z² and V' ≤ 1 - V.
-- [ ] A Lean trajectory Contract proves existence, forward uniqueness and safety
+- [x] Typed component circuits and their wiring define the actual traced system.
+- [x] Local storage identities combine into V = x² + 2z² and V' ≤ 1 - V.
+- [x] A Lean trajectory Contract proves existence, forward uniqueness and safety
       for every admitted continuous disturbance and initial state.
-- [ ] Regressions cover initialization, disturbance admission, output projection
+- [x] Regressions cover initialization, disturbance admission, output projection
       and rejection of an invalid certificate; axiom reports contain only the
       three permitted axioms.
-- [ ] Documentation explains the hand-proved baseline and the remaining search
+- [x] Documentation explains the hand-proved baseline and the remaining search
       experiment; all libraries, regressions, Checker and equation_demo build.
 
 ## Plan
@@ -42,6 +39,16 @@ into the invariant, making the certificate a later proof-search target.
 5. Compose the loop contract with the output projection, add hostile regressions,
    document the example, run builds and the mathematical/integration review panel.
 
+## Validation
+
+- The initial regression failed because the root contract module did not exist.
+- `lake build`: all 3501 jobs pass, including the new example and regressions.
+- `lake build equation_demo`: all 6811 jobs pass. The native build required writable access to the existing dependency cache; the proof build passed within the sandbox.
+- `git diff --check` passes; no warnings, admitted proofs, new axioms or unresolved comment markers in the added modules.
+- Guarded reports permit only `propext`, `Classical.choice`, and `Quot.sound`.
+- The mathematical, circuit-fidelity and regression/trust review panel found no blocking issues. Its optional varying-disturbance regression is included and passes with `sin t`.
+- Scope delivered: the hand-proved trace baseline. Invariant search remains a separate experiment; no checker interfaces or Python release pins changed.
+
 ## Conversation
 
 ### note · codex/feedback_invariant · 2026-09-27T21:28:24Z
@@ -53,3 +60,7 @@ will include forced existence and uniqueness rather than a safety-only result.
 ### note · codex/feedback_invariant · 2026-09-27T21:39:40Z
 
 The root Contract and all regressions pass the full 3501-job Lean build. The three-role review found no blocking issues; its suggestion to test a sinusoidal disturbance is included and checked. All new guarded axiom reports contain only propext, Classical.choice and Quot.sound. The required optional executable is compiling native dependency objects.
+
+### note · codex/feedback_invariant · 2026-09-27T21:41:16Z
+
+Both required builds pass. The total trace contract, observer composition, adverse certificate example and stronger-bound refutation are checked; the proof branch is ready for review.
