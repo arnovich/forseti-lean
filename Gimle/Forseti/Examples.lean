@@ -18,3 +18,4 @@ import Gimle.Forseti.Examples.FormalHeatContract
 import Gimle.Forseti.Examples.StreamObservation
 import Gimle.Forseti.Examples.HeatStripBound
 import Gimle.Forseti.Examples.HeatFieldBound
+import Gimle.Forseti.Examples.AlgebraicCounterexamples
