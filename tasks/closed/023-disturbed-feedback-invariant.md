@@ -64,3 +64,7 @@ The root Contract and all regressions pass the full 3501-job Lean build. The thr
 ### note · codex/feedback_invariant · 2026-09-27T21:41:16Z
 
 Both required builds pass. The total trace contract, observer composition, adverse certificate example and stronger-bound refutation are checked; the proof branch is ready for review.
+
+### note · codex/feedback_invariant · 2026-09-27T21:41:55Z
+
+Draft PR: https://github.com/arnovich/forseti-lean/pull/14. Implementation commit 600eaad; all required checks and the three-role review pass.
