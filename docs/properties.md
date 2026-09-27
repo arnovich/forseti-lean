@@ -50,8 +50,27 @@ connects this syntax to the semantic core.
     checks the shared corpus and weakens a Hoare postcondition with a checked
     entailment; `Tests/Certificate.lean` holds the hostile evidence and asserts
     the axiom policy with `#guard_msgs`.
-- No general entailment solver, CAD/SMT proof-log checker, algebraic-number
-  witness or serializer is supplied; producers live outside this repository.
+- [`Syntax/AlgebraicWitness.lean`](../Gimle/Forseti/Syntax/AlgebraicWitness.lean)
+  refutes goals whose only counterexamples are irrational, such as
+  `x² = 2 ⊨ x < 0`. An `AlgebraicWitness` is a box of rational intervals, one
+  per coordinate, each with a univariate polynomial, and evidence for each atom:
+  - `Root.check` requires an ordered interval, a sign change across it and an
+    interval enclosure of the derivative that excludes zero. The intermediate
+    value theorem gives a root (`Root.exists_zero`), and the derivative's fixed
+    sign makes it the only one (`Root.root_unique`). A wrong interval, an
+    interval with several roots and a repeated root are rejected. A rational
+    coordinate `q` is `x − q` on `[q, q]`.
+  - Each atom is decided for every point of the box: by a sound interval
+    `enclose`ure of its polynomial that excludes zero (a strict sign), or, for
+    a zero, by a checked identity `q = Σᵢ sᵢ · pᵢ(xᵢ)`. Nothing the producer
+    says about signs is used.
+  - `algebraicRefutes_sound` proves `¬ P ⊨ Q` from a check that passes.
+    [Examples/AlgebraicCounterexamples.lean](../Gimle/Forseti/Examples/AlgebraicCounterexamples.lean)
+    refutes goals at `±√2`, at `(√2, √3)`, at a point with one rational
+    coordinate, and with a consequent that is exactly zero at the point;
+    `Tests/AlgebraicWitness.lean` holds the hostile witnesses.
+- No general entailment solver, CAD/SMT proof-log checker or serializer is
+  supplied; producers live outside this repository.
 
 ## Stream contracts
 
