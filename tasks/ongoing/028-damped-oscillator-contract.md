@@ -1,6 +1,9 @@
 ---
 title: Trajectory contract for the damped oscillator compiled from source equations
-state: open
+state: ongoing
+claimed_by: claude-f028
+claimed_at: 2026-09-28T10:42:58Z
+branch: feat/damped_oscillator_contract
 priority: medium
 labels: [trajectory, contracts, examples, energy]
 related: ["gimle-forseti/148", "asgard-lean/032"]
