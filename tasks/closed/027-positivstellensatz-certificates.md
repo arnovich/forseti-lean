@@ -1,9 +1,6 @@
 ---
 title: Check degree-2 Positivstellensatz certificates with constraint products
-state: ongoing
-claimed_by: claude-f027
-claimed_at: 2026-09-28T08:43:08Z
-branch: feat/positivstellensatz_certificates
+state: closed
 priority: medium
 labels: [predicates, certificates, entailment]
 related: ["017", "gimle-forseti/034", "gimle-forseti/145"]
@@ -29,18 +26,18 @@ four examples are the unit disk, `x ≥ 0 ∧ y ≥ 0 ⊨ x·y ≥ 0`,
 
 ## Outcome
 
-- [ ] `Syntax.Psatz` (or an extension of `Syntax.Certificate`) defines the
+- [x] `Syntax.Psatz` (or an extension of `Syntax.Certificate`) defines the
       certificate (`pairs`, `rows`), the augmented constraint list,
       `PsatzCertificate.check goal` as a `Bool`, and
       `PsatzCertificate.sound : check = true → goal.Entailment`. The
       soundness proof adds only the product lemma to 017's.
-- [ ] Every 017 certificate is a Psatz certificate with no pairs, with a
+- [x] Every 017 certificate is a Psatz certificate with no pairs, with a
       theorem relating the two checks, so existing artifacts keep their meaning.
-- [ ] Examples: the four prototype goals by `decide +kernel`. Hostile tests:
+- [x] Examples: the four prototype goals by `decide +kernel`. Hostile tests:
       a dropped product, a pair out of range (which only weakens, never proves
       a false goal), a negative weight, a wrong identity, and a strict or
       disequality goal (outside the fragment, rejected).
-- [ ] `#guard_msgs` axiom audits of the checker and soundness theorems
+- [x] `#guard_msgs` axiom audits of the checker and soundness theorems
       (only propext, Classical.choice, Quot.sound). `lake build` is clean, and
       `docs/properties.md` states the rule.
-- [ ] No release tag. gimle-forseti 145 consumes it through a batched release.
+- [x] No release tag. gimle-forseti 145 consumes it through a batched release.
