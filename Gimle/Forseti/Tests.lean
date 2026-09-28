@@ -8,6 +8,7 @@ import Gimle.Forseti.Tests.Context
 import Gimle.Forseti.Tests.Certificate
 import Gimle.Forseti.Tests.Trajectory
 import Gimle.Forseti.Tests.DampedOscillator
+import Gimle.Forseti.Tests.LinearEnergyContract
 import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
 import Gimle.Forseti.Tests.StreamObservation
