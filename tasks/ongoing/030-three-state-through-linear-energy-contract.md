@@ -1,9 +1,12 @@
 ---
 title: Express the three-state contract through the generic linear-energy construction
-state: open
+state: ongoing
 priority: low
 labels: [trajectory, contracts, cleanup]
 related: ["029"]
+claimed_by: claude-f030
+claimed_at: 2026-09-28T18:32:07Z
+branch: refactor/three_state_linear_energy
 ---
 
 ## Context
