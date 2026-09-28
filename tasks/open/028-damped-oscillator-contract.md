@@ -3,7 +3,7 @@ title: Trajectory contract for the damped oscillator compiled from source equati
 state: open
 priority: medium
 labels: [trajectory, contracts, examples, energy]
-related: ["gimle-forseti/147", "asgard-lean/032"]
+related: ["gimle-forseti/148", "asgard-lean/032"]
 ---
 
 ## Context
@@ -40,4 +40,4 @@ dissipation `diag(0, 6)`.
 - [ ] `#guard_msgs` axiom audits (only propext, Classical.choice,
       Quot.sound), a clean `lake build`, and `docs/properties.md` and the
       README examples table updated.
-- [ ] No release tag: gimle-forseti 147 consumes it through a release.
+- [ ] No release tag: gimle-forseti 148 consumes it through a release.
