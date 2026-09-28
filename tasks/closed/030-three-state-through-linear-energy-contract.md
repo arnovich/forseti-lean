@@ -1,12 +1,9 @@
 ---
 title: Express the three-state contract through the generic linear-energy construction
-state: ongoing
+state: closed
 priority: low
 labels: [trajectory, contracts, cleanup]
 related: ["029"]
-claimed_by: claude-f030
-claimed_at: 2026-09-28T18:32:07Z
-branch: refactor/three_state_linear_energy
 ---
 
 ## Context
@@ -21,10 +18,10 @@ has a bespoke diagonal energy bound (`energy_bound`) where a
 
 ## Outcome
 
-- [ ] `ThreeState` gains a `LinearEnergyContract.Spec` (view, `energyIndex`,
+- [x] `ThreeState` gains a `LinearEnergyContract.Spec` (view, `energyIndex`,
       `P = I`, and a certificate for its dissipation), and `ThreeStateContract`
       is expressed through it. Every public name and statement gimle-forseti's
       registry cites stays unchanged, pinned by a test.
-- [ ] The generic parameterized lemmas (`energy_bound` for any nonnegative
+- [x] The generic parameterized lemmas (`energy_bound` for any nonnegative
       `(a, b, c)`) stay, if anything still uses them.
-- [ ] Clean `lake build` and axiom audits.
+- [x] Clean `lake build` and axiom audits.
