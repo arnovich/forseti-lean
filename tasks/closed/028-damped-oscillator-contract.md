@@ -1,9 +1,6 @@
 ---
 title: Trajectory contract for the damped oscillator compiled from source equations
-state: ongoing
-claimed_by: claude-f028
-claimed_at: 2026-09-28T10:42:58Z
-branch: feat/damped_oscillator_contract
+state: closed
 priority: medium
 labels: [trajectory, contracts, examples, energy]
 related: ["gimle-forseti/148", "asgard-lean/032"]
@@ -26,7 +23,7 @@ dissipation `diag(0, 6)`.
 
 ## Outcome
 
-- [ ] `Examples/DampedOscillator.lean` (forseti-lean namespace) defines its own
+- [x] `Examples/DampedOscillator.lean` (forseti-lean namespace) defines its own
       source `body`: the oscillator equations with the declared velocity, plus
       observations `x`, `v` and `E := 2*x^2 + v^2` with stable port IDs
       (`obs-x`, `obs-v`, `obs-e`). It also defines a concrete `evolution`
@@ -34,13 +31,13 @@ dissipation `diag(0, 6)`.
       Proved: `initial_eq`, `energyIndex`, `energy_at`, `energy_at_initial`
       (`= 2`), `compiled_exists`, `compiled_unique`, and `compiled_energy_bound`
       (`0 ≤ E ≤ 2` for `t ≥ 0`, via `LinearEnergy` with an exact certificate).
-- [ ] `Examples/DampedOscillatorContract.lean` mirrors
+- [x] `Examples/DampedOscillatorContract.lean` mirrors
       `ThreeStateContract`. It defines `observed`, `admitted` and
       `feedback_reads`, a `loop_contract`, an `energy_contract`
       (`Contract observed evolution.time admitted (Always … 0 ≤ E ∧ E ≤ 2)`),
       `declared_input_admitted`, and a refutation `one_refuted` showing `E ≤ 1`
       is not a bound.
-- [ ] `#guard_msgs` axiom audits (only propext, Classical.choice,
+- [x] `#guard_msgs` axiom audits (only propext, Classical.choice,
       Quot.sound), a clean `lake build`, and `docs/properties.md` and the
       README examples table updated.
-- [ ] No release tag: gimle-forseti 148 consumes it through a release.
+- [x] No release tag: gimle-forseti 148 consumes it through a release.
