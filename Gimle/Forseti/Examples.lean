@@ -23,3 +23,5 @@ import Gimle.Forseti.Examples.HeatStripBound
 import Gimle.Forseti.Examples.HeatFieldBound
 import Gimle.Forseti.Examples.AlgebraicCounterexamples
 import Gimle.Forseti.Examples.PositivstellensatzCertificates
+import Gimle.Forseti.Examples.LinearCircuitFibonacci
+import Gimle.Forseti.Examples.LinearCircuitJordan
