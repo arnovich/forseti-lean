@@ -16,9 +16,12 @@ import Gimle.Forseti.Examples.PredicateCertificates
 import Gimle.Forseti.Examples.ThreeStateContract
 import Gimle.Forseti.Examples.DampedOscillator
 import Gimle.Forseti.Examples.DampedOscillatorContract
+import Gimle.Forseti.Examples.HarmonicOscillator
 import Gimle.Forseti.Examples.FormalHeatContract
 import Gimle.Forseti.Examples.StreamObservation
 import Gimle.Forseti.Examples.HeatStripBound
 import Gimle.Forseti.Examples.HeatFieldBound
 import Gimle.Forseti.Examples.AlgebraicCounterexamples
 import Gimle.Forseti.Examples.PositivstellensatzCertificates
+import Gimle.Forseti.Examples.LinearCircuitFibonacci
+import Gimle.Forseti.Examples.LinearCircuitJordan

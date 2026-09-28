@@ -1,4 +1,4 @@
-import Gimle.Forseti.LinearEnergy
+import Gimle.Forseti.LinearEnergyContract
 import Gimle.Asgard.Model.Linear
 import Gimle.Asgard.Model.SourceSyntax
 
@@ -143,19 +143,22 @@ theorem quadratic_energyMatrix (x : Point 2) :
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
   simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
 
+/-- The data the generic construction needs: the linear view, the energy
+observation, `P` and its certificate. -/
+noncomputable def spec : LinearEnergyContract.Spec compiled where
+  view := linear
+  energy := energyIndex
+  matrix := energyMatrix
+  energy_eq x := (energy_at x).trans (quadratic_energyMatrix x).symm
+  certificate := certificate
+  valid := certificate_valid
+
 /-- Every exact continuous realization keeps `E` in `[0, 2]` for `t ≥ 0`. -/
 theorem compiled_energy_bound (state : Dynamics.Signal 2)
     (realized : compiled.Realizes state) (t : ℝ) (forward : 0 ≤ t) :
     0 ≤ compiled.outputs.circuit.run (state t) energyIndex ∧
-    compiled.outputs.circuit.run (state t) energyIndex ≤ 2 := by
-  have initial : quadratic energyMatrix compiledProblem.initial ≤ 2 := by
-    change quadratic energyMatrix compiled.initial ≤ 2
-    rw [initial_eq, quadratic_energyMatrix]
-    norm_num
-  have h := certificate_energy_bound compiledProblem energyMatrix certificate
-    certificate_valid state (compiled_solves state realized) 2 initial t
-    ((domain_iff t).mpr forward)
-  simpa only [energy_at, quadratic_energyMatrix] using h
+    compiled.outputs.circuit.run (state t) energyIndex ≤ 2 :=
+  spec.energy_bound 2 (le_of_eq energy_at_initial) state realized t ((domain_iff t).mpr forward)
 
 /-- One is already false at the exact initial state. -/
 theorem initial_not_bounded_by_one :

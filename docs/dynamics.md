@@ -48,6 +48,7 @@ circuit with no behaviour, so it is never a system theorem on its own.
 | `Contract.parallel` | two contracts, same clock | the product on owned ports |
 | `Contract.linear` | a `Linear.Problem` | existence, uniqueness, source solutions |
 | `Contract.energy` | `LinearEnergy.certificate_sound`'s premises | sublevel safety for all forward time |
+| `LinearEnergyContract.Spec.energy_contract` | a compiled model's `LinearView`, an observation computing `xᵀPx`, a valid certificate, `β ≥` the initial energy | the observed contract in `ThreeStateContract`'s shape |
 
 `Always` observes a state predicate at every forward time and `At` at one time;
 all-forward safety implies the endpoint, not conversely. `Initialized` inputs
@@ -77,6 +78,27 @@ Its source body adds the observations `x`, `v` and the assignment
 `P = diag(2, 1)` as `2·e₀² + e₁²` and its dissipation `diag(0, 6)` as `6·e₁²`:
 from `x(0) = 1`, `v(0) = 0`, `0 ≤ E ≤ 2` at every `t ≥ 0` (`energy_contract`),
 and the bound 1 is refuted by the admitted initial state (`one_refuted`).
+
+[`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
+the generic construction behind the oscillator's contract. For any compiled
+continuous model, a `Spec` holds:
+- its `LinearView`;
+- the index of an observation, with a proof that it computes `xᵀPx`;
+- a `LinearEnergy.Certificate` checked against the recognized matrix and `P`.
+
+From a `Spec` it derives `feedback_reads`, `declared_input_admitted`,
+`energy_bound`, the loop and observed contracts for any `β` at least the initial
+energy, and `refuted` for any `β` below it. `DampedOscillatorContract` is this
+construction applied to `DampedOscillator.spec`.
+[`Examples/HarmonicOscillator.lean`](../Gimle/Forseti/Examples/HarmonicOscillator.lean)
+is a second model built only from it:
+- the undamped `4x'' + x = 0`, from source with a declared velocity;
+- its energy `x² + 4v²` is conserved, so the certificate's decrease is the
+  empty sum;
+- its contract and refutation are two one-line applications of the
+  construction;
+- what remains is the model's data: the source, `P`, the certificate, and
+  reading `E` off the compiled circuit.
 
 PDE, stream and stochastic contracts are specified separately (tasks 018, 020)
 and are not checked here.

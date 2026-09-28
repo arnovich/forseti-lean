@@ -1,16 +1,16 @@
-import Gimle.Forseti.LinearCircuitHoare
+import Gimle.Forseti.Examples.LinearCircuitFibonacci
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
 
-/-! Acceptance checks for original compiled linear programs and their invariant.
-All positive equivalences consume the formula/Hoare/safety application endpoint.
-The preselected Jordan-chain reuse family is deliberately absent until freeze. -/
+/-! Regression checks for compiled linear programs: initialization, port order,
+empty states, exact casts, and unsupported syntax. Worked proofs are imported
+from Examples; the reusable property modules remain independent of both. -/
 
 namespace Gimle.Forseti.Tests.LinearCircuit
 
 open Gimle.Asgard Gimle.Forseti Gimle.Forseti.LinearCircuit
+open Gimle.Forseti.Examples.LinearCircuitFibonacci
 open scoped Matrix
 
 /-- Empty state spaces must remain admissible, including their zero readout. -/
@@ -20,33 +20,6 @@ def emptyProgram : Program 0 where
   matrix := fun i => Fin.elim0 i
   weights := Fin.elim0
   updates_ok := fun i => Fin.elim0 i
-  readout_ok := by decide +kernel
-
-/-- Every source coordinate is retained in the original compiled expression. -/
-def fibonacci : Program 2 where
-  updates := ![.add (.var 0) (.var 1), .var 0]
-  readout := .var 0
-  matrix := ![![1, 1], ![1, 0]]
-  weights := ![1, 0]
-  updates_ok := by intro i; fin_cases i <;> decide +kernel
-  readout_ok := by decide +kernel
-
-/-- Swapped visible coordinates and an unobserved growing coordinate. -/
-def extendedFibonacci : Program 3 where
-  updates := ![.var 1, .add (.var 0) (.var 1), .mul (.constant 2) (.var 2)]
-  readout := .var 1
-  matrix := ![![0, 1, 0], ![1, 1, 0], ![0, 0, 2]]
-  weights := ![0, 1, 0]
-  updates_ok := by intro i; fin_cases i <;> decide +kernel
-  readout_ok := by decide +kernel
-
-/-- A consistently conjugated coordinate permutation. -/
-def permutedFibonacci : Program 2 where
-  updates := ![.var 1, .add (.var 0) (.var 1)]
-  readout := .var 1
-  matrix := ![![0, 1], ![1, 1]]
-  weights := ![0, 1]
-  updates_ok := by intro i; fin_cases i <;> decide +kernel
   readout_ok := by decide +kernel
 
 /-- Changing one coefficient changes the visible recurrence. -/
@@ -87,42 +60,6 @@ def scalarProgram (a c : ℚ) : Program 1 where
     fin_cases j
     simp
 
-/-- Symbolic real scaling exercises all real states of this family. -/
-theorem fibonacci_scaled_prefix (r : ℝ) :
-    (prefixFormula fibonacci extendedFibonacci).holds
-      (pointAppend ![0, r] ![r, 0, r]) := by
-  rw [prefixFormula_holds_iff]
-  simp only [pointLeft_pointAppend, pointRight_pointAppend]
-  intro n hn
-  interval_cases n <;>
-    norm_num [Program.observe, Program.output, Program.state_succ, Program.state_zero,
-      Program.update, fibonacci, extendedFibonacci, Polynomial.Expr.eval]
-  ring
-
-theorem fibonacci_scaled_equivalent (r : ℝ) :
-    ∀ n, fibonacci.observe ![0, r] n = extendedFibonacci.observe ![r, 0, r] n :=
-  observations_eq_of_prefixFormula fibonacci extendedFibonacci _ _
-    (fibonacci_scaled_prefix r)
-
-theorem fibonacci_prefix :
-    (prefixFormula fibonacci extendedFibonacci).holds
-      (pointAppend ![0, 1] ![1, 0, 1]) := fibonacci_scaled_prefix 1
-
-theorem fibonacci_equivalent :
-    ∀ n, fibonacci.output.run
-        (Discrete.run (u := 0) (p := 0) fibonacci.update
-          empty ![0, 1] (fun _ => empty) n) 0 =
-      extendedFibonacci.output.run
-        (Discrete.run (u := 0) (p := 0) extendedFibonacci.update
-          empty ![1, 0, 1] (fun _ => empty) n) 0 :=
-  observations_eq_of_prefixFormula fibonacci extendedFibonacci _ _ fibonacci_prefix
-
-theorem fibonacci_hoare :
-    ExactHoare (prefixFormula fibonacci extendedFibonacci).toPredicate
-      (pairedUpdate fibonacci extendedFibonacci)
-      (prefixFormula fibonacci extendedFibonacci).toPredicate :=
-  prefix_hoare fibonacci extendedFibonacci
-
 example : fibonacci.observe ![0, 1] 0 = 0 ∧ fibonacci.observe ![0, 1] 1 = 1 := by
   norm_num [Program.observe, Program.output, Program.state_succ, Program.state_zero,
     Program.update, fibonacci, Polynomial.Expr.eval]
@@ -131,20 +68,6 @@ example : extendedFibonacci.observe ![1, 0, 1] 0 = 0 ∧
     extendedFibonacci.observe ![1, 0, 1] 1 = 1 := by
   norm_num [Program.observe, Program.output, Program.state_succ, Program.state_zero,
     Program.update, extendedFibonacci, Polynomial.Expr.eval]
-
-theorem permutation_prefix :
-    (prefixFormula fibonacci permutedFibonacci).holds
-      (pointAppend ![0, 1] ![1, 0]) := by
-  rw [prefixFormula_holds_iff]
-  simp only [pointLeft_pointAppend, pointRight_pointAppend]
-  intro n hn
-  interval_cases n <;>
-    norm_num [Program.observe, Program.output, Program.state_succ, Program.state_zero,
-      Program.update, fibonacci, permutedFibonacci, Polynomial.Expr.eval]
-
-theorem permutation_equivalent :
-    ∀ n, fibonacci.observe ![0, 1] n = permutedFibonacci.observe ![1, 0] n :=
-  observations_eq_of_prefixFormula fibonacci permutedFibonacci _ _ permutation_prefix
 
 theorem empty_prefix :
     (prefixFormula emptyProgram emptyProgram).holds (pointAppend empty empty) := by
@@ -238,11 +161,6 @@ theorem affine_compiled_control :
   norm_num [rawObservation, Discrete.run, autonomous_step, affineUpdate,
     doublingUpdate, Polynomial.Expr.eval]
 
-#print axioms fibonacci_scaled_prefix
-#print axioms fibonacci_scaled_equivalent
-#print axioms fibonacci_equivalent
-#print axioms fibonacci_hoare
-#print axioms permutation_equivalent
 #print axioms empty_equivalent
 #print axioms one_empty_equivalent
 #print axioms affine_compiled_control

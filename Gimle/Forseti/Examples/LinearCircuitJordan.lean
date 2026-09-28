@@ -2,10 +2,27 @@ import Gimle.Forseti.LinearCircuitHoare
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.NormNum
 
-/-! Preselected damped Jordan-chain examples, implemented after the reviewed core
-interface was frozen. Each finite rational calculation establishes the actual
-formula at initialization; all infinite conclusions consume the Hoare safety endpoint. -/
-namespace Gimle.Forseti.Tests.LinearCircuitReuse
+/-!
+# Equivalent damped Jordan chains
+
+This Lean module is also the native Forseti notebook for the worked examples.
+The prose and proofs share one source; the adjacent `.forseti.json` records
+per-claim checking observations, which can be regenerated with Forseti.
+
+Let `S` be the nilpotent shift sending `(x₀,x₁,x₂)` to `(0,x₀,x₁)` in dimension
+three. Compare updates `A = (I + S)/2` and `B = I/2 + S`. Both start at the
+first basis vector. Read the last coordinate of the first system and one
+quarter of the last coordinate of the second. Although the middle coordinates
+after one step are `1/2` and `1`, their selected output streams agree.
+
+The three-dimensional outputs start `0, 0, 1/4, 3/8, 3/8, 5/16`. Six
+comparisons suffice because the sum of the dimensions is six. We also check
+the one- and two-dimensional versions, with output scalings `1` and `1/2`.
+These are exact rational calculations embedded into real circuit semantics.
+The proved property is output equality; a decay-rate or stability estimate
+would require a separate theorem.
+-/
+namespace Gimle.Forseti.Examples.LinearCircuitJordan
 
 open Gimle.Asgard Gimle.Forseti Gimle.Forseti.LinearCircuit
 open FiniteLinearEquivalence
@@ -65,6 +82,16 @@ def jordanRight3 : Program 3 where
   updates_ok := by intro i; fin_cases i <;> decide +kernel
   readout_ok := by decide +kernel
 
+/-!
+## Initial states and the finite predicate
+
+Every example starts at the first basis vector. `embed` casts rational
+coordinates exactly into the real state space. The helper below transports a
+finite rational matrix calculation to `prefixFormula`, an existing Forseti
+formula about the original compiled programs. The transport is justified by
+`Program.observe_ratCast`, rather than by an independently translated program.
+-/
+
 /-- Explicit rational initial vectors, with the first coordinate equal to one. -/
 def initial1 : Fin 1 → ℚ := ![1]
 def initial2 : Fin 2 → ℚ := ![1, 0]
@@ -89,6 +116,21 @@ private theorem prefix_of_rational_prefix {d₁ d₂ : Nat}
       congrArg (fun q : ℚ => (q : ℝ)) (h ⟨n, hn⟩)
     _ = Q.observe (embed y) n := (Q.observe_ratCast y n).symm
 
+/-!
+## Three concrete applications of the same interface
+
+For each dimension, `decide +kernel` checks the finite rational calculation.
+The resulting initialization claim supplies `observations_eq_of_prefixFormula`.
+That library endpoint consumes `prefix_safety`: the existing
+`Discrete.certificate_sound` rule instantiated with the preservation Hoare
+triple `prefix_hoare` and the predicate entailment `prefix_entails_output`.
+Consequently each infinite conclusion is about the original compiled circuits
+and their initialized executions, not only about their matrix representations.
+
+Dimension one is a boundary check where the two realizations coincide. The
+following two dimensions exercise genuinely different transition circuits.
+-/
+
 /-- Dimension-one initialization satisfies the actual finite observation formula. -/
 theorem jordan1_prefix :
     (prefixFormula jordanLeft1 jordanRight1).holds
@@ -98,8 +140,8 @@ theorem jordan1_prefix :
 
 /-- Dimension-one output equality uses the existing Hoare/safety endpoint. -/
 theorem jordan1_equivalent : ∀ n,
-    jordanLeft1.observe (embed initial1) n = jordanRight1.observe (embed initial1) n :=
-  observations_eq_of_prefixFormula jordanLeft1 jordanRight1 _ _ jordan1_prefix
+    jordanLeft1.observe (embed initial1) n = jordanRight1.observe (embed initial1) n := by
+  exact observations_eq_of_prefixFormula jordanLeft1 jordanRight1 _ _ jordan1_prefix
 
 /-- Dimension-two initialization satisfies the actual finite observation formula. -/
 theorem jordan2_prefix :
@@ -110,8 +152,8 @@ theorem jordan2_prefix :
 
 /-- Distinct dimension-two realizations agree through the existing Hoare/safety endpoint. -/
 theorem jordan2_equivalent : ∀ n,
-    jordanLeft2.observe (embed initial2) n = jordanRight2.observe (embed initial2) n :=
-  observations_eq_of_prefixFormula jordanLeft2 jordanRight2 _ _ jordan2_prefix
+    jordanLeft2.observe (embed initial2) n = jordanRight2.observe (embed initial2) n := by
+  exact observations_eq_of_prefixFormula jordanLeft2 jordanRight2 _ _ jordan2_prefix
 
 /-- Dimension-three initialization satisfies the actual finite observation formula. -/
 theorem jordan3_prefix :
@@ -122,8 +164,18 @@ theorem jordan3_prefix :
 
 /-- Distinct dimension-three realizations agree through the existing Hoare/safety endpoint. -/
 theorem jordan3_equivalent : ∀ n,
-    jordanLeft3.observe (embed initial3) n = jordanRight3.observe (embed initial3) n :=
-  observations_eq_of_prefixFormula jordanLeft3 jordanRight3 _ _ jordan3_prefix
+    jordanLeft3.observe (embed initial3) n = jordanRight3.observe (embed initial3) n := by
+  exact observations_eq_of_prefixFormula jordanLeft3 jordanRight3 _ _ jordan3_prefix
+
+/-!
+## Independent numerical controls
+
+Agreement between two implementations alone would not rule out the same
+mistake in both. The next claims compare the selected left outputs with
+prescribed exact values, independently of the equality proof. Observation zero
+is included. Finally, explicit unequal next-state coordinates confirm that the
+two nontrivial examples really have different transitions.
+-/
 
 /-- Independent expected outputs prevent a merely coincident wrong-prefix check. -/
 theorem jordan2_expected (n : Fin 4) :
@@ -172,4 +224,4 @@ theorem jordan3_different_updates :
 #print axioms jordan2_different_updates
 #print axioms jordan3_different_updates
 
-end Gimle.Forseti.Tests.LinearCircuitReuse
+end Gimle.Forseti.Examples.LinearCircuitJordan
