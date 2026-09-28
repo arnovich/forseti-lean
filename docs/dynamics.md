@@ -66,6 +66,18 @@ contract: for the declared initial state, `0 ≤ V ≤ 6` at every `t ≥ 2`; th
 `(1/3, 1/2, 2)` are compiled into the model, not bound by the input predicate,
 which constrains only the drivers and initial wires.
 
+[`Examples/DampedOscillatorContract.lean`](../Gimle/Forseti/Examples/DampedOscillatorContract.lean)
+does the same for a model compiled from **source** equations: the damped
+oscillator `x'' + 3x' + 2x = 0` with the declared velocity `dx : D_t(x) = v`,
+compiled by asgard-lean's `compileSourceContinuous`
+([`Examples/DampedOscillator.lean`](../Gimle/Forseti/Examples/DampedOscillator.lean)).
+Its source body adds the observations `x`, `v` and the assignment
+`E := 2*x^2 + v^2` (ports `obs-x`, `obs-v`, `obs-e`). `E` is bounded by
+`LinearEnergy.certificate_energy_bound` with the exact certificate
+`P = diag(2, 1)` as `2·e₀² + e₁²` and its dissipation `diag(0, 6)` as `6·e₁²`:
+from `x(0) = 1`, `v(0) = 0`, `0 ≤ E ≤ 2` at every `t ≥ 0` (`energy_contract`),
+and the bound 1 is refuted by the admitted initial state (`one_refuted`).
+
 PDE, stream and stochastic contracts are specified separately (tasks 018, 020)
 and are not checked here.
 
