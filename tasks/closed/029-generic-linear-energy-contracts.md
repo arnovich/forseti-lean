@@ -1,9 +1,6 @@
 ---
 title: Build trajectory contracts for compiled linear models from an energy certificate
-state: ongoing
-claimed_by: claude-f029
-claimed_at: 2026-09-28T14:32:34Z
-branch: feat/linear_energy_contracts
+state: closed
 priority: medium
 labels: [trajectory, contracts, energy, linear]
 related: ["028", "gimle-forseti/148"]
@@ -30,19 +27,19 @@ know still costs a hand-written contract.
 
 ## Outcome
 
-- [ ] A generic construction (e.g. `Trajectory.LinearEnergyContract`) takes:
+- [x] A generic construction (e.g. `Trajectory.LinearEnergyContract`) takes:
       a compiled continuous model with a `LinearView`; an energy observation
       index with a proof that it computes `xᵀPx`; a `LinearEnergy.Certificate`
       that is `Valid` for the view's matrix and `P`; and a bound at least the
       initial energy. It yields the same `energy_contract`, `feedback_reads`,
       `declared_input_admitted` and existence facts the renderer cites, with
       exactly the shapes of `ThreeStateContract`.
-- [ ] A refutation lemma: an initial energy above a claimed bound refutes it.
-- [ ] `DampedOscillatorContract` is re-expressed through it, with its public
+- [x] A refutation lemma: an initial energy above a claimed bound refutes it.
+- [x] `DampedOscillatorContract` is re-expressed through it, with its public
       names and statements unchanged, so gimle-forseti's registry entry keeps
       working, and it gets shorter.
-- [ ] A second model is added using only the construction (e.g. a compiled
+- [x] A second model is added using only the construction (e.g. a compiled
       higher-order or integral example from asgard-lean's source compiler),
       and its size is recorded.
-- [ ] Axiom audits and a clean `lake build`. `docs/dynamics.md` states the
+- [x] Axiom audits and a clean `lake build`. `docs/dynamics.md` states the
       construction.
