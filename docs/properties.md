@@ -69,6 +69,28 @@ connects this syntax to the semantic core.
     refutes goals at `±√2`, at `(√2, √3)`, at a point with one rational
     coordinate, and with a consequent that is exactly zero at the point;
     `Tests/AlgebraicWitness.lean` holds the hostile witnesses.
+- [`Syntax/Positivstellensatz.lean`](../Gimle/Forseti/Syntax/Positivstellensatz.lean)
+  widens the certificate to a degree-2 Positivstellensatz. A
+  `PsatzCertificate` names pairs `(i, j)` of antecedent constraints and gives
+  ordinary rows against the antecedent augmented with `−(pᵢ · pⱼ) ≤ 0`:
+  - `augment_nonpositive` is the only new fact: a product of two nonpositive
+    reals is nonnegative, so every derived constraint holds where the
+    antecedent does. A pair out of range reads the constant `0` and only
+    weakens the certificate.
+  - `PsatzCertificate.sound` proves `P ⊨ Q` from a check that passes, by 017's
+    `Row.check_sound` over the augmented list.
+  - `check_ofCertificate`: a 017 certificate is a Psatz certificate with no
+    pairs, and the two checks agree, so existing evidence keeps its meaning.
+  - [Examples/PositivstellensatzCertificates.lean](../Gimle/Forseti/Examples/PositivstellensatzCertificates.lean)
+    proves three goals: `x ≥ 0 ∧ y ≥ 0 ⊨ x·y ≥ 0`, `x ≥ 1 ∧ y ≥ 1 ⊨ x·y ≥ 1`
+    (neither has a quadratic-module certificate), and `x² ≤ 1 ∧ y² ≤ 1 ⊨
+    x·y ≤ 1` by the off-diagonal square `(x − y)²`.
+    `Tests/Positivstellensatz.lean` holds the hostile certificates: a dropped
+    product, an out-of-range pair, a negative weight, a wrong identity, a wrong
+    multiplier count, a false goal and a strict goal.
+  - The format was selected by gimle-forseti 034's comparison of solver proof
+    logs, exact quantifier elimination and widened certificates. Products of
+    three or more constraints, and strict goals, are outside it.
 - No general entailment solver, CAD/SMT proof-log checker or serializer is
   supplied; producers live outside this repository.
 

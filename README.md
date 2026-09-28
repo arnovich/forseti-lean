@@ -32,6 +32,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Stream observations](Gimle/Forseti/Examples/StreamObservation.lean) | Polynomial certificates lifted to total contracts over Asgard's formal heat circuit |
 | [Heat field bound](Gimle/Forseti/Examples/HeatFieldBound.lean) | Bounds on the evaluated real field of the heat circuit's output, proved and refuted |
 | [Algebraic counterexamples](Gimle/Forseti/Examples/AlgebraicCounterexamples.lean) | Entailments refuted only at irrational points, such as `x² = 2 ⊨ x < 0` at `√2` |
+| [Positivstellensatz certificates](Gimle/Forseti/Examples/PositivstellensatzCertificates.lean) | Entailments that need a product of constraints, such as `x ≥ 0 ∧ y ≥ 0 ⊨ x·y ≥ 0`, checked by `PsatzCertificate` |
 
 Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 

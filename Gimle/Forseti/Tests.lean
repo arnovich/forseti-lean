@@ -13,6 +13,7 @@ import Gimle.Forseti.Tests.StreamObservation
 import Gimle.Forseti.Tests.FieldBound
 import Gimle.Forseti.Tests.FieldObservation
 import Gimle.Forseti.Tests.AlgebraicWitness
+import Gimle.Forseti.Tests.Positivstellensatz
 
 namespace Gimle.Forseti.Tests
 
