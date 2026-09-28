@@ -24,6 +24,11 @@ x' = A x       V(x) = xᵀ P x       D = −(AᵀP + PA)
 model with damping `(1/3,1/2,2)`, initial state `(1,2,-1)`, and start `2`.
 `compiled_energy_bound` proves the fourth compiled observation stays in `[0,6]`
 for every exact realization and `t ≥ 2`. Bound `5` fails at the initial state.
+The bound comes from one `LinearEnergy.Certificate`: `P = I` as three unit
+squares, and its dissipation `diag(2a, 2b, 2c)` as weighted unit squares, valid
+for any nonnegative `(a, b, c)` (`certificate_valid`). The generic
+`energy_bound` applies it to any such triple; `spec` applies it at the compiled
+`(1/3, 1/2, 2)`.
 
 [ProofSearchContract.lean](../Gimle/Forseti/Examples/ProofSearchContract.lean)
 shows proposed certificate data checked by exact arithmetic and soundness theorems.
@@ -65,7 +70,10 @@ packages the compiled three-state loop and its observation circuit into one
 contract: for the declared initial state, `0 ≤ V ≤ 6` at every `t ≥ 2`; the bound
 5 is refuted by the admitted initial state (`five_refuted`). Its parameters
 `(1/3, 1/2, 2)` are compiled into the model, not bound by the input predicate,
-which constrains only the drivers and initial wires.
+which constrains only the drivers and initial wires. Every piece is
+`LinearEnergyContract` (below) applied to `ThreeState.spec`;
+`Tests/ThreeState.lean` pins the names and statements gimle-forseti's trajectory
+registry cites.
 
 [`Examples/DampedOscillatorContract.lean`](../Gimle/Forseti/Examples/DampedOscillatorContract.lean)
 does the same for a model compiled from **source** equations: the damped
@@ -88,8 +96,9 @@ continuous model, a `Spec` holds:
 
 From a `Spec` it derives `feedback_reads`, `declared_input_admitted`,
 `energy_bound`, the loop and observed contracts for any `β` at least the initial
-energy, and `refuted` for any `β` below it. `DampedOscillatorContract` is this
-construction applied to `DampedOscillator.spec`.
+energy, and `refuted` for any `β` below it. `ThreeStateContract` and
+`DampedOscillatorContract` are this construction applied to `ThreeState.spec`
+and `DampedOscillator.spec`.
 [`Examples/HarmonicOscillator.lean`](../Gimle/Forseti/Examples/HarmonicOscillator.lean)
 is a second model built only from it:
 - the undamped `4x'' + x = 0`, from source with a declared velocity;

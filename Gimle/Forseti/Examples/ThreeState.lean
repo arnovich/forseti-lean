@@ -1,4 +1,4 @@
-import Gimle.Forseti.LinearEnergy
+import Gimle.Forseti.LinearEnergyContract
 import Gimle.Asgard.Examples.ThreeState
 
 /-! Exact properties of the accepted three-state Asgard model.
@@ -7,7 +7,12 @@ The generic half (`energy_derivative`, `energy_bound`) is stated for any
 recognized three-state linear field with nonnegative rational coefficients; only
 the `compiled_*` half binds to Asgard's compiled model. Nothing here restates
 the equations or the circuit — `energy_at` reads V off the compiled observation
-circuit at its own index, so the bound is about what the compiler produced. -/
+circuit at its own index, so the bound is about what the compiler produced.
+
+Both halves rest on one `LinearEnergy.Certificate`: `P = I` as three unit
+squares, and its dissipation `diag(2a, 2b, 2c)` as three weighted unit squares.
+`spec` hands the compiled instance to `LinearEnergyContract`, which derives
+`compiled_energy_bound` here and every contract in `ThreeStateContract`. -/
 namespace Gimle.Forseti.Examples.ThreeState
 open Gimle.Asgard Gimle.Asgard.Model
 open Gimle.Asgard.Examples.ThreeState
@@ -57,15 +62,40 @@ theorem energy_derivative (a b c : ℚ) (problem : Dynamics.Linear.Problem 3)
   push_cast
   ring
 
+/-- The unit vectors of `ℚ³`. -/
+def unit (r : Fin 3) : Fin 3 → ℚ := fun i => if i = r then 1 else 0
+
+/-- `P = I` as `e₀² + e₁² + e₂²`, and its dissipation `diag(2a, 2b, 2c)` as
+`2a·e₀² + 2b·e₁² + 2c·e₂²`. Untrusted data; `certificate_valid` checks it. -/
+def certificate (a b c : ℚ) : Certificate 3 where
+  positive := ⟨3, fun _ => 1, unit⟩
+  decrease := ⟨3, ![2 * a, 2 * b, 2 * c], unit⟩
+
+/-- The certificate is valid for the recognized matrix of any nonnegative
+damping triple; `dissipation_eq` supplies the recomputed dissipation. -/
+theorem certificate_valid {a b c : ℚ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) :
+    (certificate a b c).Valid (expectedMatrix a b c) identity := by
+  refine ⟨⟨fun _ => by show (0 : ℚ) ≤ 1; norm_num, ?_⟩, ⟨?_, ?_⟩⟩
+  · intro i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [certificate, identity, unit, Fin.sum_univ_three]
+  · intro r
+    fin_cases r
+    · show (0 : ℚ) ≤ 2 * a
+      linarith
+    · show (0 : ℚ) ≤ 2 * b
+      linarith
+    · show (0 : ℚ) ≤ 2 * c
+      linarith
+  · intro i j
+    rw [dissipation_eq]
+    fin_cases i <;> fin_cases j <;>
+      norm_num [certificate, diagonal, unit, Fin.sum_univ_three]
+
 theorem dissipation_nonnegative (a b c : ℚ)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (x : Point 3) :
-    0 ≤ quadratic (dissipation (expectedMatrix a b c) identity) x := by
-  rw [dissipation_eq, quadratic_diagonal]
-  have ha' : (0 : ℝ) ≤ (2*a : ℚ) := by exact_mod_cast (mul_nonneg (by norm_num : (0:ℚ) ≤ 2) ha)
-  have hb' : (0 : ℝ) ≤ (2*b : ℚ) := by exact_mod_cast (mul_nonneg (by norm_num : (0:ℚ) ≤ 2) hb)
-  have hc' : (0 : ℝ) ≤ (2*c : ℚ) := by exact_mod_cast (mul_nonneg (by norm_num : (0:ℚ) ≤ 2) hc)
-  exact add_nonneg (add_nonneg (mul_nonneg ha' (sq_nonneg _))
-    (mul_nonneg hb' (sq_nonneg _))) (mul_nonneg hc' (sq_nonneg _))
+    0 ≤ quadratic (dissipation (expectedMatrix a b c) identity) x :=
+  (certificate a b c).decrease.nonnegative _ (certificate_valid ha hb hc).2 x
 
 /-- The bound is for every continuous solution, not for Euler samples. -/
 theorem energy_bound (a b c : ℚ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c)
@@ -76,29 +106,11 @@ theorem energy_bound (a b c : ℚ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c)
     (state : Dynamics.Signal 3) (solves : problem.Solves state)
     (t : ℝ) (forward : 2 ≤ t) :
     0 ≤ quadratic identity (state t) ∧ quadratic identity (state t) ≤ 6 := by
-  have nonnegative (x : Point 3) : 0 ≤ quadratic identity x := by
-    rw [quadratic_identity]
-    positivity
-  have decreases (x : Point 3) :
-      0 ≤ quadratic (dissipation problem.matrix identity) x := by
-    rw [matrix_eq]
-    exact dissipation_nonnegative a b c ha hb hc x
-  have anti := quadratic_antitone problem identity state solves decreases
-  have start_mem : problem.time.start ∈ problem.time.domain := by
-    simp [Dynamics.TimeDomain.domain]
-  have t_mem : t ∈ problem.time.domain := by
-    simpa [Dynamics.TimeDomain.domain, start_eq] using forward
-  have start_le : problem.time.start ≤ t := by simpa [start_eq] using forward
-  have upper := anti start_mem t_mem start_le
-  change quadratic identity (state t) ≤ quadratic identity (state problem.time.start) at upper
-  rw [solves.1, initial_eq] at upper
-  simp only [quadratic_identity] at upper
-  have initial_energy :
-      (![1, 2, -1] : Point 3) 0 ^ 2 + (![1, 2, -1] : Point 3) 1 ^ 2 +
-      (![1, 2, -1] : Point 3) 2 ^ 2 = (6 : ℝ) := by
-    norm_num [show (![1, 2, -1] : Point 3) 2 = -1 from rfl]
-  rw [initial_energy] at upper
-  exact ⟨nonnegative _, by simpa only [quadratic_identity] using upper⟩
+  refine certificate_energy_bound problem identity (certificate a b c)
+    (matrix_eq ▸ certificate_valid ha hb hc) state solves 6 ?_ t
+    (by simpa [Dynamics.TimeDomain.domain, start_eq] using forward)
+  rw [initial_eq, quadratic_identity]
+  norm_num [show (![1, 2, -1] : Point 3) 2 = -1 from rfl]
 
 theorem compiled_matrix : linear.matrix = expectedMatrix (1/3) (1/2) 2 := by
   rw [linear_matrix]
@@ -167,15 +179,26 @@ theorem compiled_initial_derivative (state : Dynamics.Signal 3)
   convert h using 1
   norm_num [show (![1, 2, -1] : Point 3) 2 = -1 from rfl]
 
+/-- The time domain is `t ≥ 2`. -/
+theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 2 ≤ t := by
+  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+
+/-- The data the generic construction needs: the linear view, the energy
+observation `V`, `P = I` and the certificate at the compiled damping. -/
+noncomputable def spec : LinearEnergyContract.Spec model where
+  view := linear
+  energy := energyIndex
+  matrix := identity
+  energy_eq x := (energy_at x).trans (quadratic_identity x).symm
+  certificate := certificate (1/3) (1/2) 2
+  valid := compiled_matrix ▸ certificate_valid (by norm_num) (by norm_num) (by norm_num)
+
 /-- Every exact continuous realization remains in the initial energy sublevel. -/
 theorem compiled_energy_bound (state : Dynamics.Signal 3)
     (realized : model.Realizes state) (t : ℝ) (forward : 2 ≤ t) :
     0 ≤ model.outputs.circuit.run (state t) energyIndex ∧
-    model.outputs.circuit.run (state t) energyIndex ≤ 6 := by
-  have h := energy_bound (1/3) (1/2) 2 (by norm_num) (by norm_num) (by norm_num)
-    compiledProblem compiled_problem_matrix compiled_problem_initial compiled_problem_start
-    state (compiled_solves state realized) t forward
-  simpa only [energy_at, quadratic_identity] using h
+    model.outputs.circuit.run (state t) energyIndex ≤ 6 :=
+  spec.energy_bound 6 (le_of_eq energy_at_initial) state realized t ((domain_iff t).mpr forward)
 
 /-- Five is already false at the exact initial state. -/
 theorem initial_not_bounded_by_five :
@@ -222,6 +245,7 @@ theorem compiled_start_is_two : compiledProblem.time.start = 2 := compiled_probl
 #print axioms matrix_depends_on_coefficients
 #print axioms energy_derivative
 #print axioms energy_bound
+#print axioms certificate_valid
 #print axioms compiled_exists
 #print axioms compiled_unique
 #print axioms compiled_realizes_iff_problem
