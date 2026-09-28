@@ -26,6 +26,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Energy](Gimle/Forseti/Examples/EnergyDemo.lean) | Sharp bounds for an exact circuit |
 | [Compiled equations](Gimle/Forseti/Examples/EquationWorkflow.lean) | Properties of the same circuits produced by Asgard's equation compiler |
 | [Three-state model](Gimle/Forseti/Examples/ThreeState.lean) | Forward existence, uniqueness, and the compiled energy bound `0 ≤ V ≤ 6` |
+| [Damped oscillator](Gimle/Forseti/Examples/DampedOscillatorContract.lean) | A trajectory contract for `x'' + 3x' + 2x = 0` compiled from source equations with a declared velocity: `0 ≤ 2x² + v² ≤ 2` for `t ≥ 0`, from an exact energy certificate |
 | [Disturbed feedback](Gimle/Forseti/Examples/DisturbedFeedback.lean) | Component storage identities compose through a trace to prove `\|x(t)\| ≤ 1` under continuous disturbances bounded by one |
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
