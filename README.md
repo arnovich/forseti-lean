@@ -42,6 +42,7 @@ Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 - [Predicates and Hoare rules](docs/properties.md)
 - [Dynamics and safety certificates](docs/dynamics.md)
 - [Finite linear output equivalence](docs/finite-linear-equivalence.md)
+- [Compiled linear circuits and Hoare invariants](docs/linear-circuit-equivalence.md)
 - [Standalone proof checker](docs/checker.md)
 
 Optional numerical demo: `lake build equation_demo`, then

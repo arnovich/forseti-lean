@@ -32,7 +32,8 @@ hidden-state boundedness. The bound requires linear transitions and readouts;
 an affine representation needs its additional homogeneous coordinate counted.
 Approximate numerical equality is not the premise of the theorem.
 
-The module is a property theorem about rational matrices. A compiler/extractor
-bridge to circuit execution and enrollment through an external Forseti checking
-environment are separate obligations. Adding this module does not expand the
-checker's admitted interface.
+The module is a property theorem about rational matrices. The optional
+[compiled circuit and Hoare bridge](linear-circuit-equivalence.md) connects
+recognized original expressions to initialized execution and existing predicate
+invariants. Enrollment through an external Forseti checking environment remains
+a separate obligation. Neither module expands the checker's admitted interface.
