@@ -1,6 +1,9 @@
 ---
 title: Build trajectory contracts for compiled linear models from an energy certificate
-state: open
+state: ongoing
+claimed_by: claude-f029
+claimed_at: 2026-09-28T14:32:34Z
+branch: feat/linear_energy_contracts
 priority: medium
 labels: [trajectory, contracts, energy, linear]
 related: ["028", "gimle-forseti/148"]
