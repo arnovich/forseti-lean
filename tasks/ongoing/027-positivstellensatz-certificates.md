@@ -1,6 +1,9 @@
 ---
 title: Check degree-2 Positivstellensatz certificates with constraint products
-state: open
+state: ongoing
+claimed_by: claude-f027
+claimed_at: 2026-09-28T08:43:08Z
+branch: feat/positivstellensatz_certificates
 priority: medium
 labels: [predicates, certificates, entailment]
 related: ["017", "gimle-forseti/034", "gimle-forseti/145"]
