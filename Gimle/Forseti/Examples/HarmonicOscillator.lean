@@ -111,11 +111,26 @@ noncomputable def spec : LinearEnergyContract.Spec compiled where
   certificate := certificate
   valid := certificate_valid
 
-/-! ## The contract, from the construction alone -/
+/-! ## The contract, from the construction alone
+
+The names below are the interface gimle-forseti's trajectory registry cites,
+the same as `DampedOscillatorContract`'s. -/
 
 def observed := LinearEnergyContract.observed compiled
 
-def admitted := LinearEnergyContract.admitted compiled
+def admitted : Trajectory.SignalPredicate (0 + evolution.states.length) :=
+  LinearEnergyContract.admitted compiled
+
+theorem compiled_exists : ∃ state, compiled.Realizes state := linear.exists_realization
+
+theorem feedback_reads (input : Dynamics.Signal (0 + evolution.states.length))
+    (admit : admitted input) (state : Dynamics.Signal evolution.states.length) :
+    compiled.feedback.Rel evolution.time input state ↔ compiled.Realizes state :=
+  LinearEnergyContract.feedback_reads compiled input admit state
+
+theorem declared_input_admitted :
+    admitted (Dynamics.signalAppend Model.noDrivers fun _ => compiled.initial) :=
+  LinearEnergyContract.declared_input_admitted compiled
 
 /-- **The conserved energy stays in `[0, 1]`** for every admitted input. -/
 theorem energy_contract :
