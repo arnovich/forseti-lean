@@ -1,4 +1,4 @@
-import Gimle.Forseti.Examples.LinearCircuitFibonacci
+import Gimle.Forseti.Examples.LinearCircuitModels
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.NormNum
@@ -10,7 +10,7 @@ from Examples; the reusable property modules remain independent of both. -/
 namespace Gimle.Forseti.Tests.LinearCircuit
 
 open Gimle.Asgard Gimle.Forseti Gimle.Forseti.LinearCircuit
-open Gimle.Forseti.Examples.LinearCircuitFibonacci
+open Gimle.Forseti.Examples.LinearCircuitModels
 open scoped Matrix
 
 /-- Empty state spaces must remain admissible, including their zero readout. -/
