@@ -74,3 +74,13 @@ formatting/lint/type checks and diff checks passed. The mathematical, compositio
 and search/replay panel approved with no remaining blockers. Added an explicit
 body-acceleration observation theorem and fixed both review findings. Tasks 025
 and 026 remain open for later; no checker admission or release pin changed.
+
+### note · codex/suspension · 2026-09-29T12:45:47Z
+
+Merged PR [15](https://github.com/arnovich/forseti-lean/pull/15) as `d61af4d`
+after the owner authorized integration. Updated against current main and
+Asgard v1.7.0; retained all newer documentation links when resolving the README
+conflict. The suspension proof required no changes. Full lake build (3531 jobs),
+equation_demo (6811 jobs), permitted-axiom checks, exact certificate reproduction
+and all four Python search regressions passed. Task 024 is complete and merged;
+the separate future examples 025 and 026 remain open.
