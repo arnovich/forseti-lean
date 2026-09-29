@@ -1,0 +1,190 @@
+{
+  "format": "gimle.forseti.notebook-metadata/v2",
+  "checks": {
+    "prefix_of_rational_prefix": {
+      "context": "e79b4500b56757bf0f3cfe930fea0981f0e100016d80c9bce83efed546994b38",
+      "proof": "ccdf42c5969574203a12fa0ace00145c8ed76bbfe71cb2cd1eefc5c10ade9395",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "ed7e21612c516a2adf2cc3ef05a6187ab0735c10fa05b200877a9a9ca6f4c1b0",
+      "assumed": {}
+    },
+    "jordan1_prefix": {
+      "context": "d5372ef77fd1be00adbba6af43d372c4c23c4d7f87af79ffb802658c71f26d1a",
+      "proof": "c43f8ecef3e884d7fd451f831102efa1eeb09c33b509fac13b512ac290e65ec2",
+      "verdict": "holds",
+      "uses": [
+        "prefix_of_rational_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_0",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "6ca78faa9337099da3988dd8e3dac577e41110a37d7ad4f4b3abd21731237343",
+      "assumed": {
+        "prefix_of_rational_prefix": "ed7e21612c516a2adf2cc3ef05a6187ab0735c10fa05b200877a9a9ca6f4c1b0"
+      }
+    },
+    "jordan1_equivalent": {
+      "context": "be99be94e6394753a70e9dd20b21ec0bb0abd84bd2abe9d8472bbd13ec9a9087",
+      "proof": "0df9a59187824012ff1ad69617a70809dcf311c5a57c6fb059ace14fcf753bf1",
+      "verdict": "holds",
+      "uses": [
+        "jordan1_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_1",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "efd76cb4119cbc79c8d53bcb521f5641f804d1be42a82cfc19790fda1ab97692",
+      "assumed": {
+        "jordan1_prefix": "6ca78faa9337099da3988dd8e3dac577e41110a37d7ad4f4b3abd21731237343"
+      }
+    },
+    "jordan2_prefix": {
+      "context": "b8db3baa507f1f71a72ba3b4c68058e621ddeba626d9e65717df850aa4477883",
+      "proof": "c43f8ecef3e884d7fd451f831102efa1eeb09c33b509fac13b512ac290e65ec2",
+      "verdict": "holds",
+      "uses": [
+        "prefix_of_rational_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_0",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "17c36df8ce2b68cf10b62c1acd24bb4d9ff2a03bb93eafd1b01be6807896a2c5",
+      "assumed": {
+        "prefix_of_rational_prefix": "ed7e21612c516a2adf2cc3ef05a6187ab0735c10fa05b200877a9a9ca6f4c1b0"
+      }
+    },
+    "jordan2_equivalent": {
+      "context": "fa6fdc54384a3bdd5bbea396af79d380551c6ba66853ef1409fdb6818ed49d2f",
+      "proof": "cee92316ed4b6c5e24febb51512afe806c29b6f8e5d7ac579740969a6aa4aac1",
+      "verdict": "holds",
+      "uses": [
+        "jordan2_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_3",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "c88f62bd86c7495372fb3bdd94543202987bd4632e46af4bdd0e26c2b348e772",
+      "assumed": {
+        "jordan2_prefix": "17c36df8ce2b68cf10b62c1acd24bb4d9ff2a03bb93eafd1b01be6807896a2c5"
+      }
+    },
+    "jordan3_prefix": {
+      "context": "1d56e8185a4a8e608247f641c80f4f7d1c609d17d205e3dd0fabde87730b51bb",
+      "proof": "c43f8ecef3e884d7fd451f831102efa1eeb09c33b509fac13b512ac290e65ec2",
+      "verdict": "holds",
+      "uses": [
+        "prefix_of_rational_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_0",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "fb54841711065baf2830f6efee16aaca8a4abcfa9c560f20d4c0bb04f4331f48",
+      "assumed": {
+        "prefix_of_rational_prefix": "ed7e21612c516a2adf2cc3ef05a6187ab0735c10fa05b200877a9a9ca6f4c1b0"
+      }
+    },
+    "jordan3_equivalent": {
+      "context": "fd196b4d0cc579a6016a36cceee6bcee7417ab8a38f45ed0ad26edb35939c18a",
+      "proof": "e9850600cc8015c00e8e0da34f8e877ad19089639631035b721009a7733aa967",
+      "verdict": "holds",
+      "uses": [
+        "jordan3_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_5",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "11e30851214a99b865d08fdc4d2ff187d9b6cc26f3a5101033c61d221c8b0733",
+      "assumed": {
+        "jordan3_prefix": "fb54841711065baf2830f6efee16aaca8a4abcfa9c560f20d4c0bb04f4331f48"
+      }
+    },
+    "jordan2_expected": {
+      "context": "25f3d09a1837644323ae99be40a5be7057adde8ab79188d9177df59aef80fe8d",
+      "proof": "93671da1061c6eb0b41ad826da19a0e0d0b4e45edab20614318289a4e587fd47",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "4ec4cef3634ed5e8bf70a3e400d6481c6330af8306d9d2e935b00c900304d69d",
+      "assumed": {}
+    },
+    "jordan3_expected": {
+      "context": "2c897875de75cc8b2530993b47041e81fcd29b16a2a93b5467c11ddf48923209",
+      "proof": "de792cc9e87c4141b947cbc03fb98a443e4eefc672083339cd44e6c7929e380d",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "abe5fca79685037ea542d6e863e5f737a6addc98333b8b32aa4ae0ab1254951a",
+      "assumed": {}
+    },
+    "jordan2_different_updates": {
+      "context": "5e46ac1842bbba616a0af14f807f6c779d7e967ca2412098010f2cef8bff4d71",
+      "proof": "a19d67be5ba79643a0a146435226d9aabbf874a79fbde209efe343dfe58bdd58",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "b2e4aa805112b12591eedff9ac8e1e5b76351d68829cfa25eed569668656d584",
+      "assumed": {}
+    },
+    "jordan3_different_updates": {
+      "context": "92443f1e26b4920ec6a90a67fb9349c5297929857cabecd9aee6f010d82a9066",
+      "proof": "23ef17477d3768eab9a9a81fd74e56e2fb993f91fb01f74deb3e2ff1355f56bf",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "de315a2555530367b1bcaf2592cd66e85d7daf4cd8c1fdbbdce6ff7137c2a087",
+      "assumed": {}
+    }
+  },
+  "refutations": {}
+}

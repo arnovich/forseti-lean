@@ -1,11 +1,8 @@
 ---
 title: Compositional active suspension with discovered safety certificate
-state: ongoing
+state: closed
 priority: medium
 labels: [proof, dynamics, example, search]
-claimed_by: codex/suspension
-claimed_at: 2026-09-27T21:57:51Z
-branch: feat/compositional_active_suspension
 related: [023]
 ---
 
@@ -34,7 +31,7 @@ an actuator replacement without redoing the outer theorem.
       and initialization assumptions chosen independently of the certificate.
 - [x] A second actuator implementation meets the same stated interface and
       inherits the outer safety theorem.
-- [ ] Hostile regressions, all permitted-axiom guards, complete builds and a
+- [x] Hostile regressions, all permitted-axiom guards, complete builds and a
       three-role review pass; docs distinguish the normalized mathematical model
       from a calibrated vehicle and record the measured certificate search.
 
@@ -67,3 +64,13 @@ contracts compile using the same searched storage (19 candidates), with exact
 rate-specific supply decompositions. Full Lean and equation_demo builds passed.
 Three-role implementation review found no blockers; corrected a cancelling
 pre-start test and made replay byte-exact. Final validation and publication remain.
+
+### note · codex/suspension · 2026-09-27T22:25:04Z
+
+Completed in draft PR [15](https://github.com/arnovich/forseti-lean/pull/15),
+feature commit `04f65f2`. Final lake build (3507 jobs), equation_demo build
+(6811 jobs), all root axiom guards, exact search reproduction, four Python tests,
+formatting/lint/type checks and diff checks passed. The mathematical, composition
+and search/replay panel approved with no remaining blockers. Added an explicit
+body-acceleration observation theorem and fixed both review findings. Tasks 025
+and 026 remain open for later; no checker admission or release pin changed.

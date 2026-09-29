@@ -1,0 +1,124 @@
+{
+  "format": "gimle.forseti.notebook-metadata/v2",
+  "checks": {
+    "fibonacci_scaled_prefix": {
+      "context": "40688ffcc8bd544a6c320a05c9f51492a108cd0771f10b2239a0344675c2cfb4",
+      "proof": "2db0ecf29c040d764aa178613c57015915e4f9c7279265722110354bc7614c53",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "e0cb662bd41ae2d093921eefbce33defe98987143dab9b4ddbb0cecedfbdeccb",
+      "assumed": {}
+    },
+    "fibonacci_scaled_equivalent": {
+      "context": "68b58c89a11417d4e9d5e7ce4684f7724e1df998af9cbe1377cd38638bb2867c",
+      "proof": "f98f03af0e1424eeda9b3c85bb73d4fbf2cb6ac4f6bb19098b2c7f0f89ff4e30",
+      "verdict": "holds",
+      "uses": [
+        "fibonacci_scaled_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_0",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "38d2f9dc77e5fa870f83641497b7b2c0d1f23c063201e8d5eea5140640ec851a",
+      "assumed": {
+        "fibonacci_scaled_prefix": "e0cb662bd41ae2d093921eefbce33defe98987143dab9b4ddbb0cecedfbdeccb"
+      }
+    },
+    "fibonacci_prefix": {
+      "context": "622a6300c66a713fc0dec6602a32b4aa0fb81d0610caf61670d343f5a9d8eae9",
+      "proof": "3f1f8dbe675f7753b67a6ab57402a6a34911f34d4915738e1d493ec851858732",
+      "verdict": "holds",
+      "uses": [
+        "fibonacci_scaled_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_0",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "0015a4378b7a824c10c31bf4b7d324552bfdd987d9b2057c8856658cbf468f34",
+      "assumed": {
+        "fibonacci_scaled_prefix": "e0cb662bd41ae2d093921eefbce33defe98987143dab9b4ddbb0cecedfbdeccb"
+      }
+    },
+    "fibonacci_equivalent": {
+      "context": "3c099350cd9278735096c592458443c30667d90e30faed442d9fb1fac61919d6",
+      "proof": "190df027bff34559d300458e56e9770e3beaa4c067a784769d9ebe8b4e83c655",
+      "verdict": "holds",
+      "uses": [
+        "fibonacci_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_2",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "d49d135b061682db30690d4bedf159c37e858a71ffd8634db6a117b033f09d42",
+      "assumed": {
+        "fibonacci_prefix": "0015a4378b7a824c10c31bf4b7d324552bfdd987d9b2057c8856658cbf468f34"
+      }
+    },
+    "fibonacci_hoare": {
+      "context": "c19fdbd5dec3500873bb67a6af0ed9a939a61541af6d8857184625f103f3ff08",
+      "proof": "6440ed726c17e545c5d4ad6dd599d250c623eaef62628d511204c2f10fcdd1f4",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "6c8dcbe1dc774f7bc6b465c47d0e54d0869e35da60f26645a20d3e850178d952",
+      "assumed": {}
+    },
+    "permutation_prefix": {
+      "context": "3804e7038d7aa2d3535f486ff1d250e21f2c64ed5acece9a4c29d6529ff557f7",
+      "proof": "f4d3e3d2d3ce967fccaa8a143796a9d7e1a8cf6f1fe59ad81c205f63b8936953",
+      "verdict": "holds",
+      "uses": [],
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "1e2d1b1263fcfcb4986e9a4b4cc20fbe5186f02c7b799f98eb57dd286d457c92",
+      "assumed": {}
+    },
+    "permutation_equivalent": {
+      "context": "a5ca25e58bdcb7ccfd93ba09e99d86429e413909faf3ad29d49c6d4c9c30e0fc",
+      "proof": "2b3e31c9b0513f5adc53ffdaee0e950eca022d143a8c0959e26024e0fecd1c16",
+      "verdict": "holds",
+      "uses": [
+        "permutation_prefix"
+      ],
+      "axioms": [
+        "forsetiClaim_5",
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "reason": "",
+      "proposition": "c5f041426f879aec8d8f4b7df14f908231175608070441e93084515771b62053",
+      "assumed": {
+        "permutation_prefix": "1e2d1b1263fcfcb4986e9a4b4cc20fbe5186f02c7b799f98eb57dd286d457c92"
+      }
+    }
+  },
+  "refutations": {}
+}

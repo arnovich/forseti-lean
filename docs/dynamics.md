@@ -24,6 +24,11 @@ x' = A x       V(x) = xᵀ P x       D = −(AᵀP + PA)
 model with damping `(1/3,1/2,2)`, initial state `(1,2,-1)`, and start `2`.
 `compiled_energy_bound` proves the fourth compiled observation stays in `[0,6]`
 for every exact realization and `t ≥ 2`. Bound `5` fails at the initial state.
+The bound comes from one `LinearEnergy.Certificate`: `P = I` as three unit
+squares, and its dissipation `diag(2a, 2b, 2c)` as weighted unit squares, valid
+for any nonnegative `(a, b, c)` (`certificate_valid`). The generic
+`energy_bound` applies it to any such triple; `spec` applies it at the compiled
+`(1/3, 1/2, 2)`.
 
 [ProofSearchContract.lean](../Gimle/Forseti/Examples/ProofSearchContract.lean)
 shows proposed certificate data checked by exact arithmetic and soundness theorems.
@@ -48,6 +53,7 @@ circuit with no behaviour, so it is never a system theorem on its own.
 | `Contract.parallel` | two contracts, same clock | the product on owned ports |
 | `Contract.linear` | a `Linear.Problem` | existence, uniqueness, source solutions |
 | `Contract.energy` | `LinearEnergy.certificate_sound`'s premises | sublevel safety for all forward time |
+| `LinearEnergyContract.Spec.energy_contract` | a compiled model's `LinearView`, an observation computing `xᵀPx`, a valid certificate, `β ≥` the initial energy | the observed contract in `ThreeStateContract`'s shape |
 
 `Always` observes a state predicate at every forward time and `At` at one time;
 all-forward safety implies the endpoint, not conversely. `Initialized` inputs
@@ -64,7 +70,44 @@ packages the compiled three-state loop and its observation circuit into one
 contract: for the declared initial state, `0 ≤ V ≤ 6` at every `t ≥ 2`; the bound
 5 is refuted by the admitted initial state (`five_refuted`). Its parameters
 `(1/3, 1/2, 2)` are compiled into the model, not bound by the input predicate,
-which constrains only the drivers and initial wires.
+which constrains only the drivers and initial wires. Every piece is
+`LinearEnergyContract` (below) applied to `ThreeState.spec`;
+`Tests/ThreeState.lean` pins the names and statements gimle-forseti's trajectory
+registry cites.
+
+[`Examples/DampedOscillatorContract.lean`](../Gimle/Forseti/Examples/DampedOscillatorContract.lean)
+does the same for a model compiled from **source** equations: the damped
+oscillator `x'' + 3x' + 2x = 0` with the declared velocity `dx : D_t(x) = v`,
+compiled by asgard-lean's `compileSourceContinuous`
+([`Examples/DampedOscillator.lean`](../Gimle/Forseti/Examples/DampedOscillator.lean)).
+Its source body adds the observations `x`, `v` and the assignment
+`E := 2*x^2 + v^2` (ports `obs-x`, `obs-v`, `obs-e`). `E` is bounded by
+`LinearEnergy.certificate_energy_bound` with the exact certificate
+`P = diag(2, 1)` as `2·e₀² + e₁²` and its dissipation `diag(0, 6)` as `6·e₁²`:
+from `x(0) = 1`, `v(0) = 0`, `0 ≤ E ≤ 2` at every `t ≥ 0` (`energy_contract`),
+and the bound 1 is refuted by the admitted initial state (`one_refuted`).
+
+[`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
+the generic construction behind the oscillator's contract. For any compiled
+continuous model, a `Spec` holds:
+- its `LinearView`;
+- the index of an observation, with a proof that it computes `xᵀPx`;
+- a `LinearEnergy.Certificate` checked against the recognized matrix and `P`.
+
+From a `Spec` it derives `feedback_reads`, `declared_input_admitted`,
+`energy_bound`, the loop and observed contracts for any `β` at least the initial
+energy, and `refuted` for any `β` below it. `ThreeStateContract` and
+`DampedOscillatorContract` are this construction applied to `ThreeState.spec`
+and `DampedOscillator.spec`.
+[`Examples/HarmonicOscillator.lean`](../Gimle/Forseti/Examples/HarmonicOscillator.lean)
+is a second model built only from it:
+- the undamped `4x'' + x = 0`, from source with a declared velocity;
+- its energy `x² + 4v²` is conserved, so the certificate's decrease is the
+  empty sum;
+- its contract and refutation are two one-line applications of the
+  construction;
+- what remains is the model's data: the source, `P`, the certificate, and
+  reading `E` off the compiled circuit.
 
 PDE, stream and stochastic contracts are specified separately (tasks 018, 020)
 and are not checked here.

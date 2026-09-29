@@ -7,12 +7,16 @@ import Gimle.Forseti.Tests.Syntax
 import Gimle.Forseti.Tests.Context
 import Gimle.Forseti.Tests.Certificate
 import Gimle.Forseti.Tests.Trajectory
+import Gimle.Forseti.Tests.ThreeState
+import Gimle.Forseti.Tests.DampedOscillator
+import Gimle.Forseti.Tests.LinearEnergyContract
 import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
 import Gimle.Forseti.Tests.StreamObservation
 import Gimle.Forseti.Tests.FieldBound
 import Gimle.Forseti.Tests.FieldObservation
 import Gimle.Forseti.Tests.AlgebraicWitness
+import Gimle.Forseti.Tests.Positivstellensatz
 
 namespace Gimle.Forseti.Tests
 
