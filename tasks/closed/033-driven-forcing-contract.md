@@ -1,9 +1,6 @@
 ---
 title: Trajectory contract for a driven model under its driver precondition
-state: ongoing
-claimed_by: claude-170
-claimed_at: 2026-09-29T10:03:53Z
-branch: task/033_driven_forcing_contract
+state: closed
 priority: medium
 labels: [trajectory, contracts, examples, drivers]
 related: ["asgard-lean/031", "gimle-forseti/170", "028"]
