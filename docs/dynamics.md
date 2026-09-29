@@ -87,6 +87,22 @@ Its source body adds the observations `x`, `v` and the assignment
 from `x(0) = 1`, `v(0) = 0`, `0 ≤ E ≤ 2` at every `t ≥ 0` (`energy_contract`),
 and the bound 1 is refuted by the admitted initial state (`one_refuted`).
 
+[`Examples/ForcedDecayContract.lean`](../Gimle/Forseti/Examples/ForcedDecayContract.lean)
+is the first contract for a **driven** model: `x' + x = u' + u`, `x(0) = 0`,
+with `u` a declared driver whose port `du` must carry its derivative, compiled
+by `compileSourceDriven`
+([`Examples/ForcedDecay.lean`](../Gimle/Forseti/Examples/ForcedDecay.lean);
+`same_source` ties it to asgard-lean's `DrivenForcing`). A driven observation
+reads `[drivers, state]`, so the observed circuit forwards the driver wires
+beside the feedback ([`Driven.lean`](../Gimle/Forseti/Driven.lean),
+`forwarded_rel`). The precondition binds the drivers — `Evolution.Admitted` and
+`|u| ≤ B` — and the initial wire; it is never `True`. The unique output is
+`u(t) − u(0)·e^(−t)`, so `|x| ≤ 2B` for `t ≥ 0` (`contract_within`,
+`driven_contract` at `B = 1`). The bound 1 is refuted under `u = cos`
+(`one_refuted`), and dropping the driver bound refutes 2 under `u = 3`
+(`bound_needed`). `feedback_reads` equates the relation with asgard's
+`DrivenModel.Realizes`.
+
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled
 continuous model, a `Spec` holds:

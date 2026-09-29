@@ -9,6 +9,7 @@ import Gimle.Forseti.Tests.Certificate
 import Gimle.Forseti.Tests.Trajectory
 import Gimle.Forseti.Tests.ThreeState
 import Gimle.Forseti.Tests.DampedOscillator
+import Gimle.Forseti.Tests.ForcedDecay
 import Gimle.Forseti.Tests.LinearEnergyContract
 import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
