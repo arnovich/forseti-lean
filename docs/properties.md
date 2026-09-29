@@ -99,12 +99,16 @@ connects this syntax to the semantic core.
 Properties of continuous feedback circuits over forward time — `Contract`,
 `Always`, `Initialized` and their rules — are in
 [Dynamics and safety certificates](dynamics.md#trajectory-contracts). Two
-compiled models carry a whole-system contract there:
+undriven compiled models carry a whole-system contract there:
 [`Examples/ThreeStateContract.lean`](../Gimle/Forseti/Examples/ThreeStateContract.lean)
 (`0 ≤ V ≤ 6` for `t ≥ 2`) and
 [`Examples/DampedOscillatorContract.lean`](../Gimle/Forseti/Examples/DampedOscillatorContract.lean),
 the damped oscillator compiled from source equations with a declared velocity
-(`0 ≤ 2x² + v² ≤ 2` for `t ≥ 0`, the bound 1 refuted).
+(`0 ≤ 2x² + v² ≤ 2` for `t ≥ 0`, the bound 1 refuted). One driven model does
+too:
+[`Examples/ForcedDecayContract.lean`](../Gimle/Forseti/Examples/ForcedDecayContract.lean),
+`x' + x = u' + u` with a declared driver `u` (`|x| ≤ 2` for `t ≥ 0` under the
+driver precondition `|u| ≤ 1`, never `True`).
 
 ## Stream contracts
 

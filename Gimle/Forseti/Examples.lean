@@ -16,6 +16,8 @@ import Gimle.Forseti.Examples.PredicateCertificates
 import Gimle.Forseti.Examples.ThreeStateContract
 import Gimle.Forseti.Examples.DampedOscillator
 import Gimle.Forseti.Examples.DampedOscillatorContract
+import Gimle.Forseti.Examples.ForcedDecay
+import Gimle.Forseti.Examples.ForcedDecayContract
 import Gimle.Forseti.Examples.HarmonicOscillator
 import Gimle.Forseti.Examples.FormalHeatContract
 import Gimle.Forseti.Examples.StreamObservation

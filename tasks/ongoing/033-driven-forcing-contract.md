@@ -27,16 +27,28 @@ and `|x| ≤ 2` for every admitted driver with `|u| ≤ 1`.
 
 - `Examples/ForcedDecay.lean` declares the same equations with an observation
   `obs-x` of `x`, compiles them with `compileSourceDriven`, and states the
-  compiled field, initial state and observation index, as
-  `Examples/DampedOscillator.lean` does for 028.
-- `Examples/ForcedDecayContract.lean` defines the observed circuit (the driven
-  feedback, with the drivers forwarded to the observation) and proves a
-  well-posed `Contract` over it: for every input whose drivers are admitted
-  with `|u| ≤ 1` on the domain and whose initial wire starts at `x(0) = 0`,
-  an output exists, outputs agree on `t ≥ 0`, and `|x| ≤ 2` at every `t ≥ 0`.
-- The precondition is not vacuous: a named driver (`u = sin`, `du = cos`) is
-  admitted, and one admitted input has an output with `|x| > 1` at some time,
-  so `1` is not a bound.
+  compiled field (`rates_expressions`), initial state (`initial_eq`), the
+  observation read (`x_at`, `x_at_initial`), the driver coordinates (`index_u`,
+  `index_du`), and `same_source`: inputs, assignments, differentials, evolution
+  and drivers equal asgard-lean's `DrivenForcing`.
+- `Driven.lean` holds the model-independent `forwarded F obs` (the driven
+  feedback, with the driver wires forwarded to the observation) and
+  `forwarded_rel`, which states its relation without unfolding `F`.
+- `Examples/ForcedDecayContract.lean` proves `contract_within B`, a well-posed
+  `Contract` over `observed`: for every input whose drivers are admitted
+  (`Evolution.Admitted`) with `|u| ≤ B` on the domain and whose initial wire
+  starts at `x(0) = 0`, an output exists, outputs agree on `t ≥ 0`, and
+  `|x| ≤ 2B` at every `t ≥ 0`. `driven_contract` is `B = 1` with the band
+  `[−2, 2]`, under the precondition `admitted`, which is not `True`.
+- `feedback_reads` equates the feedback relation with asgard's
+  `DrivenModel.Realizes`; `compiled_exists` realizes every admitted driver.
+- The precondition is not vacuous and neither part is idle:
+  `witness_input_admitted` (`u = sin`); `one_refuted` (`u = cos` breaks the
+  band `[−1, 1]` at `t = π`); `bound_needed` (without `|u| ≤ 1`, `u = 3` breaks
+  `[−2, 2]` at `t = 2`).
+- `Tests/ForcedDecay.lean` pins the IDs a renderer cites (`obs-x`,
+  `driver-u`, `driver-du`, `initial-x`, `time`), the precondition's shape, a
+  non-admitted driver, and the axiom reports with `#guard_msgs`.
 - Full `lake build` is clean and axiom reports show only `propext`,
-  `Classical.choice` and `Quot.sound`; a release tag follows for
-  gimle-forseti to pin.
+  `Classical.choice` and `Quot.sound`; the release is tagged `v1.9.0` for
+  gimle-forseti 170 to pin.

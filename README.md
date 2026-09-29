@@ -27,6 +27,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Compiled equations](Gimle/Forseti/Examples/EquationWorkflow.lean) | Properties of the same circuits produced by Asgard's equation compiler |
 | [Three-state model](Gimle/Forseti/Examples/ThreeState.lean) | Forward existence, uniqueness, and the compiled energy bound `0 ≤ V ≤ 6` |
 | [Damped oscillator](Gimle/Forseti/Examples/DampedOscillatorContract.lean) | A trajectory contract for `x'' + 3x' + 2x = 0` compiled from source equations with a declared velocity: `0 ≤ 2x² + v² ≤ 2` for `t ≥ 0`, from an exact energy certificate |
+| [Forced decay](Gimle/Forseti/Examples/ForcedDecayContract.lean) | A trajectory contract for a driven model, `x' + x = u' + u` with `x(0) = 0`, compiled from source equations with a declared driver: `|x| ≤ 2` for `t ≥ 0` under the driver precondition (admitted, `|u| ≤ 1`), never `True` |
 | [Harmonic oscillator](Gimle/Forseti/Examples/HarmonicOscillator.lean) | `4x'' + x = 0` with its conserved energy `x² + 4v²` in `[0, 1]`, contracted only through the generic `LinearEnergyContract` construction |
 | [Disturbed feedback](Gimle/Forseti/Examples/DisturbedFeedback.lean) | Component storage identities compose through a trace to prove `\|x(t)\| ≤ 1` under continuous disturbances bounded by one |
 | [Active suspension](Gimle/Forseti/Examples/ActiveSuspension.lean) | A searched invariant proves travel, force and acceleration bounds through nested traces, shared by two actuator implementations |
