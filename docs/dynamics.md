@@ -110,18 +110,29 @@ contract whose field has **no linear view**: Lorenz's `x' = σ(y − x)`,
 solution `V' = −2σx² − 2y² − 2βz² + 2β(σ+ρ)z`, so `V' + 2V ≤ 2·1541` at every
 state (`storage_bound`; the least such constant is `23104/15`), and the
 integrating factor `e^{2t}(V − 1600)` is non-increasing from `V(0) = 1371`
-(`invariant`, the `DisturbedFeedback` pattern). Existence for all `t ≥ 0` is
-proved by hand, since Mathlib's Picard–Lindelöf is local: the field is clamped
-coordinatewise to a box containing `{V ≤ 1600}`, which makes it bounded and
-globally Lipschitz (`clamped_lipschitz`); Picard–Lindelöf gives a solution on
-every `[0, n]` (`clamped_solution_on`); they are glued by uniqueness
-(`piece_agree`, `glued_deriv`); Mathlib's fencing lemma keeps the glued solution
-in the sublevel set, where the clamp is the identity, because at a contact point
-`V' < 0` by the margin `1541 < 1600` (`glued_energy_le`); so it solves the true
-field (`glued_realizes`). Uniqueness is `ODE_solution_unique_of_mem_Icc_right`
-on the compact box, with membership from the invariant (`compiled_unique`).
-`energy_contract` is the total contract `0 ≤ V ≤ 1600`, and `1300` is refuted at
-the start (`thirteen_hundred_refuted`); `Tests/Lorenz.lean` pins the names.
+(`storage_bound`). Everything else is
+[`Nonlinear.lean`](../Gimle/Forseti/Nonlinear.lean), the **general trapping
+theorem**: for any compiled model — every compiled field is a polynomial, hence
+`C¹` (`contDiff_eval`) — and any weighted sum of squares `V = Σ wᵢ(xᵢ − cᵢ)²`
+with `V' ≤ α(C' − V)` at every state, `C' < C`, and a sup-norm radius about the
+centre covering `{V ≤ C}` (a `Trapping`), a realization from any start with
+`V ≤ C` exists for all forward time, is unique, and keeps `V ≤ C`. Existence is
+by hand, since Mathlib's Picard–Lindelöf is local: the field clamped
+coordinatewise to the box is bounded and globally Lipschitz
+(`clamped_lipschitz`); Picard–Lindelöf gives a solution on every
+`[t₀, t₀ + n]` (`clamped_solution_on`); they are glued by uniqueness
+(`piece_agree`, `glued_deriv`); Mathlib's fencing lemma keeps the glued
+solution in `{V ≤ C}`, where the clamp is the identity, because at a contact
+point `V' ≤ α(C' − C) < 0` (`glued_energy_le`); so it solves the true field
+(`exists_solution`). Uniqueness is `ODE_solution_unique_of_mem_Icc_right` on the
+compact box, with membership from the invariant (`unique`). `energy_contract`
+and `refuted` deliver the observed contract and the refutation of a bound below
+the initial value in the registry's interface shape. Lorenz supplies its
+`trapping` (weights `1`, centre `(0, 0, 38)`, `α = 2`, `C' = 1541`, `C = 1600`,
+radius `40`), `decrease` and `initial_le`, and gets `compiled_exists`,
+`compiled_unique`, `energy_contract` (`0 ≤ V ≤ 1600`) and
+`thirteen_hundred_refuted`; `Tests/Lorenz.lean` and `Tests/Nonlinear.lean` pin
+the names.
 
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled
