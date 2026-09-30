@@ -18,6 +18,7 @@ import Gimle.Forseti.Tests.FieldBound
 import Gimle.Forseti.Tests.FieldObservation
 import Gimle.Forseti.Tests.AlgebraicWitness
 import Gimle.Forseti.Tests.Positivstellensatz
+import Gimle.Forseti.Tests.Lorenz
 
 namespace Gimle.Forseti.Tests
 
