@@ -1,9 +1,6 @@
 ---
 title: Galerkin truncations of 2D Navier–Stokes with compositional energy invariants
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-09-30T13:50:31Z
-branch: feat/galerkin_ns
+state: closed
 priority: medium
 labels: [proof, dynamics, nonlinear, showcase]
 related: [025, 034, 035]
@@ -26,7 +23,7 @@ from `Nonlinear.lean` (035).
 
 ## Outcome
 
-- [ ] `tools/galerkin_ns.py` (stdlib, exact Fractions, `--check`) derives a
+- [x] `tools/galerkin_ns.py` (stdlib, exact Fractions, `--check`) derives a
       member from its wavevectors — triads, coefficients, invariants, the SOS
       certificate — verifies the identities in Python, and emits
       `Examples/GalerkinNS/{T3,K5,B2}.lean`: body, evolution, compiled,
@@ -35,8 +32,14 @@ from `Nonlinear.lean` (035).
       and the registry interface (`observed`, `admitted`, `feedback_reads`,
       `declared_input_admitted`, `compiled_exists`, `energy_contract`, a
       refutation, `energyIndex`, `energy_at_initial`, `initial_eq`).
-- [ ] T₃ (3 modes, ν = 1/10, f = 1), K₅ (5 modes), B₂ (12 modes, ν = 1/50)
+- [x] T₃ (3 modes, ν = 1/10, f = 1), K₅ (5 modes), B₂ (12 modes, ν = 1/50)
       build under `decide +kernel`; `Tests/GalerkinNS.lean` pins the names and
       the three-axiom footprint; `tools/test_galerkin_ns.py` covers the
       derivation and `--check` passes.
-- [ ] Nothing is claimed about the PDE.
+- [x] Nothing is claimed about the PDE.
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-09-30T13:58:51Z
+
+PR #28 merged; released as v1.11.0 with 035.
