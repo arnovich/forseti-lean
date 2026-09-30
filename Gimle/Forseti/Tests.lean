@@ -21,6 +21,7 @@ import Gimle.Forseti.Tests.Positivstellensatz
 import Gimle.Forseti.Tests.Lorenz
 import Gimle.Forseti.Tests.Nonlinear
 import Gimle.Forseti.Tests.GalerkinNS
+import Gimle.Forseti.Tests.GalerkinNSFamily
 
 namespace Gimle.Forseti.Tests
 

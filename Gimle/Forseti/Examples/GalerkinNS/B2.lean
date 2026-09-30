@@ -1,4 +1,5 @@
 import Gimle.Forseti.Nonlinear
+import Gimle.Forseti.GalerkinNS.Family
 import Gimle.Asgard.Compile.Syntax
 
 /-! # B2: a Galerkin truncation of 2D Navier–Stokes, trapped
@@ -105,6 +106,124 @@ theorem rates_eval (i : Fin evolution.states.length) (x : Point evolution.states
 theorem field_eq : Nonlinear.field compiled = field := by
   funext x i
   exact rates_eval i x
+
+/-! ## The member as an instance of the family -/
+
+/-- The modes as the family indexes them. -/
+def modes : Fin 12 → GalerkinNS.Family.Wave :=
+  ![(0, 1), (0, 2), (1, -2), (1, -1), (1, 0), (1, 1), (1, 2), (2, -2), (2, -1), (2, 0), (2, 1), (2, 2)]
+
+/-- The index of the forced mode `(1, 1)`. -/
+def forcedIndex : Fin 12 := 5
+
+theorem modes_nonzero : ∀ i, modes i ≠ 0 := by decide
+
+theorem modes_forced : modes forcedIndex = (1, 1) := by decide
+
+private theorem coordinate_0 (x : Point 12) :
+    field x 0 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 0 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_1 (x : Point 12) :
+    field x 1 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 1 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_2 (x : Point 12) :
+    field x 2 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 2 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_3 (x : Point 12) :
+    field x 3 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 3 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_4 (x : Point 12) :
+    field x 4 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 4 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_5 (x : Point 12) :
+    field x 5 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 5 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_6 (x : Point 12) :
+    field x 6 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 6 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_7 (x : Point 12) :
+    field x 7 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 7 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_8 (x : Point 12) :
+    field x 8 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 8 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_9 (x : Point 12) :
+    field x 9 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 9 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_10 (x : Point 12) :
+    field x 10 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 10 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_11 (x : Point 12) :
+    field x 11 = GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 11 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+/-- The compiled field is the family field at these modes: the triad
+coefficients are the ordered-pair coupling summed over both orders. -/
+theorem field_eq_family :
+    Nonlinear.field compiled =
+      GalerkinNS.Family.field (1 / 50 : ℝ) (1 / 1 : ℝ) modes forcedIndex := by
+  rw [field_eq]
+  funext x i
+  fin_cases i
+  · exact coordinate_0 x
+  · exact coordinate_1 x
+  · exact coordinate_2 x
+  · exact coordinate_3 x
+  · exact coordinate_4 x
+  · exact coordinate_5 x
+  · exact coordinate_6 x
+  · exact coordinate_7 x
+  · exact coordinate_8 x
+  · exact coordinate_9 x
+  · exact coordinate_10 x
+  · exact coordinate_11 x
 
 /-- `E = Σ a_k²/|k|²`. -/
 noncomputable def energy (x : Point 12) : ℝ := x 0 * x 0 + (1 / 4 : ℝ) * x 1 * x 1 + (1 / 5 : ℝ) * x 2 * x 2 + (1 / 2 : ℝ) * x 3 * x 3 + x 4 * x 4 + (1 / 2 : ℝ) * x 5 * x 5 + (1 / 5 : ℝ) * x 6 * x 6 + (1 / 8 : ℝ) * x 7 * x 7 + (1 / 5 : ℝ) * x 8 * x 8 + (1 / 4 : ℝ) * x 9 * x 9 + (1 / 5 : ℝ) * x 10 * x 10 + (1 / 8 : ℝ) * x 11 * x 11
@@ -373,6 +492,34 @@ theorem decrease (x : Point 12) :
   have nonneg : 0 ≤ (1 / 50 : ℝ) * (x 5 - 25 / 1) ^ 2 + (3 / 100 : ℝ) * x 1 ^ 2 + (4 / 125 : ℝ) * x 2 ^ 2 + (1 / 50 : ℝ) * x 3 ^ 2 + (4 / 125 : ℝ) * x 6 ^ 2 + (7 / 200 : ℝ) * x 7 ^ 2 + (4 / 125 : ℝ) * x 8 ^ 2 + (3 / 100 : ℝ) * x 9 ^ 2 + (4 / 125 : ℝ) * x 10 ^ 2 + (7 / 200 : ℝ) * x 11 ^ 2 := by positivity
   linarith
 
+theorem rate_eq_family (F : Point 12 → Point 12) (x : Point 12) :
+    trapping.rate F x = GalerkinNS.Family.rate modes F x := by
+  unfold Nonlinear.Trapping.rate GalerkinNS.Family.rate
+  refine Finset.sum_congr rfl fun i _ => ?_
+  fin_cases i <;> simp [trapping, modes, GalerkinNS.Family.lam, Matrix.cons_val,
+    -mul_eq_mul_right_iff, -mul_eq_mul_left_iff] <;> ring
+
+theorem energy_eq_family (x : Point 12) :
+    trapping.energy x = GalerkinNS.Family.energy modes x := by
+  unfold Nonlinear.Trapping.energy GalerkinNS.Family.energy
+  refine Finset.sum_congr rfl fun i _ => ?_
+  fin_cases i <;> simp [trapping, modes, GalerkinNS.Family.lam, Matrix.cons_val,
+    -mul_eq_mul_right_iff, -mul_eq_mul_left_iff] <;> ring
+
+/-- `decrease` again, by the family theorem through `field_eq_family`: a second
+route to the same inequality over the same `field_eq` and `trapping`, with the
+identity by `Family.decrease_rate` instead of `ring`. -/
+theorem decrease_family (x : Point 12) :
+    trapping.rate (Nonlinear.field compiled) x ≤
+      trapping.alpha * (trapping.inner - trapping.energy x) := by
+  rw [rate_eq_family, energy_eq_family, field_eq_family]
+  have alpha_eq : trapping.alpha = 2 * (1 / 50 : ℝ) := by norm_num [trapping]
+  have inner_eq : trapping.inner = (1 / 1 : ℝ) ^ 2 / (8 * (1 / 50 : ℝ) ^ 2) := by
+    norm_num [trapping]
+  rw [alpha_eq, inner_eq]
+  exact GalerkinNS.Family.decrease_rate (1 / 50 : ℝ) (1 / 1 : ℝ) (by norm_num) modes modes_nonzero
+    forcedIndex modes_forced x
+
 theorem initial_le : trapping.energy compiled.initial ≤ trapping.bound := by
   rw [← energy_eq_trapping, initial_eq]
   simp [energy, trapping, Matrix.cons_val] <;> norm_num
@@ -424,6 +571,8 @@ theorem refuted :
 
 #print axioms energy_identity
 #print axioms certificate
+#print axioms field_eq_family
+#print axioms decrease_family
 #print axioms energy_contract
 #print axioms refuted
 

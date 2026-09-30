@@ -32,17 +32,27 @@ with sympy, not a Lean statement.
 
 ## Outcome
 
-- [ ] `Gimle/Forseti/GalerkinNS/Family.lean`: definitions above; `energy_antisymm`,
+- [x] `Gimle/Forseti/GalerkinNS/Family.lean`: definitions above; `energy_antisymm`,
   `cubic_flux_zero`, `energy_identity`, `certificate`, `decrease`, a family
   `Trapping` (weights 1/λ, centre 0, α = 2ν, inner f²/(8ν²), bound C, radius
   1 + C Σ λ) and `trapped` (existence for all t ≥ start, uniqueness, E ≤ C) for
   every n, k, ν > 0, f, C > f²/(8ν²) and start with E ≤ C; `#print axioms` shows
   only propext/Classical.choice/Quot.sound
-- [ ] tools/galerkin_ns.py emits, per member, `field_eq_family` (compiled field =
+- [x] tools/galerkin_ns.py emits, per member, `field_eq_family` (compiled field =
   family field at its modes) and derives `decrease` from `Family.decrease`,
   keeping the `ring` route; `--check` current; B2 elaborates within the existing
   option budget
-- [ ] Tests exercise a member the generator does not emit (a 2-mode list and a
+- [x] Tests exercise a member the generator does not emit (a 2-mode list and a
   list with a ± pair) so the theorems are seen to be family-wide
-- [ ] docs/dynamics.md states the family rules citing the Lean names; the README
+- [x] docs/dynamics.md states the family rules citing the Lean names; the README
   row for Galerkin NS says "every member" and drops "chaotic in simulation"
+
+## Conversation
+
+### note · claude/17d157a0-family · 2026-09-30T18:45:14Z
+
+Shipped as named: each member keeps `decrease` (the `ring` route) and adds
+`decrease_family`, derived from `Family.decrease_rate` through
+`field_eq_family`; `Family.decrease` is the `Nonlinear.Trapping`-shaped wrapper
+the family `trapped` consumes. The certificate needs only `∀ i, k i ≠ 0` and
+`k forced = (1, 1)`; uniqueness of `(1, 1)` is not a hypothesis.

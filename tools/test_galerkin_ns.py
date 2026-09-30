@@ -51,6 +51,19 @@ class DerivationTests(unittest.TestCase):
         for member in gen.MEMBERS:
             self.assertLess(member.f**2 / (8 * member.nu**2), member.bound)
 
+    def test_the_family_coupling_summed_over_both_orders_is_the_triad_field(self) -> None:
+        for member in gen.MEMBERS:
+            with self.subTest(member=member.name):
+                self.assertEqual(gen.family_field(member), gen.field(member))
+
+    def test_the_family_coupling_by_hand_on_t3(self) -> None:
+        # c((1,1),(2,1),(1,0)) + c((2,1),(1,1),(1,0)) is T3's coefficient of a11 a21 in a10'
+        self.assertEqual(gen.coupling((1, 1), (2, 1), (1, 0)), F(-1, 4))
+        self.assertEqual(gen.coupling((2, 1), (1, 1), (1, 0)), F(1, 10))
+        self.assertEqual(gen.selector((1, 1), (2, 1), (1, 0)), 1)
+        self.assertEqual(gen.selector((1, 0), (1, 1), (2, 1)), -1)
+        self.assertEqual(gen.selector((1, 0), (1, 1), (0, 2)), 0)
+
 
 class EmissionTests(unittest.TestCase):
     """The Lean text is deterministic and --check never writes."""
@@ -58,6 +71,18 @@ class EmissionTests(unittest.TestCase):
     def test_emission_is_deterministic(self) -> None:
         for member in gen.MEMBERS:
             self.assertEqual(gen.emit(member), gen.emit(member))
+
+    def test_emission_bridges_each_member_to_the_family(self) -> None:
+        for member in gen.MEMBERS:
+            with self.subTest(member=member.name):
+                text = gen.emit(member)
+                forced = member.modes.index(gen.FORCED)
+                self.assertIn("import Gimle.Forseti.GalerkinNS.Family", text)
+                self.assertIn(f"def forcedIndex : Fin {len(member.modes)} := {forced}", text)
+                self.assertIn("theorem field_eq_family :", text)
+                self.assertIn("theorem decrease_family", text)
+                self.assertIn("#print axioms field_eq_family", text)
+                self.assertEqual(text.count("private theorem coordinate_"), len(member.modes))
 
     def test_check_mode_reports_stale_output_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
