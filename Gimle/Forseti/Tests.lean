@@ -20,6 +20,7 @@ import Gimle.Forseti.Tests.AlgebraicWitness
 import Gimle.Forseti.Tests.Positivstellensatz
 import Gimle.Forseti.Tests.Lorenz
 import Gimle.Forseti.Tests.Nonlinear
+import Gimle.Forseti.Tests.GalerkinNS
 
 namespace Gimle.Forseti.Tests
 
