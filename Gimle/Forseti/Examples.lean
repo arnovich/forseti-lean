@@ -26,3 +26,4 @@ import Gimle.Forseti.Examples.HeatFieldBound
 import Gimle.Forseti.Examples.AlgebraicCounterexamples
 import Gimle.Forseti.Examples.PositivstellensatzCertificates
 import Gimle.Forseti.Examples.LinearCircuitModels
+import Gimle.Forseti.Examples.Lorenz

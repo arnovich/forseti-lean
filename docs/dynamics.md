@@ -103,6 +103,26 @@ beside the feedback ([`Driven.lean`](../Gimle/Forseti/Driven.lean),
 (`bound_needed`). `feedback_reads` equates the relation with asgard's
 `DrivenModel.Realizes`.
 
+[`Examples/Lorenz.lean`](../Gimle/Forseti/Examples/Lorenz.lean) is the first
+contract whose field has **no linear view**: Lorenz's `x' = σ(y − x)`,
+`y' = x(ρ − z) − y`, `z' = xy − βz` with `σ = 10, ρ = 28, β = 8/3`, from
+`(1, 1, 1)` at `t = 0`, observing `V = x² + y² + (z − σ − ρ)²`. Along every
+solution `V' = −2σx² − 2y² − 2βz² + 2β(σ+ρ)z`, so `V' + 2V ≤ 2·1541` at every
+state (`storage_bound`; the least such constant is `23104/15`), and the
+integrating factor `e^{2t}(V − 1600)` is non-increasing from `V(0) = 1371`
+(`invariant`, the `DisturbedFeedback` pattern). Existence for all `t ≥ 0` is
+proved by hand, since Mathlib's Picard–Lindelöf is local: the field is clamped
+coordinatewise to a box containing `{V ≤ 1600}`, which makes it bounded and
+globally Lipschitz (`clamped_lipschitz`); Picard–Lindelöf gives a solution on
+every `[0, n]` (`clamped_solution_on`); they are glued by uniqueness
+(`piece_agree`, `glued_deriv`); Mathlib's fencing lemma keeps the glued solution
+in the sublevel set, where the clamp is the identity, because at a contact point
+`V' < 0` by the margin `1541 < 1600` (`glued_energy_le`); so it solves the true
+field (`glued_realizes`). Uniqueness is `ODE_solution_unique_of_mem_Icc_right`
+on the compact box, with membership from the invariant (`compiled_unique`).
+`energy_contract` is the total contract `0 ≤ V ≤ 1600`, and `1300` is refuted at
+the start (`thirteen_hundred_refuted`); `Tests/Lorenz.lean` pins the names.
+
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled
 continuous model, a `Spec` holds:
