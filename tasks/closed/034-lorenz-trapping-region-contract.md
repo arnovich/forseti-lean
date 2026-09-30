@@ -1,9 +1,6 @@
 ---
 title: Lorenz trapping-region contract — nonlinear existence, uniqueness and invariant
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-09-30T11:56:36Z
-branch: feat/lorenz_contract
+state: closed
 priority: medium
 labels: [proof, dynamics, nonlinear, showcase]
 related: [025]
@@ -30,15 +27,29 @@ asgard-lean change is needed.
 
 ## Outcome
 
-- [ ] `Gimle/Forseti/Examples/Lorenz.lean`: `body`, `evolution`, `compiled`,
+- [x] `Gimle/Forseti/Examples/Lorenz.lean`: `body`, `evolution`, `compiled`,
       `initial_eq`, `energyIndex`, `energy_at`, `energy_at_initial`,
       `observed`, `admitted` (definitionally `Initialized … (· = initial)`),
       `compiled_exists`, `feedback_reads`, `declared_input_admitted`, and
       `energy_contract : Contract observed evolution.time admitted (Always … (0 ≤ V ∧ V ≤ 1600))`.
-- [ ] Existence for all `t ≥ 0` proved by hand (clamped field, Picard–Lindelöf
+- [x] Existence for all `t ≥ 0` proved by hand (clamped field, Picard–Lindelöf
       per `[0, T]`, gluing, invariant keeps the solution where fields agree);
       uniqueness on the compact sublevel set; both reusable beyond Lorenz where
       practical.
-- [ ] A refutation lemma for a bound below `V(0)` (`1300`), as `five_refuted`.
-- [ ] `Tests/Lorenz.lean` pins every interface name; `lake build` clean; axiom
+- [x] A refutation lemma for a bound below `V(0)` (`1300`), as `five_refuted`.
+- [x] `Tests/Lorenz.lean` pins every interface name; `lake build` clean; axiom
       reports show only propext, Classical.choice, Quot.sound.
+
+## Notes
+
+The clamp–glue–fence existence machinery in `Examples/Lorenz.lean` is generic
+(any C¹ field with a compact sublevel set on whose boundary `V' < 0`); the
+review recommended extracting it as a reusable lemma. Deferred to task 025,
+which needs it next.
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-09-30T12:22:06Z
+
+PR #26 merged; released as v1.10.0 (asgard v1.7.0 unchanged). Filed as
+`34-…` by mistake; renamed to the zero-padded form on closing.
