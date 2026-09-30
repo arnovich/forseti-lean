@@ -1,9 +1,6 @@
 ---
 title: General nonlinear trapping theorem, extracted from Lorenz
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-09-30T13:40:36Z
-branch: feat/nonlinear_trapping
+state: closed
 priority: medium
 labels: [proof, dynamics, nonlinear]
 related: [025, 034]
@@ -23,13 +20,19 @@ so it becomes a theorem about any compiled model whose field is polynomial.
 
 ## Outcome
 
-- [ ] `Expr.contDiff_eval`: every `Polynomial.Expr` evaluates to a `ContDiff ℝ 1`
+- [x] `Expr.contDiff_eval`: every `Polynomial.Expr` evaluates to a `ContDiff ℝ 1`
       function of the point, so every compiled field is smooth.
-- [ ] `Gimle/Forseti/Nonlinear.lean`: for a `ContinuousModel` with a quadratic
+- [x] `Gimle/Forseti/Nonlinear.lean`: for a `ContinuousModel` with a quadratic
       (or C¹) `V` satisfying `V' ≤ α(C' − V)` at every state with `C' < C`, a
       sup-ball containing `{V ≤ C}` and `V(initial) ≤ C`: `∃ state, Realizes`,
       forward uniqueness, and the observed `Contract` with `V ≤ C`, plus the
       refutation of a bound below `V(initial)`, in the registry's interface
       shape; nothing model-specific inside.
-- [ ] `Examples/Lorenz.lean` is an instance of it with unchanged statements;
+- [x] `Examples/Lorenz.lean` is an instance of it with unchanged statements;
       `Tests/Lorenz.lean` still pins the same names. Axioms unchanged.
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-09-30T13:49:18Z
+
+PR #27 merged.
