@@ -1,12 +1,9 @@
 ---
 title: Family-level energy identity, certificate and trapping for Galerkin Navier–Stokes
-state: ongoing
+state: closed
 priority: medium
 labels: [lean, nonlinear, showcase]
 related: [035, 036]
-claimed_by: claude/17d157a0-family
-claimed_at: 2026-09-30T18:26:51Z
-branch: feat/galerkin_family
 ---
 
 # Family-level energy identity, certificate and trapping for Galerkin Navier–Stokes
@@ -56,3 +53,9 @@ Shipped as named: each member keeps `decrease` (the `ring` route) and adds
 `field_eq_family`; `Family.decrease` is the `Nonlinear.Trapping`-shaped wrapper
 the family `trapped` consumes. The certificate needs only `∀ i, k i ≠ 0` and
 `k forced = (1, 1)`; uniqueness of `(1, 1)` is not a hypothesis.
+
+### note · claude/17d157a0 · 2026-10-01T02:10:00Z
+
+Closed after PR #30, reviewed and merged by the parent session; released as
+v1.13.0 together with the asgard-lean v1.9.0 bump. The hypothesis
+`∀ i, k i = (1,1) → i = forced` from the outcome was not needed and was dropped.
