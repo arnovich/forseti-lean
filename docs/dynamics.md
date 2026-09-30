@@ -148,13 +148,57 @@ conserves the energy `E = Σ a_k²/λ_k` and the enstrophy `Z = Σ a_k²`
 state `2ν(f²/(8ν²) − E) − E' = ν(a₍₁,₁₎ − f/(2ν))² + 2ν Σ (1 − 1/λ_k) a_k²`
 (`certificate`, checked by `ring`), which is the `decrease` a `Trapping` needs;
 `f²/(8ν²)` is the laminar equilibrium's energy, so no smaller level is
-positively invariant. The members `T3` (3 modes, one triad), `K5` (5 modes,
-three triads) and `B2` (12 modes, 22 triads; chaotic in simulation at
-`ν = 1/50`) are written by [`tools/galerkin_ns.py`](../tools/galerkin_ns.py),
+positively invariant (a one-line argument on the laminar line, not a Lean
+statement). The members `T3` (3 modes, one triad), `K5` (5 modes,
+three triads) and `B2` (12 modes, 22 triads; irregular in simulation at
+`ν = 1/50`, step-dependent) are written by [`tools/galerkin_ns.py`](../tools/galerkin_ns.py),
 which derives the triads with exact rationals, verifies every identity by
 polynomial expansion, and emits the model, the identities and the contract in
 the registry's interface shape; `--check` compares without writing, and
 `Tests/GalerkinNS.lean` pins the names. Nothing is claimed about the PDE.
+
+[`GalerkinNS/Family.lean`](../Gimle/Forseti/GalerkinNS/Family.lean) proves the
+identity, the certificate and the trapping once, for **every member**. The
+family is `field ν f k forced` for any `n`, modes `k : Fin n → ℤ × ℤ` and an
+index `forced`: `a_i' = −ν λ(k i) a_i + f [i = forced] + Σ_{j,l} c(k j, k l, k i) a_j a_l`
+over **ordered** pairs, with the coupling
+`c(p, q, k) = (p × q)/(2 λ_p) · ([p − q = ±k] − [p + q = ±k])` (`coefficient`;
+the projection `(1/2π²) ∫∫ · cos(k·x)` of `−J(ψ, ω)` with `Δψ = ω`, a paper derivation
+checked with sympy against direct integration for `T3` and `K5`, not a Lean
+statement), `E = Σ a_i²/λ(k i)` (`energy`) and `Z = Σ a_i²` (`enstrophy`). Under
+the hypotheses `∀ i, k i ≠ 0` and `k forced = (1, 1)`, and nothing else:
+
+- `E' = −2νZ + f a_forced` (`energy_identity`): the cubic flux
+  `Σ_{i,j,l} (2/λ(k i)) a_i c(k j, k l, k i) a_j a_l` vanishes because exchanging
+  the ψ-index `j` and the energy index `i` flips the summand's sign,
+  `(k × q) S(k, q, p) = −(p × q) S(p, q, k)` (`energy_antisymm`), so the sum
+  equals its own negative by `Finset.sum_comm` (`cubic_flux_zero`);
+- `2ν(f²/(8ν²) − E) − E' = ν(a_forced − f/(2ν))² + 2ν Σ_{i ≠ forced} (1 − 1/λ(k i)) a_i²`
+  (`certificate`), algebra from the identity with `λ(1, 1) = 2`; its weights are
+  nonnegative since `λ ≥ 1` on nonzero modes, so `E' ≤ 2ν(f²/(8ν²) − E)`
+  (`decrease_rate`);
+- for `ν > 0` and any `C > f²/(8ν²)`, `trapping` (weights `1/λ(k i)`, centre `0`,
+  `α = 2ν`, `C' = f²/(8ν²)`, radius `1 + C Σ λ(k i)`, which covers `{E ≤ C}` since
+  `C λ_i ≤ C Σ λ ≤ (1 + C Σ λ)²`) satisfies `decrease`, and the field is `C¹` as a
+  finite sum of polynomials (`contDiff_field`), so `Nonlinear.lean` gives, from
+  any start with `E ≤ C`, a forward solution for all `t ≥ start`, its uniqueness
+  and `E ≤ C` along it (`exists_solution`, `unique`, `invariant`; together
+  `trapped`).
+
+The derivation assumes the modes are pairwise distinct up to sign, so that
+`a_i'` is the coefficient of `cos(k_i·x)`; the half-plane convention only fixes
+a representative, and the coupling is even in each argument, so the choice does
+not change the field. This is not a hypothesis of any theorem: a duplicated
+mode, or a mode and its negative, gives a field the theorems still cover, but
+one whose triad terms are doubled relative to the PDE's projection. Each
+generated member states `field_eq_family` — its compiled field is the family
+field at its modes, the triad coefficients being the ordered-pair coupling
+summed over both orders — and derives `decrease_family` from
+`Family.decrease_rate` through it, beside its `ring` route.
+`Tests/GalerkinNSFamily.lean` applies the theorems to members the generator
+does not emit (a 2-mode list and a list with a `±` pair), evaluates the identity
+by hand on a real triad, shows the identity fails when the forced mode has
+`λ ≠ 2`, and pins the axiom footprint.
 
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled

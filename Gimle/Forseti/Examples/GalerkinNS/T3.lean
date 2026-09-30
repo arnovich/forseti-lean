@@ -1,4 +1,5 @@
 import Gimle.Forseti.Nonlinear
+import Gimle.Forseti.GalerkinNS.Family
 import Gimle.Asgard.Compile.Syntax
 
 /-! # T3: a Galerkin truncation of 2D Navier–Stokes, trapped
@@ -88,6 +89,52 @@ theorem field_eq : Nonlinear.field compiled = field := by
   funext x i
   exact rates_eval i x
 
+/-! ## The member as an instance of the family -/
+
+/-- The modes as the family indexes them. -/
+def modes : Fin 3 → GalerkinNS.Family.Wave :=
+  ![(1, 0), (1, 1), (2, 1)]
+
+/-- The index of the forced mode `(1, 1)`. -/
+def forcedIndex : Fin 3 := 1
+
+theorem modes_nonzero : ∀ i, modes i ≠ 0 := by decide
+
+theorem modes_forced : modes forcedIndex = (1, 1) := by decide
+
+private theorem coordinate_0 (x : Point 3) :
+    field x 0 = GalerkinNS.Family.field (1 / 10 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 0 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_1 (x : Point 3) :
+    field x 1 = GalerkinNS.Family.field (1 / 10 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 1 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+private theorem coordinate_2 (x : Point 3) :
+    field x 2 = GalerkinNS.Family.field (1 / 10 : ℝ) (1 / 1 : ℝ) modes forcedIndex x 2 := by
+  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,
+    forcedIndex, field]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring
+
+/-- The compiled field is the family field at these modes: the triad
+coefficients are the ordered-pair coupling summed over both orders. -/
+theorem field_eq_family :
+    Nonlinear.field compiled =
+      GalerkinNS.Family.field (1 / 10 : ℝ) (1 / 1 : ℝ) modes forcedIndex := by
+  rw [field_eq]
+  funext x i
+  fin_cases i
+  · exact coordinate_0 x
+  · exact coordinate_1 x
+  · exact coordinate_2 x
+
 /-- `E = Σ a_k²/|k|²`. -/
 noncomputable def energy (x : Point 3) : ℝ := x 0 * x 0 + (1 / 2 : ℝ) * x 1 * x 1 + (1 / 5 : ℝ) * x 2 * x 2
 
@@ -172,6 +219,34 @@ theorem decrease (x : Point 3) :
   have nonneg : 0 ≤ (1 / 10 : ℝ) * (x 1 - 5 / 1) ^ 2 + (4 / 25 : ℝ) * x 2 ^ 2 := by positivity
   linarith
 
+theorem rate_eq_family (F : Point 3 → Point 3) (x : Point 3) :
+    trapping.rate F x = GalerkinNS.Family.rate modes F x := by
+  unfold Nonlinear.Trapping.rate GalerkinNS.Family.rate
+  refine Finset.sum_congr rfl fun i _ => ?_
+  fin_cases i <;> simp [trapping, modes, GalerkinNS.Family.lam, Matrix.cons_val,
+    -mul_eq_mul_right_iff, -mul_eq_mul_left_iff] <;> ring
+
+theorem energy_eq_family (x : Point 3) :
+    trapping.energy x = GalerkinNS.Family.energy modes x := by
+  unfold Nonlinear.Trapping.energy GalerkinNS.Family.energy
+  refine Finset.sum_congr rfl fun i _ => ?_
+  fin_cases i <;> simp [trapping, modes, GalerkinNS.Family.lam, Matrix.cons_val,
+    -mul_eq_mul_right_iff, -mul_eq_mul_left_iff] <;> ring
+
+/-- `decrease` again, by the family theorem through `field_eq_family`: a second
+route to the same inequality over the same `field_eq` and `trapping`, with the
+identity by `Family.decrease_rate` instead of `ring`. -/
+theorem decrease_family (x : Point 3) :
+    trapping.rate (Nonlinear.field compiled) x ≤
+      trapping.alpha * (trapping.inner - trapping.energy x) := by
+  rw [rate_eq_family, energy_eq_family, field_eq_family]
+  have alpha_eq : trapping.alpha = 2 * (1 / 10 : ℝ) := by norm_num [trapping]
+  have inner_eq : trapping.inner = (1 / 1 : ℝ) ^ 2 / (8 * (1 / 10 : ℝ) ^ 2) := by
+    norm_num [trapping]
+  rw [alpha_eq, inner_eq]
+  exact GalerkinNS.Family.decrease_rate (1 / 10 : ℝ) (1 / 1 : ℝ) (by norm_num) modes modes_nonzero
+    forcedIndex modes_forced x
+
 theorem initial_le : trapping.energy compiled.initial ≤ trapping.bound := by
   rw [← energy_eq_trapping, initial_eq]
   simp [energy, trapping, Matrix.cons_val] <;> norm_num
@@ -223,6 +298,8 @@ theorem refuted :
 
 #print axioms energy_identity
 #print axioms certificate
+#print axioms field_eq_family
+#print axioms decrease_family
 #print axioms energy_contract
 #print axioms refuted
 

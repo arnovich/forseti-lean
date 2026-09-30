@@ -18,7 +18,17 @@ Energy E = Σ a_k²/λ_k and enstrophy Z = Σ a_k² are conserved by every triad
 (Σ C/λ = 0 and Σ C = 0), so E' = −2νZ + f a_(1,1), and at every state
 E' ≤ 2ν (f²/(8ν²) − E) by the sum of squares
 ν (a_(1,1) − f/(2ν))² + 2ν Σ_{k≠(1,1)} (1 − 1/λ_k) a_k²; f²/(8ν²) is the
-laminar equilibrium's energy and is optimal.
+laminar equilibrium's energy and is optimal (an argument on the laminar line,
+not a Lean statement).
+
+The same field, written over ordered pairs of modes with the coupling
+c(p, q, k) = (p × q)/(2 λ_p) · ([p − q = ±k] − [p + q = ±k]), is
+`Gimle.Forseti.GalerkinNS.Family.field`, and the family module proves the
+energy identity, the certificate and the trapping once for every member. Each
+emitted member states `field_eq_family` (its compiled field is the family field
+at its modes) and derives `decrease_family` from the family theorem through it,
+beside the `ring` route above: the same `field_eq` and `trapping`, the identity
+by the family theorem instead of `ring`.
 
 Only the standard library is used, with exact rationals. The identities are
 verified here by polynomial expansion before anything is written, and Lean
@@ -155,6 +165,48 @@ def field(member: Member) -> list[Poly]:
     return rhs
 
 
+def cross(p: Vector, q: Vector) -> int:
+    return p[0] * q[1] - p[1] * q[0]
+
+
+def selector(p: Vector, q: Vector, k: Vector) -> int:
+    """`[p − q = ±k] − [p + q = ±k]`, the family's `S`."""
+    minus = (p[0] - q[0], p[1] - q[1])
+    plus = (p[0] + q[0], p[1] + q[1])
+    neg = (-k[0], -k[1])
+    return int(minus in (k, neg)) - int(plus in (k, neg))
+
+
+def coupling(p: Vector, q: Vector, k: Vector) -> F:
+    """The family's ordered-pair coefficient of `a_p a_q` in `a_k'`."""
+    return F(cross(p, q), 2 * lam(p)) * selector(p, q, k)
+
+
+def family_field(member: Member) -> list[Poly]:
+    """The right-hand sides as `Family.field` writes them: over ordered pairs."""
+    n = len(member.modes)
+    rhs: list[Poly] = []
+    for i, k in enumerate(member.modes):
+        poly: Poly = {}
+        linear = [0] * n
+        linear[i] = 1
+        poly[tuple(linear)] = -member.nu * lam(k)
+        if k == FORCED:
+            poly[tuple([0] * n)] = member.f
+        for j, p in enumerate(member.modes):
+            for l, q in enumerate(member.modes):
+                c = coupling(p, q, k)
+                if c == 0:
+                    continue
+                powers = [0] * n
+                powers[j] += 1
+                powers[l] += 1
+                key = tuple(powers)
+                poly[key] = poly.get(key, F(0)) + c
+        rhs.append({key: c for key, c in poly.items() if c != 0})
+    return rhs
+
+
 # ----- exact polynomial checks ----------------------------------------------------
 
 
@@ -216,6 +268,7 @@ def verify(member: Member) -> None:
     # E' = −2νZ + f a_f
     expected = combine((-2 * member.nu, enstrophy(member)), (member.f, variable(n, forced)))
     assert rate(member) == expected, f"{member.name}: energy identity fails"
+    assert field(member) == family_field(member), f"{member.name}: triads differ from the family coupling"
     # 2ν(C* − E) − E' = ν (a_f − f/(2ν))² + 2ν Σ_{k≠f} (1 − 1/λ_k) a_k²
     star = member.f**2 / (8 * member.nu**2)
     lhs = combine(
@@ -316,6 +369,7 @@ def emit(member: Member) -> str:
     w = lines.append
 
     w(f"import Gimle.Forseti.Nonlinear")
+    w(f"import Gimle.Forseti.GalerkinNS.Family")
     w(f"import Gimle.Asgard.Compile.Syntax")
     w("")
     w("/-! # " + member.name + ": a Galerkin truncation of 2D Navier–Stokes, trapped")
@@ -424,6 +478,42 @@ def emit(member: Member) -> str:
     w("  funext x i")
     w("  exact rates_eval i x")
     w("")
+    # the member as an instance of the family
+    nu_real = f"({member.nu.numerator} / {member.nu.denominator} : ℝ)"
+    f_real = f"({member.f.numerator} / {member.f.denominator} : ℝ)"
+    family_field_term = f"GalerkinNS.Family.field {nu_real} {f_real} modes forcedIndex"
+    w("/-! ## The member as an instance of the family -/")
+    w("")
+    w("/-- The modes as the family indexes them. -/")
+    w(f"def modes : Fin {n} → GalerkinNS.Family.Wave :=")
+    w(f"  ![{', '.join(f'({k[0]}, {k[1]})' for k in member.modes)}]")
+    w("")
+    w("/-- The index of the forced mode `(1, 1)`. -/")
+    w(f"def forcedIndex : Fin {n} := {forced}")
+    w("")
+    w("theorem modes_nonzero : ∀ i, modes i ≠ 0 := by decide")
+    w("")
+    w("theorem modes_forced : modes forcedIndex = (1, 1) := by decide")
+    w("")
+    for i in range(n):
+        w(f"private theorem coordinate_{i} (x : Point {n}) :")
+        w(f"    field x {i} = {family_field_term} x {i} := by")
+        w("  simp only [GalerkinNS.Family.field, Fin.sum_univ_succ, Fin.sum_univ_zero, modes,")
+        w("    forcedIndex, field]")
+        w("  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,")
+        w("    GalerkinNS.Family.lam, Matrix.cons_val] <;> ring")
+        w("")
+    w("/-- The compiled field is the family field at these modes: the triad")
+    w("coefficients are the ordered-pair coupling summed over both orders. -/")
+    w("theorem field_eq_family :")
+    w("    Nonlinear.field compiled =")
+    w(f"      {family_field_term} := by")
+    w("  rw [field_eq]")
+    w("  funext x i")
+    w("  fin_cases i")
+    for i in range(n):
+        w(f"  · exact coordinate_{i} x")
+    w("")
     energy_closed = " + ".join(real_term(wk, [i, i]) for i, wk in enumerate(ws))
     w("/-- `E = Σ a_k²/|k|²`. -/")
     w(f"noncomputable def energy (x : Point {n}) : ℝ := {energy_closed}")
@@ -531,6 +621,34 @@ def emit(member: Member) -> str:
     w("  have nonneg : 0 ≤ " + " + ".join(sos) + " := by positivity")
     w("  linarith")
     w("")
+    w(f"theorem rate_eq_family (F : Point {n} → Point {n}) (x : Point {n}) :")
+    w("    trapping.rate F x = GalerkinNS.Family.rate modes F x := by")
+    w("  unfold Nonlinear.Trapping.rate GalerkinNS.Family.rate")
+    w("  refine Finset.sum_congr rfl fun i _ => ?_")
+    w("  fin_cases i <;> simp [trapping, modes, GalerkinNS.Family.lam, Matrix.cons_val,")
+    w("    -mul_eq_mul_right_iff, -mul_eq_mul_left_iff] <;> ring")
+    w("")
+    w(f"theorem energy_eq_family (x : Point {n}) :")
+    w("    trapping.energy x = GalerkinNS.Family.energy modes x := by")
+    w("  unfold Nonlinear.Trapping.energy GalerkinNS.Family.energy")
+    w("  refine Finset.sum_congr rfl fun i _ => ?_")
+    w("  fin_cases i <;> simp [trapping, modes, GalerkinNS.Family.lam, Matrix.cons_val,")
+    w("    -mul_eq_mul_right_iff, -mul_eq_mul_left_iff] <;> ring")
+    w("")
+    w("/-- `decrease` again, by the family theorem through `field_eq_family`: a second")
+    w("route to the same inequality over the same `field_eq` and `trapping`, with the")
+    w("identity by `Family.decrease_rate` instead of `ring`. -/")
+    w(f"theorem decrease_family (x : Point {n}) :")
+    w("    trapping.rate (Nonlinear.field compiled) x ≤")
+    w("      trapping.alpha * (trapping.inner - trapping.energy x) := by")
+    w("  rw [rate_eq_family, energy_eq_family, field_eq_family]")
+    w(f"  have alpha_eq : trapping.alpha = 2 * {nu_real} := by norm_num [trapping]")
+    w(f"  have inner_eq : trapping.inner = {f_real} ^ 2 / (8 * {nu_real} ^ 2) := by")
+    w("    norm_num [trapping]")
+    w("  rw [alpha_eq, inner_eq]")
+    w(f"  exact GalerkinNS.Family.decrease_rate {nu_real} {f_real} (by norm_num) modes modes_nonzero")
+    w("    forcedIndex modes_forced x")
+    w("")
     w("theorem initial_le : trapping.energy compiled.initial ≤ trapping.bound := by")
     w("  rw [← energy_eq_trapping, initial_eq]")
     w("  simp [energy, trapping, Matrix.cons_val] <;> norm_num")
@@ -582,6 +700,8 @@ def emit(member: Member) -> str:
     w("")
     w("#print axioms energy_identity")
     w("#print axioms certificate")
+    w("#print axioms field_eq_family")
+    w("#print axioms decrease_family")
     w("#print axioms energy_contract")
     w("#print axioms refuted")
     w("")
