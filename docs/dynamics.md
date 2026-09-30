@@ -134,6 +134,28 @@ radius `40`), `decrease` and `initial_le`, and gets `compiled_exists`,
 `thirteen_hundred_refuted`; `Tests/Lorenz.lean` and `Tests/Nonlinear.lean` pin
 the names.
 
+[`Examples/GalerkinNS/`](../Gimle/Forseti/Examples/GalerkinNS/) applies the
+general theorem to a family: Galerkin truncations of 2D incompressible
+Navier–Stokes on the 2π-periodic square, vorticity form, cosine modes only,
+forced in the single mode `cos(x + y)`, with rational `ν` and `f`. A member is
+a finite set of integer wavevectors `K`; with `ω = Σ a_k cos(k·x)` and
+`λ_k = |k|²` the projected equations are `a_k' = −νλ_k a_k + f[k = (1,1)] +
+Σ C_k a_P a_Q` over **triads** `P + Q + R = 0`, each three rational monomials
+with `C_P = (σ/2)(1/λ_R − 1/λ_Q)` and cyclically, `σ = P × Q`. Every triad
+conserves the energy `E = Σ a_k²/λ_k` and the enstrophy `Z = Σ a_k²`
+(`triad_i`: its weighted flows sum to zero), so per-mode storage identities
+(`storage_k`) sum to `E' = −2νZ + f a₍₁,₁₎` (`energy_identity`), and at every
+state `2ν(f²/(8ν²) − E) − E' = ν(a₍₁,₁₎ − f/(2ν))² + 2ν Σ (1 − 1/λ_k) a_k²`
+(`certificate`, checked by `ring`), which is the `decrease` a `Trapping` needs;
+`f²/(8ν²)` is the laminar equilibrium's energy, so no smaller level is
+positively invariant. The members `T3` (3 modes, one triad), `K5` (5 modes,
+three triads) and `B2` (12 modes, 22 triads; chaotic in simulation at
+`ν = 1/50`) are written by [`tools/galerkin_ns.py`](../tools/galerkin_ns.py),
+which derives the triads with exact rationals, verifies every identity by
+polynomial expansion, and emits the model, the identities and the contract in
+the registry's interface shape; `--check` compares without writing, and
+`Tests/GalerkinNS.lean` pins the names. Nothing is claimed about the PDE.
+
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled
 continuous model, a `Spec` holds:
