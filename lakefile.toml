@@ -1,11 +1,11 @@
 name = "forseti"
-version = "0.9.0"
+version = "0.10.0"
 defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Tests", "Checker"]
 
 [[require]]
 name = "asgard"
 git = "https://github.com/arnovich/asgard-lean.git"
-rev = "acc1540bd563dec424fa6457b33b150c99f2331a"
+rev = "147ef3ebf0e26795cdce50b5e7566b5d0e5c44d8"
 
 [[lean_lib]]
 name = "Gimle.Forseti"
