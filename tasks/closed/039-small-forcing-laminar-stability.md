@@ -1,9 +1,6 @@
 ---
 title: Small-forcing laminar stability for the Galerkin family — the unforced energy decays
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-10-02T17:00:00Z
-branch: feat/laminar_stability
+state: closed
 priority: medium
 labels: [lean, nonlinear, showcase, research]
 related: ["037", "038"]
@@ -48,3 +45,16 @@ linearly stable (Jacobian eigenvalues all negative), and a simulation from
   cite; the existing members gain the `E_rest` observation too, without a
   contract (they are above the threshold)
 - released; gimle-forseti task 197 consumes the release
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-10-02T20:30:00Z
+
+Closed with PR #36 (merged, `b610d8e2`), released as v1.18.0. Two outcome
+details moved under review: `K` is the entrywise sum of the *symmetrised*
+coefficients `|(c_jl + c_lj)/2|` (the ordered sum gave `K = 3/5` and a
+negative rate for T3's modes at `ν = 1/2`; symmetrised, `K = 2/5` and
+`γ = 1/5` with `r = 2`), and the decay comes from an integrating-factor lemma
+`Dissipative.decay` rather than Grönwall. `laminar_attracts` takes the
+strict threshold `0 < 2ν − K r`; `rest_decay` keeps `≤`. The member is
+`T3S`, with `rest_contract` through the new `Nonlinear.bounded_contract`.
