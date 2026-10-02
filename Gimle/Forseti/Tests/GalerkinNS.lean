@@ -31,6 +31,21 @@ example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.outputs.circuit.run
     Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial
     Gimle.Forseti.Examples.GalerkinNS.T3.energyIndex = 17 / 10 :=
   Gimle.Forseti.Examples.GalerkinNS.T3.energy_at_initial
+example : Fin Gimle.Forseti.Examples.GalerkinNS.T3.body.observations.length :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex
+example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.outputs.circuit.run
+    Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial
+    Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex = 3 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.enstrophy_at_initial
+
+/-- The enstrophy ball `Z ≤ 26`, above the level `f²/(4ν²) = 25`. -/
+example : Contract Gimle.Forseti.Examples.GalerkinNS.T3.observed
+    Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.T3.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time fun observation =>
+      0 ≤ observation Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex ∧
+        observation Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex ≤ 26) :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.enstrophy_contract
 
 /-- No linear view: the contract is `Nonlinear`'s. -/
 example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.linear.isNone = true := by

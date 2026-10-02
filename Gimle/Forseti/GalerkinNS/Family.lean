@@ -90,6 +90,12 @@ noncomputable def enstrophy (x : Point n) : ℝ := ∑ i, x i ^ 2
 noncomputable def rate (k : Fin n → Wave) (F : Point n → Point n) (x : Point n) : ℝ :=
   ∑ i, 2 * x i / lam (k i) * F x i
 
+/-- The palinstrophy `P = Σ λ(k i) a_i²`, the enstrophy's dissipation. -/
+noncomputable def palinstrophy (k : Fin n → Wave) (x : Point n) : ℝ := ∑ i, lam (k i) * x i ^ 2
+
+/-- `Z'` along a field: `Σ 2 a_i F_i(a)`. -/
+noncomputable def zrate (F : Point n → Point n) (x : Point n) : ℝ := ∑ i, 2 * x i * F x i
+
 /-! ## The coupling's combinatorics -/
 
 theorem lam_pos {k : Wave} (hk : k ≠ 0) : 0 < lam k := by
@@ -207,6 +213,108 @@ theorem cubic_flux_zero (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (a : Point 
       _ = -∑ i, ∑ j, ∑ l, g i j l := by simp only [Finset.sum_neg_distrib]
   linarith
 
+/-! ## The enstrophy's combinatorics -/
+
+/-- When neither relation holds for `(p, q, k)`, neither holds for `(p, k, q)`:
+`S p k q = 0`. -/
+theorem S_exchange_of_none (p q k : Wave)
+    (hA : ¬(p - q = k ∨ p - q = -k)) (hB : ¬(p + q = k ∨ p + q = -k)) : S p k q = 0 := by
+  obtain ⟨k1, k2⟩ := k
+  obtain ⟨p1, p2⟩ := p
+  obtain ⟨q1, q2⟩ := q
+  simp only [S, Prod.ext_iff, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub,
+    Prod.fst_neg, Prod.snd_neg, not_or, not_and_or] at *
+  split_ifs <;> omega
+
+/-- Enstrophy antisymmetry: exchanging the ω-index and the enstrophy index, the
+ψ-index fixed, flips the sign: `(p × q) S(p, q, k) = −(p × k) S(p, k, q)`; the
+discrete form of `∫ ω J(ψ, ω) = 0`. This is a different exchange from
+`energy_antisymm`, and the weight `1/λ_p` is untouched by it. -/
+theorem enstrophy_antisymm (p q k : Wave) (hp : p ≠ 0) (hq : q ≠ 0) (hk : k ≠ 0) :
+    cross p q * S p q k = -(cross p k * S p k q) := by
+  rcases S_spec p q k hp hq with ⟨hA, hS⟩ | ⟨hB, hS⟩ | ⟨hA, hB, hS⟩
+  · rw [hS]
+    rcases hA with h | h
+    · subst h
+      have w : S p (p - q) q = 1 := by
+        obtain ⟨p1, p2⟩ := p
+        obtain ⟨q1, q2⟩ := q
+        simp only [S, Prod.ext_iff, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub,
+          Prod.fst_neg, Prod.snd_neg, Prod.fst_zero, Prod.snd_zero, ne_eq, not_and_or] at *
+        split_ifs <;> omega
+      rw [w]
+      simp only [cross, Prod.fst_sub, Prod.snd_sub]
+      ring
+    · have hk' : k = q - p := by rw [← neg_neg k, ← h, neg_sub]
+      subst hk'
+      have w : S p (q - p) q = -1 := by
+        obtain ⟨p1, p2⟩ := p
+        obtain ⟨q1, q2⟩ := q
+        simp only [S, Prod.ext_iff, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub,
+          Prod.fst_neg, Prod.snd_neg, Prod.fst_zero, Prod.snd_zero, ne_eq, not_and_or] at *
+        split_ifs <;> omega
+      rw [w]
+      simp only [cross, Prod.fst_sub, Prod.snd_sub]
+      ring
+  · rw [hS]
+    rcases hB with h | h
+    · subst h
+      have w : S p (p + q) q = 1 := by
+        obtain ⟨p1, p2⟩ := p
+        obtain ⟨q1, q2⟩ := q
+        simp only [S, Prod.ext_iff, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub,
+          Prod.fst_neg, Prod.snd_neg, Prod.fst_zero, Prod.snd_zero, ne_eq, not_and_or] at *
+        split_ifs <;> omega
+      rw [w]
+      simp only [cross, Prod.fst_add, Prod.snd_add]
+      ring
+    · have hk' : k = -(p + q) := by rw [h, neg_neg]
+      subst hk'
+      have w : S p (-(p + q)) q = -1 := by
+        obtain ⟨p1, p2⟩ := p
+        obtain ⟨q1, q2⟩ := q
+        simp only [S, Prod.ext_iff, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub,
+          Prod.fst_neg, Prod.snd_neg, Prod.fst_zero, Prod.snd_zero, ne_eq, not_and_or] at *
+        split_ifs <;> omega
+      rw [w]
+      simp only [cross, Prod.fst_add, Prod.snd_add, Prod.fst_neg, Prod.snd_neg]
+      ring
+  · rw [hS, S_exchange_of_none p q k hA hB]
+    ring
+
+/-- The cubic enstrophy flux `Σ_{i,j,l} 2 a_i c(k j, k l, k i) a_j a_l` vanishes for
+every finite list of nonzero wavevectors: exchanging `i` and `l` flips the
+summand's sign, so the sum equals its own negative. -/
+theorem cubic_enstrophy_flux_zero (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (a : Point n) :
+    ∑ i, ∑ j, ∑ l, 2 * a i * (coefficient (k j) (k l) (k i) * a j * a l) = 0 := by
+  set g : Fin n → Fin n → Fin n → ℝ := fun i j l =>
+    2 * a i * (coefficient (k j) (k l) (k i) * a j * a l) with hg
+  have flip : ∀ i j l, g l j i = -g i j l := by
+    intro i j l
+    have key := enstrophy_antisymm (k j) (k l) (k i) (hk j) (hk l) (hk i)
+    have key' : (cross (k j) (k l) : ℝ) * S (k j) (k l) (k i) =
+        -((cross (k j) (k i) : ℝ) * S (k j) (k i) (k l)) := by exact_mod_cast key
+    have swapc : coefficient (k j) (k i) (k l) = -coefficient (k j) (k l) (k i) := by
+      simp only [coefficient]
+      linear_combination (1 / (2 * (lam (k j) : ℝ))) * key'
+    simp only [hg, swapc]
+    ring
+  have inner : ∀ i, ∑ j, ∑ l, g i j l = ∑ l, ∑ j, g i j l := fun i => Finset.sum_comm
+  have swap : ∑ i, ∑ j, ∑ l, g i j l = -∑ i, ∑ j, ∑ l, g i j l := by
+    calc ∑ i, ∑ j, ∑ l, g i j l = ∑ i, ∑ l, ∑ j, g i j l :=
+          Finset.sum_congr rfl fun i _ => inner i
+      _ = ∑ l, ∑ i, ∑ j, g i j l := Finset.sum_comm
+      _ = ∑ l, ∑ i, ∑ j, -g l j i := by
+          refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun i _ =>
+            Finset.sum_congr rfl fun j _ => ?_
+          rw [flip l j i]
+      _ = -∑ l, ∑ i, ∑ j, g l j i := by simp only [Finset.sum_neg_distrib]
+      _ = -∑ i, ∑ j, ∑ l, g i j l := by
+          congr 1
+          refine Finset.sum_congr rfl fun l _ => ?_
+          exact (inner l).symm
+  linarith
+
 /-! ## The energy identity and the certificate -/
 
 /-- One term of `E'`: the dissipation and forcing part, and the cubic part. -/
@@ -274,6 +382,63 @@ theorem decrease_rate (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀
     refine Finset.sum_nonneg fun i _ => mul_nonneg (sub_nonneg.mpr ?_) (sq_nonneg _)
     exact div_le_one_of_le₀ (by exact_mod_cast one_le_lam (hk i))
       (by exact_mod_cast (lam_pos (hk i)).le)
+  nlinarith [mul_nonneg hν.le (sq_nonneg (x forced - f / (2 * ν))), mul_nonneg hν.le squares]
+
+/-! ## The enstrophy identity and its certificate -/
+
+/-- One term of `Z'`: the dissipation and forcing part, and the cubic part. -/
+theorem zrate_expand (ν f : ℝ) (k : Fin n → Wave) (forced : Fin n) (x : Point n) :
+    zrate (field ν f k forced) x =
+      ∑ i, 2 * x i * (-ν * lam (k i) * x i + (if i = forced then f else 0)) +
+        ∑ i, ∑ j, ∑ l, 2 * x i * (coefficient (k j) (k l) (k i) * x j * x l) := by
+  rw [zrate, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [field, mul_add, Finset.mul_sum]
+
+/-- **The enstrophy identity**, for every member: `Z' = −2νP + 2 f a_forced`, with
+`P = Σ λ(k i) a_i²` the palinstrophy. -/
+theorem enstrophy_identity (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (x : Point n) :
+    zrate (field ν f k forced) x = -2 * ν * palinstrophy k x + 2 * f * x forced := by
+  rw [zrate_expand, cubic_enstrophy_flux_zero k hk x, add_zero]
+  have each : ∀ i, 2 * x i * (-ν * lam (k i) * x i + (if i = forced then f else 0)) =
+      -2 * ν * (lam (k i) * x i ^ 2) + (if i = forced then 2 * f * x i else 0) := by
+    intro i
+    split_ifs <;> ring
+  rw [Finset.sum_congr rfl fun i _ => each i, Finset.sum_add_distrib, Finset.sum_ite_eq',
+    if_pos (Finset.mem_univ _), palinstrophy, Finset.mul_sum]
+
+/-- **The enstrophy certificate**, for every member: `2ν(f²/(4ν²) − Z) − Z'` is the
+sum of squares `2ν Σ_{i ≠ forced} (λ(k i) − 1) a_i² + 2ν (a_forced − f/(2ν))²`, with
+nonnegative weights since `λ ≥ 1` on nonzero modes. -/
+theorem enstrophy_certificate (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0)
+    (forced : Fin n) (hf : k forced = (1, 1)) (x : Point n) :
+    2 * ν * (f ^ 2 / (4 * ν ^ 2) - enstrophy x) - zrate (field ν f k forced) x =
+      2 * ν * ∑ i ∈ Finset.univ.erase forced, ((lam (k i) : ℝ) - 1) * x i ^ 2 +
+        2 * ν * (x forced - f / (2 * ν)) ^ 2 := by
+  rw [enstrophy_identity ν f k hk forced x, enstrophy, palinstrophy,
+    ← Finset.add_sum_erase Finset.univ (fun i => x i ^ 2) (Finset.mem_univ forced),
+    ← Finset.add_sum_erase Finset.univ (fun i => (lam (k i) : ℝ) * x i ^ 2)
+      (Finset.mem_univ forced), hf, lam_one_one]
+  have split : ∑ i ∈ Finset.univ.erase forced, ((lam (k i) : ℝ) - 1) * x i ^ 2 =
+      ∑ i ∈ Finset.univ.erase forced, (lam (k i) : ℝ) * x i ^ 2 -
+        ∑ i ∈ Finset.univ.erase forced, x i ^ 2 := by
+    rw [← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  rw [split]
+  push_cast
+  field_simp
+  ring
+
+/-- The squares are nonnegative, so `Z' ≤ 2ν(f²/(4ν²) − Z)` at every state. -/
+theorem enstrophy_decrease_rate (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave)
+    (hk : ∀ i, k i ≠ 0) (forced : Fin n) (hf : k forced = (1, 1)) (x : Point n) :
+    zrate (field ν f k forced) x ≤ 2 * ν * (f ^ 2 / (4 * ν ^ 2) - enstrophy x) := by
+  have h := enstrophy_certificate ν f hν k hk forced hf x
+  have squares : 0 ≤ ∑ i ∈ Finset.univ.erase forced, ((lam (k i) : ℝ) - 1) * x i ^ 2 := by
+    refine Finset.sum_nonneg fun i _ => mul_nonneg (sub_nonneg.mpr ?_) (sq_nonneg _)
+    exact_mod_cast one_le_lam (hk i)
   nlinarith [mul_nonneg hν.le (sq_nonneg (x forced - f / (2 * ν))), mul_nonneg hν.le squares]
 
 /-! ## The field is smooth -/
@@ -387,6 +552,79 @@ theorem trapped (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀ i, k 
     fun _ _ hx hy => unique ν f hν k hk forced hf C hC time x₀ initial hx hy,
     invariant ν f hν k hk forced hf C hC time x₀ initial⟩
 
+/-! ## The enstrophy ball, from `Nonlinear.lean` -/
+
+/-- The enstrophy `Trapping`: weights `1`, centre `0`, `α = 2ν`, inner level
+`f²/(4ν²)`, any trapped level `C > f²/(4ν²)`, and sup-norm radius `1 + C`, which
+covers `{Z ≤ C}` since `C ≤ (1 + C)²`. -/
+noncomputable def trappingZ (ν f : ℝ) (hν : 0 < ν) (C : ℝ) (hC : f ^ 2 / (4 * ν ^ 2) < C) :
+    Nonlinear.Trapping n where
+  weights := fun _ => 1
+  centre := fun _ => 0
+  alpha := 2 * ν
+  inner := f ^ 2 / (4 * ν ^ 2)
+  bound := C
+  radius := 1 + C
+  weights_pos := fun _ => one_pos
+  alpha_pos := by linarith
+  margin := hC
+  radius_nonneg := by
+    have hC0 : 0 ≤ C := le_trans (by positivity) hC.le
+    linarith
+  covers := fun _ => by
+    have hC0 : 0 ≤ C := le_trans (by positivity) hC.le
+    nlinarith [sq_nonneg C]
+
+/-- The enstrophy `Trapping`'s `energy` is `enstrophy`. -/
+theorem trappingZ_energy (ν f : ℝ) (hν : 0 < ν) (C : ℝ) (hC : f ^ 2 / (4 * ν ^ 2) < C)
+    (x : Point n) : (trappingZ (n := n) ν f hν C hC).energy x = enstrophy x := by
+  simp only [Nonlinear.Trapping.energy, trappingZ, enstrophy]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  ring
+
+/-- The enstrophy `Trapping`'s `rate` is `zrate`. -/
+theorem trappingZ_rate (ν f : ℝ) (hν : 0 < ν) (C : ℝ) (hC : f ^ 2 / (4 * ν ^ 2) < C)
+    (F : Point n → Point n) (x : Point n) :
+    (trappingZ (n := n) ν f hν C hC).rate F x = zrate F x := by
+  simp only [Nonlinear.Trapping.rate, trappingZ, zrate]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  ring
+
+/-- The enstrophy's differential inequality in the shape `Nonlinear.Trapping` consumes. -/
+theorem decreaseZ (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0)
+    (forced : Fin n) (hf : k forced = (1, 1)) (C : ℝ) (hC : f ^ 2 / (4 * ν ^ 2) < C)
+    (x : Point n) :
+    (trappingZ (n := n) ν f hν C hC).rate (field ν f k forced) x ≤
+      (trappingZ (n := n) ν f hν C hC).alpha *
+        ((trappingZ (n := n) ν f hν C hC).inner - (trappingZ (n := n) ν f hν C hC).energy x) := by
+  rw [trappingZ_rate, trappingZ_energy]
+  exact enstrophy_decrease_rate ν f hν k hk forced hf x
+
+/-- **The enstrophy ball traps, for every member**: from any start with `Z ≤ C`,
+`C > f²/(4ν²)`, a forward solution exists for all `t ≥ start`, it is unique, and
+it keeps `Z ≤ C`. Uniform in the member: the level does not depend on the modes. -/
+theorem trapped_enstrophy (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0)
+    (forced : Fin n) (hf : k forced = (1, 1)) (C : ℝ) (hC : f ^ 2 / (4 * ν ^ 2) < C)
+    (time : TimeDomain) (x₀ : Point n) (initial : enstrophy x₀ ≤ C) :
+    (∃ state, Nonlinear.Solves (field ν f k forced) time x₀ state) ∧
+    (∀ x y : Signal n, Nonlinear.Solves (field ν f k forced) time x₀ x →
+      Nonlinear.Solves (field ν f k forced) time x₀ y → Set.EqOn x y time.domain) ∧
+    (∀ state, Nonlinear.Solves (field ν f k forced) time x₀ state →
+      ∀ t ∈ time.domain, enstrophy (state t) ≤ C) := by
+  have start : (trappingZ (n := n) ν f hν C hC).energy x₀ ≤ C := by rwa [trappingZ_energy]
+  refine ⟨(trappingZ ν f hν C hC).exists_solution _ (contDiff_field ν f k forced)
+      (decreaseZ ν f hν k hk forced hf C hC) time x₀ start,
+    fun x y hx hy => (trappingZ ν f hν C hC).unique _ (contDiff_field ν f k forced)
+      (decreaseZ ν f hν k hk forced hf C hC) time x₀ start hx hy,
+    fun state h t ht => ?_⟩
+  have bound := (trappingZ ν f hν C hC).invariant _ (decreaseZ ν f hν k hk forced hf C hC)
+    time x₀ start state h t ht
+  rwa [trappingZ_energy] at bound
+
+/-- Every mode is bounded by `√C` on the enstrophy ball: `a_i² ≤ Z ≤ C`. -/
+theorem mode_sq_le_enstrophy (x : Point n) (i : Fin n) : x i ^ 2 ≤ enstrophy x :=
+  Finset.single_le_sum (f := fun j => x j ^ 2) (fun j _ => sq_nonneg (x j)) (Finset.mem_univ i)
+
 #print axioms energy_antisymm
 #print axioms cubic_flux_zero
 #print axioms energy_identity
@@ -397,5 +635,10 @@ theorem trapped (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀ i, k 
 #print axioms unique
 #print axioms invariant
 #print axioms trapped
+#print axioms enstrophy_antisymm
+#print axioms cubic_enstrophy_flux_zero
+#print axioms enstrophy_identity
+#print axioms enstrophy_certificate
+#print axioms trapped_enstrophy
 
 end Gimle.Forseti.GalerkinNS.Family

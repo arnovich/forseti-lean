@@ -11,7 +11,9 @@ checked again here by Lean.
 Modes: a10 = (1, 0), a01 = (0, 1), a11 = (1, 1), a21 = (2, 1), a12 = (1, 2).
 ν = 1/10, f = 1 on cos(x + y). Energy E = Σ a_k²/|k|²;
 E' ≤ 2ν (f²/(8ν²) − E) = 1/5 · (25/2 − E), and the trapped level is
-13 > 25/2, from the start (1, …, 1). -/
+13 > 25/2, from the start (1, …, 1). Enstrophy Z = Σ a_k²;
+Z' ≤ 2ν (f²/(4ν²) − Z) = 1/5 · (25 − Z), and the trapped level is
+26 > 25. -/
 
 namespace Gimle.Forseti.Examples.GalerkinNS.K5
 
@@ -27,7 +29,7 @@ set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
 /-- The modes as states, the forced mode's equation carrying `f`, and the
-energy as the last observation. -/
+energy and the enstrophy as the last two observations. -/
 def body : Body := {
   program := ⟨[⟨"state-a10", "a10", .state⟩, ⟨"state-a01", "a01", .state⟩, ⟨"state-a11", "a11", .state⟩, ⟨"state-a21", "a21", .state⟩, ⟨"state-a12", "a12", .state⟩],
     equations% {
@@ -37,8 +39,9 @@ def body : Body := {
       da21 := (-rat(1,2)) * a21 + (-rat(1,4)) * a10 * a11;
       da12 := (-rat(1,2)) * a12 + rat(1,4) * a01 * a11;
       E := rat(1,1) * a10 * a10 + rat(1,1) * a01 * a01 + rat(1,2) * a11 * a11 + rat(1,5) * a21 * a21 + rat(1,5) * a12 * a12;
+      Z := rat(1,1) * a10 * a10 + rat(1,1) * a01 * a01 + rat(1,1) * a11 * a11 + rat(1,1) * a21 * a21 + rat(1,1) * a12 * a12;
     }⟩
-  observations := [⟨⟨"obs-a10", "a10", .output⟩, "state-a10"⟩, ⟨⟨"obs-a01", "a01", .output⟩, "state-a01"⟩, ⟨⟨"obs-a11", "a11", .output⟩, "state-a11"⟩, ⟨⟨"obs-a21", "a21", .output⟩, "state-a21"⟩, ⟨⟨"obs-a12", "a12", .output⟩, "state-a12"⟩, ⟨⟨"obs-e", "E", .output⟩, "E"⟩]
+  observations := [⟨⟨"obs-a10", "a10", .output⟩, "state-a10"⟩, ⟨⟨"obs-a01", "a01", .output⟩, "state-a01"⟩, ⟨⟨"obs-a11", "a11", .output⟩, "state-a11"⟩, ⟨⟨"obs-a21", "a21", .output⟩, "state-a21"⟩, ⟨⟨"obs-a12", "a12", .output⟩, "state-a12"⟩, ⟨⟨"obs-e", "E", .output⟩, "E"⟩, ⟨⟨"obs-z", "Z", .output⟩, "Z"⟩]
 }
 
 /-- From `(1, …, 1)` at `t = 0`. -/
@@ -62,6 +65,11 @@ def energyIndex : Fin body.observations.length := ⟨5, by decide⟩
 
 private theorem energy_expression : compiled.outputs.expressions energyIndex =
     ((.add (.add (.add (.add (.mul (.mul (.constant (1 / 1)) (.var 0)) (.var 0)) (.mul (.mul (.constant (1 / 1)) (.var 1)) (.var 1))) (.mul (.mul (.constant (1 / 2)) (.var 2)) (.var 2))) (.mul (.mul (.constant (1 / 5)) (.var 3)) (.var 3))) (.mul (.mul (.constant (1 / 5)) (.var 4)) (.var 4))) : Expr 5) := by decide +kernel
+
+def enstrophyIndex : Fin body.observations.length := ⟨6, by decide⟩
+
+private theorem enstrophy_expression : compiled.outputs.expressions enstrophyIndex =
+    ((.add (.add (.add (.add (.mul (.mul (.constant (1 / 1)) (.var 0)) (.var 0)) (.mul (.mul (.constant (1 / 1)) (.var 1)) (.var 1))) (.mul (.mul (.constant (1 / 1)) (.var 2)) (.var 2))) (.mul (.mul (.constant (1 / 1)) (.var 3)) (.var 3))) (.mul (.mul (.constant (1 / 1)) (.var 4)) (.var 4))) : Expr 5) := by decide +kernel
 
 theorem initial_eq : compiled.initial = (![1, 1, 1, 1, 1] : Point 5) := by
   change (fun i : Fin 5 => (compiled.initials i : ℝ)) = _
@@ -173,6 +181,21 @@ theorem energy_at_initial :
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
   simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
 
+/-- `Z = Σ a_k²`. -/
+noncomputable def enstrophy (x : Point 5) : ℝ := x 0 * x 0 + x 1 * x 1 + x 2 * x 2 + x 3 * x 3 + x 4 * x 4
+
+theorem enstrophy_at (x : Point 5) :
+    compiled.outputs.circuit.run x enstrophyIndex = enstrophy x := by
+  rw [Selected.circuit, compileOutputs_correct]
+  change (compiled.outputs.expressions enstrophyIndex).eval x = _
+  rw [enstrophy_expression]
+  simp [enstrophy, Expr.eval] <;> ring
+
+theorem enstrophy_at_initial :
+    compiled.outputs.circuit.run compiled.initial enstrophyIndex = 5 := by
+  rw [enstrophy_at, initial_eq]
+  simp [enstrophy, Matrix.cons_val] <;> norm_num
+
 /-! ## The compositional identities: modes store, triads route -/
 
 /-- Triad {a01, a10, a11}: its weighted energy flows sum to zero, and so
@@ -225,6 +248,41 @@ theorem energy_identity (x : Point 5) :
       -2 * (1 / 10 : ℝ) * (x 0 * x 0 + x 1 * x 1 + x 2 * x 2 + x 3 * x 3 + x 4 * x 4) + (1 / 1 : ℝ) * x 2 := by
   simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, field]
   simp [Matrix.cons_val] <;> ring
+
+/-- The enstrophy identity: the same cancellation with the weights `1`, leaving
+`Z' = −2ν Σ λ_k a_k² + 2 f a_(1,1)`. -/
+theorem enstrophy_identity (x : Point 5) :
+    (∑ i, 2 * x i * field x i) =
+      -2 * (1 / 10 : ℝ) * (x 0 * x 0 + x 1 * x 1 + (2 / 1 : ℝ) * x 2 * x 2 + (5 / 1 : ℝ) * x 3 * x 3 + (5 / 1 : ℝ) * x 4 * x 4) + 2 * (1 / 1 : ℝ) * x 2 := by
+  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, field]
+  simp [Matrix.cons_val] <;> ring
+
+/-- **Only two diagonal invariants.** A weighting `w` for which every triad is
+lossless — each hypothesis is one triad's `Σ w C = 0` — is a combination of
+`1/λ` (energy) and `1` (enstrophy): there is no other diagonal quadratic the
+triads conserve, so no reweighting of the modes traps tighter than these two. -/
+theorem only_two_diagonal (w : Fin 5 → ℝ)
+    (h0 : w 0 * (-1 / 4) + w 1 * (1 / 4) = 0)
+    (h1 : w 1 * (3 / 20) + w 2 * (-2 / 5) + w 4 * (1 / 4) = 0)
+    (h2 : w 0 * (-3 / 20) + w 2 * (2 / 5) + w 3 * (-1 / 4) = 0) :
+    ∃ α β : ℝ, w 0 = α * (1 / 1) + β ∧
+      w 1 = α * (1 / 1) + β ∧
+      w 2 = α * (1 / 2) + β ∧
+      w 3 = α * (1 / 5) + β ∧
+      w 4 = α * (1 / 5) + β := by
+  refine ⟨(w 0 - w 2) * (2 / 1), w 2 - (w 0 - w 2) * (2 / 1) / 2, ?_, ?_, ?_, ?_, ?_⟩
+  · linear_combination 0
+  · linear_combination (4 / 1 : ℝ) * h0
+  · linear_combination 0
+  · linear_combination (-4 / 1 : ℝ) * h2
+  · linear_combination (-12 / 5 : ℝ) * h0 + (4 / 1 : ℝ) * h1
+
+/-- A further conserved quadratic form, `(5 / 3 : ℝ) * x 0 * x 0 + (2 / 1 : ℝ) * x 0 * x 4 + (5 / 3 : ℝ) * x 1 * x 1 + (2 / 1 : ℝ) * x 1 * x 3`, beyond `E` and `Z`: its
+flux along the field has no cubic part. It comes from a symmetry of the mode set
+(a reflection exchanging modes), and no member without one has it. -/
+theorem symmetric_invariant_0 (x : Point 5) :
+    ((2 / 1 : ℝ) * x 4 + (10 / 3 : ℝ) * x 0) * field x 0 + ((2 / 1 : ℝ) * x 3 + (10 / 3 : ℝ) * x 1) * field x 1 + ((2 / 1 : ℝ) * x 1) * field x 3 + ((2 / 1 : ℝ) * x 0) * field x 4 = (-6 / 5 : ℝ) * x 1 * x 3 + (-1 / 3 : ℝ) * x 1 * x 1 + (-6 / 5 : ℝ) * x 0 * x 4 + (-1 / 3 : ℝ) * x 0 * x 0 := by
+  simp [field] <;> ring
 
 /-! ## The trapping data and the contract -/
 
@@ -293,6 +351,69 @@ theorem initial_le : trapping.energy compiled.initial ≤ trapping.bound := by
   rw [← energy_eq_trapping, initial_eq]
   simp [energy, trapping, Matrix.cons_val] <;> norm_num
 
+/-! ## The enstrophy ball -/
+
+/-- Weights `1`, centre `0`, `α = 2ν`, inner level `f²/(4ν²)`, trapped level
+`26`, sup-norm radius `6`. -/
+noncomputable def trappingZ : Nonlinear.Trapping 5 where
+  weights := fun _ => 1
+  centre := fun _ => 0
+  alpha := 1 / 5
+  inner := 25 / 1
+  bound := 26
+  radius := 6
+  weights_pos := fun _ => one_pos
+  alpha_pos := by norm_num
+  margin := by norm_num
+  radius_nonneg := by norm_num
+  covers := fun _ => by norm_num
+
+theorem enstrophy_eq_trappingZ (x : Point 5) : enstrophy x = trappingZ.energy x := by
+  simp [enstrophy, trappingZ, Nonlinear.Trapping.energy, Fin.sum_univ_succ] <;> ring
+
+/-- The enstrophy certificate: `2ν (f²/(4ν²) − Z) − Z'` is a sum of squares,
+`2ν (a_(1,1) − f/(2ν))² + 2ν Σ (|k|² − 1) a_k²`. -/
+theorem certificateZ (x : Point 5) :
+    trappingZ.alpha * (trappingZ.inner - trappingZ.energy x) - trappingZ.rate (Nonlinear.field compiled) x =
+      (2 * (1 / 10) : ℝ) * (x 2 - 5 / 1) ^ 2 + (4 / 5 : ℝ) * x 3 ^ 2 + (4 / 5 : ℝ) * x 4 ^ 2 := by
+  rw [field_eq]
+  simp only [trappingZ, Nonlinear.Trapping.rate, Nonlinear.Trapping.energy, field, Fin.sum_univ_succ, Fin.sum_univ_zero]
+  simp [Matrix.cons_val] <;> ring
+
+theorem decreaseZ (x : Point 5) :
+    trappingZ.rate (Nonlinear.field compiled) x ≤ trappingZ.alpha * (trappingZ.inner - trappingZ.energy x) := by
+  have h := certificateZ x
+  have nonneg : 0 ≤ (2 * (1 / 10) : ℝ) * (x 2 - 5 / 1) ^ 2 + (4 / 5 : ℝ) * x 3 ^ 2 + (4 / 5 : ℝ) * x 4 ^ 2 := by positivity
+  linarith
+
+theorem rateZ_eq_family (F : Point 5 → Point 5) (x : Point 5) :
+    trappingZ.rate F x = GalerkinNS.Family.zrate F x := by
+  unfold Nonlinear.Trapping.rate GalerkinNS.Family.zrate
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp [trappingZ]
+
+theorem enstrophy_eq_family (x : Point 5) :
+    trappingZ.energy x = GalerkinNS.Family.enstrophy x := by
+  unfold Nonlinear.Trapping.energy GalerkinNS.Family.enstrophy
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp [trappingZ]
+
+/-- `decreaseZ` again, by the family theorem through `field_eq_family`. -/
+theorem decreaseZ_family (x : Point 5) :
+    trappingZ.rate (Nonlinear.field compiled) x ≤
+      trappingZ.alpha * (trappingZ.inner - trappingZ.energy x) := by
+  rw [rateZ_eq_family, enstrophy_eq_family, field_eq_family]
+  have alpha_eq : trappingZ.alpha = 2 * (1 / 10 : ℝ) := by norm_num [trappingZ]
+  have inner_eq : trappingZ.inner = (1 / 1 : ℝ) ^ 2 / (4 * (1 / 10 : ℝ) ^ 2) := by
+    norm_num [trappingZ]
+  rw [alpha_eq, inner_eq]
+  exact GalerkinNS.Family.enstrophy_decrease_rate (1 / 10 : ℝ) (1 / 1 : ℝ) (by norm_num) modes modes_nonzero
+    forcedIndex modes_forced x
+
+theorem initial_leZ : trappingZ.energy compiled.initial ≤ trappingZ.bound := by
+  rw [← enstrophy_eq_trappingZ, initial_eq]
+  simp [enstrophy, trappingZ, Matrix.cons_val] <;> norm_num
+
 /-! ## The interface gimle-forseti's trajectory registry cites -/
 
 def observed := LinearEnergyContract.observed compiled
@@ -328,6 +449,18 @@ theorem energy_contract :
         0 ≤ observation energyIndex ∧ observation energyIndex ≤ 13) :=
   Nonlinear.energy_contract compiled trapping energyIndex energy_at_trapping decrease initial_le
 
+theorem enstrophy_at_trappingZ (x : Point 5) :
+    compiled.outputs.circuit.run x enstrophyIndex = trappingZ.energy x := by
+  rw [enstrophy_at, enstrophy_eq_trappingZ]
+
+/-- **The trajectory stays in the enstrophy ball `Z ≤ 26`**, for every
+admitted input; the level `f²/(4ν²)` is the same for every member of the family. -/
+theorem enstrophy_contract :
+    Contract observed evolution.time admitted
+      (Always evolution.time fun observation =>
+        0 ≤ observation enstrophyIndex ∧ observation enstrophyIndex ≤ 26) :=
+  Nonlinear.energy_contract compiled trappingZ enstrophyIndex enstrophy_at_trappingZ decreaseZ initial_leZ
+
 /-- `1` is not a bound: `E = 29/10` at the start. -/
 theorem refuted :
     ¬ Holds observed evolution.time admitted
@@ -344,5 +477,8 @@ theorem refuted :
 #print axioms decrease_family
 #print axioms energy_contract
 #print axioms refuted
+#print axioms enstrophy_identity
+#print axioms only_two_diagonal
+#print axioms enstrophy_contract
 
 end Gimle.Forseti.Examples.GalerkinNS.K5
