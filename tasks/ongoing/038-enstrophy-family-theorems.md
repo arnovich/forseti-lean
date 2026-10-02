@@ -1,6 +1,9 @@
 ---
 title: Enstrophy identity, certificate and trapping for every Galerkin member, and the two diagonal invariants
-state: open
+state: ongoing
+claimed_by: claude/17d157a0
+claimed_at: 2026-10-02T14:45:00Z
+branch: feat/enstrophy_family
 priority: medium
 labels: [lean, nonlinear, showcase]
 related: ["037"]
