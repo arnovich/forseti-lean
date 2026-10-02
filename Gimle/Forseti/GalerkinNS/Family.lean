@@ -625,6 +625,286 @@ theorem trapped_enstrophy (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk :
 theorem mode_sq_le_enstrophy (x : Point n) (i : Fin n) : x i ^ 2 ≤ enstrophy x :=
   Finset.single_le_sum (f := fun j => x j ^ 2) (fun j _ => sq_nonneg (x j)) (Finset.mem_univ i)
 
+/-! ## The unforced energy: small forcing, and the laminar line attracts
+
+The unforced modes' energy `E_rest = Σ_{i ≠ forced} a_i²/λ(k i)` loses what the
+triads through the forced mode feed it and nothing else: exactly,
+`E_rest' = −2ν Z_rest − a_forced N_forced(a)`, where `N_forced` is the forced
+mode's own cubic term. That term is bounded by the sum `K` of the forced mode's
+coupling coefficients times `Z_rest`, so on the enstrophy ball `Z ≤ r²` the
+unforced energy obeys `E_rest' ≤ −(2ν − K r) Z_rest ≤ −(2ν − K r) E_rest`, and
+below the threshold `K r < 2ν` it decays exponentially: the laminar line
+attracts, on the whole ball. -/
+
+/-- The forced mode's cubic term, `N_forced(a) = Σ_{j,l} c(k j, k l, k forced) a_j a_l`. -/
+noncomputable def forcedCubic (k : Fin n → Wave) (forced : Fin n) (x : Point n) : ℝ :=
+  ∑ j, ∑ l, coefficient (k j) (k l) (k forced) * x j * x l
+
+/-- The unforced modes' energy, `E − a_forced²/λ(k forced)`. -/
+noncomputable def restEnergy (k : Fin n → Wave) (forced : Fin n) (x : Point n) : ℝ :=
+  energy k x - x forced ^ 2 / lam (k forced)
+
+/-- The unforced modes' enstrophy, `Z − a_forced²`. -/
+noncomputable def restEnstrophy (forced : Fin n) (x : Point n) : ℝ :=
+  enstrophy x - x forced ^ 2
+
+/-- `E_rest'` along a field. -/
+noncomputable def restRate (k : Fin n → Wave) (forced : Fin n) (F : Point n → Point n)
+    (x : Point n) : ℝ :=
+  rate k F x - 2 * x forced / lam (k forced) * F x forced
+
+/-- The forced mode's coupling of an unordered pair, `(c(k j, k l, k forced) + c(k l, k j, k forced))/2`:
+the cubic term is a quadratic form, and this is its symmetric matrix. -/
+noncomputable def symCoefficient (k : Fin n → Wave) (forced : Fin n) (j l : Fin n) : ℝ :=
+  (coefficient (k j) (k l) (k forced) + coefficient (k l) (k j) (k forced)) / 2
+
+/-- The forced mode's coupling sum, `K = Σ_{j,l} |(c(k j, k l, k forced) + c(k l, k j, k forced))/2|`. -/
+noncomputable def couplingSum (k : Fin n → Wave) (forced : Fin n) : ℝ :=
+  ∑ j, ∑ l, |symCoefficient k forced j l|
+
+/-- The cubic term through its symmetric matrix. -/
+theorem forcedCubic_sym (k : Fin n → Wave) (forced : Fin n) (x : Point n) :
+    forcedCubic k forced x = ∑ j, ∑ l, symCoefficient k forced j l * x j * x l := by
+  have swap : ∑ j, ∑ l, coefficient (k l) (k j) (k forced) * x j * x l =
+      ∑ j, ∑ l, coefficient (k j) (k l) (k forced) * x j * x l := by
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
+    ring
+  have : ∑ j, ∑ l, symCoefficient k forced j l * x j * x l =
+      (∑ j, ∑ l, coefficient (k j) (k l) (k forced) * x j * x l +
+        ∑ j, ∑ l, coefficient (k l) (k j) (k forced) * x j * x l) / 2 := by
+    rw [← Finset.sum_add_distrib, Finset.sum_div]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [← Finset.sum_add_distrib, Finset.sum_div]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    simp only [symCoefficient]
+    ring
+  rw [this, swap, forcedCubic]
+  ring
+
+/-- A mode couples to nothing through itself: `(p × q) S(p, q, p) = 0`, since the
+relations force `q = 0` or `q = ±2p`, where the cross product vanishes. -/
+theorem cross_S_self_left (p q : Wave) (hp : p ≠ 0) (hq : q ≠ 0) :
+    cross p q * S p q p = 0 := by
+  rcases S_spec p q p hp hq with ⟨hA, hS⟩ | ⟨hB, hS⟩ | ⟨-, -, hS⟩
+  · rcases hA with h | h
+    · exact absurd (by rw [sub_eq_self] at h; exact h) hq
+    · have hq2 : q = p + p := by linear_combination -h
+      subst hq2
+      simp only [cross, Prod.fst_add, Prod.snd_add]
+      ring
+  · rcases hB with h | h
+    · exact absurd (by rw [add_eq_left] at h; exact h) hq
+    · have hq2 : q = -(p + p) := by linear_combination h
+      subst hq2
+      simp only [cross, Prod.fst_add, Prod.snd_add, Prod.fst_neg, Prod.snd_neg]
+      ring
+  · rw [hS]
+    ring
+
+/-- Nor does anything couple to a mode through that mode: `(q × p) S(q, p, p) = 0`. -/
+theorem cross_S_self_right (p q : Wave) (hp : p ≠ 0) (hq : q ≠ 0) :
+    cross q p * S q p p = 0 := by
+  rcases S_spec q p p hq hp with ⟨hA, hS⟩ | ⟨hB, hS⟩ | ⟨-, -, hS⟩
+  · rcases hA with h | h
+    · have hq2 : q = p + p := by linear_combination h
+      subst hq2
+      simp only [cross, Prod.fst_add, Prod.snd_add]
+      ring
+    · exact absurd (by rw [sub_eq_neg_self] at h; exact h) hq
+  · rcases hB with h | h
+    · exact absurd (by rw [add_eq_right] at h; exact h) hq
+    · have hq2 : q = -(p + p) := by linear_combination h
+      subst hq2
+      simp only [cross, Prod.fst_add, Prod.snd_add, Prod.fst_neg, Prod.snd_neg]
+      ring
+  · rw [hS]
+    ring
+
+theorem coefficient_self_left (p q : Wave) (hp : p ≠ 0) (hq : q ≠ 0) : coefficient p q p = 0 := by
+  have h := cross_S_self_left p q hp hq
+  have h' : (cross p q : ℝ) * S p q p = 0 := by exact_mod_cast h
+  simp only [coefficient]
+  rw [div_mul_eq_mul_div, div_eq_zero_iff]
+  left
+  exact h'
+
+theorem coefficient_self_right (p q : Wave) (hp : p ≠ 0) (hq : q ≠ 0) :
+    coefficient q p p = 0 := by
+  have h := cross_S_self_right p q hp hq
+  have h' : (cross q p : ℝ) * S q p p = 0 := by exact_mod_cast h
+  simp only [coefficient]
+  rw [div_mul_eq_mul_div, div_eq_zero_iff]
+  left
+  exact h'
+
+/-- **The unforced energy identity**: `E_rest' = −2ν Z_rest − a_forced N_forced(a)`. -/
+theorem rest_identity (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (hf : k forced = (1, 1)) (x : Point n) :
+    restRate k forced (field ν f k forced) x =
+      -2 * ν * restEnstrophy forced x - x forced * forcedCubic k forced x := by
+  rw [restRate, energy_identity ν f k hk forced hf x, restEnstrophy]
+  simp only [field, forcedCubic, hf, lam_one_one, if_pos rfl]
+  push_cast
+  ring
+
+/-- `E_rest ≤ Z_rest`, since `λ ≥ 1`. -/
+theorem restEnergy_le_restEnstrophy (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (x : Point n) : restEnergy k forced x ≤ restEnstrophy forced x := by
+  rw [restEnergy, restEnstrophy, energy, enstrophy,
+    ← Finset.add_sum_erase Finset.univ (fun i => x i ^ 2 / (lam (k i) : ℝ)) (Finset.mem_univ forced),
+    ← Finset.add_sum_erase Finset.univ (fun i => x i ^ 2) (Finset.mem_univ forced)]
+  have each : ∀ i, x i ^ 2 / (lam (k i) : ℝ) ≤ x i ^ 2 := fun i =>
+    div_le_self (sq_nonneg _) (by exact_mod_cast one_le_lam (hk i))
+  have := Finset.sum_le_sum fun i (_ : i ∈ Finset.univ.erase forced) => each i
+  linarith
+
+/-- `0 ≤ E_rest`. -/
+theorem restEnergy_nonneg (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (x : Point n) : 0 ≤ restEnergy k forced x := by
+  rw [restEnergy, energy,
+    ← Finset.add_sum_erase Finset.univ (fun i => x i ^ 2 / (lam (k i) : ℝ)) (Finset.mem_univ forced)]
+  have : 0 ≤ ∑ i ∈ Finset.univ.erase forced, x i ^ 2 / (lam (k i) : ℝ) :=
+    Finset.sum_nonneg fun i _ => div_nonneg (sq_nonneg _) (by exact_mod_cast (lam_pos (hk i)).le)
+  linarith
+
+/-- An unforced mode's square is at most `Z_rest`. -/
+theorem sq_le_restEnstrophy (forced : Fin n) (x : Point n) {i : Fin n} (hi : i ≠ forced) :
+    x i ^ 2 ≤ restEnstrophy forced x := by
+  rw [restEnstrophy, enstrophy,
+    ← Finset.add_sum_erase Finset.univ (fun i => x i ^ 2) (Finset.mem_univ forced)]
+  have := Finset.single_le_sum (f := fun j => x j ^ 2) (fun j _ => sq_nonneg (x j))
+    (Finset.mem_erase.mpr ⟨hi, Finset.mem_univ i⟩)
+  linarith
+
+/-- **The forced mode's cubic term is bounded by `K Z_rest`.** -/
+theorem abs_forcedCubic_le (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (x : Point n) : |forcedCubic k forced x| ≤ couplingSum k forced * restEnstrophy forced x := by
+  have term : ∀ j l, |symCoefficient k forced j l * x j * x l| ≤
+      |symCoefficient k forced j l| * restEnstrophy forced x := by
+    intro j l
+    by_cases hj : j = forced
+    · subst hj
+      simp [symCoefficient, coefficient_self_left (k j) (k l) (hk j) (hk l),
+        coefficient_self_right (k j) (k l) (hk j) (hk l)]
+    by_cases hl : l = forced
+    · subst hl
+      simp [symCoefficient, coefficient_self_right (k l) (k j) (hk l) (hk j),
+        coefficient_self_left (k l) (k j) (hk l) (hk j)]
+    have hj2 := sq_le_restEnstrophy forced x hj
+    have hl2 := sq_le_restEnstrophy forced x hl
+    have prod : |x j * x l| ≤ restEnstrophy forced x := by
+      rw [abs_mul]
+      nlinarith [abs_nonneg (x j), abs_nonneg (x l), sq_abs (x j), sq_abs (x l),
+        sq_nonneg (|x j| - |x l|)]
+    rw [mul_assoc, abs_mul]
+    exact mul_le_mul_of_nonneg_left prod (abs_nonneg _)
+  rw [forcedCubic_sym]
+  calc |∑ j, ∑ l, symCoefficient k forced j l * x j * x l|
+      ≤ ∑ j, ∑ l, |symCoefficient k forced j l * x j * x l| :=
+        (Finset.abs_sum_le_sum_abs _ _).trans
+          (Finset.sum_le_sum fun j _ => Finset.abs_sum_le_sum_abs _ _)
+    _ ≤ ∑ j, ∑ l, |symCoefficient k forced j l| * restEnstrophy forced x :=
+        Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun l _ => term j l
+    _ = couplingSum k forced * restEnstrophy forced x := by
+        rw [couplingSum, Finset.sum_mul]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [Finset.sum_mul]
+
+/-- On the enstrophy ball `Z ≤ r²`, `E_rest' ≤ −(2ν − K r) Z_rest`. -/
+theorem rest_decrease_rate (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (hf : k forced = (1, 1)) (r : ℝ) (hr : 0 ≤ r) (x : Point n) (ball : enstrophy x ≤ r ^ 2) :
+    restRate k forced (field ν f k forced) x ≤
+      -(2 * ν - couplingSum k forced * r) * restEnstrophy forced x := by
+  rw [rest_identity ν f k hk forced hf x]
+  have forced_le : |x forced| ≤ r := by
+    have sq : x forced ^ 2 ≤ r ^ 2 := (mode_sq_le_enstrophy x forced).trans ball
+    exact abs_le.mpr (abs_le_of_sq_le_sq' sq hr)
+  have cubic := abs_forcedCubic_le k hk forced x
+  have K0 : 0 ≤ couplingSum k forced := Finset.sum_nonneg fun j _ =>
+    Finset.sum_nonneg fun l _ => abs_nonneg _
+  have Z0 : 0 ≤ restEnstrophy forced x := by
+    rw [restEnstrophy]
+    linarith [mode_sq_le_enstrophy x forced]
+  have prod : x forced * forcedCubic k forced x ≥ -(r * (couplingSum k forced * restEnstrophy forced x)) := by
+    have h := neg_abs_le (x forced * forcedCubic k forced x)
+    rw [abs_mul] at h
+    have := mul_le_mul forced_le cubic (abs_nonneg _) hr
+    linarith
+  nlinarith
+
+/-- **Exponential decay of the unforced energy on the enstrophy ball**: along any
+forward solution that keeps `Z ≤ r²`, with `γ = 2ν − K r ≥ 0`,
+`E_rest(t) ≤ E_rest(start) e^{−γ (t − start)}` (at `γ = 0` this is monotone
+decrease, not decay; `laminar_attracts` asks for `γ > 0`). -/
+theorem rest_decay (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) (forced : Fin n)
+    (hf : k forced = (1, 1)) (r : ℝ) (hr : 0 ≤ r) (hγ : 0 ≤ 2 * ν - couplingSum k forced * r)
+    (time : TimeDomain) (x₀ : Point n) (state : Signal n)
+    (h : Nonlinear.Solves (field ν f k forced) time x₀ state)
+    (ball : ∀ t ∈ time.domain, enstrophy (state t) ≤ r ^ 2) :
+    ∀ t ∈ time.domain, restEnergy k forced (state t) ≤
+      restEnergy k forced x₀ *
+        Real.exp (-(2 * ν - couplingSum k forced * r) * (t - time.start)) := by
+  have derivative : ∀ t ∈ time.domain,
+      HasDerivWithinAt (fun t => restEnergy k forced (state t))
+        (restRate k forced (field ν f k forced) (state t)) time.domain t := by
+    intro t ht
+    have d := h.2 t ht
+    have e : HasDerivWithinAt (fun t => energy k (state t)) (rate k (field ν f k forced) (state t))
+        time.domain t := by
+      have := HasDerivWithinAt.sum (u := Finset.univ)
+        (A := fun i s => (state s i) ^ 2 / (lam (k i) : ℝ))
+        (A' := fun i => (↑(2 : ℕ) * state t i ^ (2 - 1) * field ν f k forced (state t) i) /
+          (lam (k i) : ℝ))
+        (fun i _ => ((d i).pow 2).div_const (lam (k i) : ℝ))
+      refine (this.congr (fun s _ => ?_) ?_).congr_deriv ?_
+      · simp [energy, Finset.sum_apply]
+      · simp [energy, Finset.sum_apply]
+      · refine Finset.sum_congr rfl fun i _ => ?_
+        norm_num
+        ring
+    have f' : HasDerivWithinAt (fun t => (state t forced) ^ 2 / (lam (k forced) : ℝ))
+        ((↑(2 : ℕ) * state t forced ^ (2 - 1) * field ν f k forced (state t) forced) /
+          (lam (k forced) : ℝ)) time.domain t :=
+      ((d forced).pow 2).div_const _
+    refine (e.sub f').congr_deriv ?_
+    simp only [restRate]
+    norm_num
+    ring
+  have decrease : ∀ t ∈ time.domain,
+      restRate k forced (field ν f k forced) (state t) ≤
+        -(2 * ν - couplingSum k forced * r) * restEnergy k forced (state t) := by
+    intro t ht
+    have step := rest_decrease_rate ν f k hk forced hf r hr (state t) (ball t ht)
+    have le := restEnergy_le_restEnstrophy k hk forced (state t)
+    nlinarith
+  have := Dissipative.decay time (fun t => restEnergy k forced (state t))
+    (fun t => restRate k forced (field ν f k forced) (state t))
+    (2 * ν - couplingSum k forced * r) derivative decrease
+  intro t ht
+  have := this t ht
+  rwa [h.1] at this
+
+/-- **The laminar line attracts, for every member below the threshold**: from any
+start with `Z ≤ r²`, where `r ≥ 0`, `f²/(4ν²) < r²` and `K r < 2ν`, a forward
+solution exists for all `t ≥ start`, it is unique, it keeps `Z ≤ r²`, and its
+unforced energy obeys `E_rest(t) ≤ E_rest(start) e^{−(2ν − K r)(t − start)}`. -/
+theorem laminar_attracts (ν f : ℝ) (hν : 0 < ν) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0)
+    (forced : Fin n) (hf : k forced = (1, 1)) (r : ℝ) (hr : 0 ≤ r)
+    (hC : f ^ 2 / (4 * ν ^ 2) < r ^ 2) (hγ : 0 < 2 * ν - couplingSum k forced * r)
+    (time : TimeDomain) (x₀ : Point n) (initial : enstrophy x₀ ≤ r ^ 2) :
+    (∃ state, Nonlinear.Solves (field ν f k forced) time x₀ state) ∧
+    (∀ x y : Signal n, Nonlinear.Solves (field ν f k forced) time x₀ x →
+      Nonlinear.Solves (field ν f k forced) time x₀ y → Set.EqOn x y time.domain) ∧
+    (∀ state, Nonlinear.Solves (field ν f k forced) time x₀ state →
+      ∀ t ∈ time.domain, enstrophy (state t) ≤ r ^ 2 ∧
+        restEnergy k forced (state t) ≤
+          restEnergy k forced x₀ *
+            Real.exp (-(2 * ν - couplingSum k forced * r) * (t - time.start))) := by
+  obtain ⟨ex, un, inv⟩ := trapped_enstrophy ν f hν k hk forced hf (r ^ 2) hC time x₀ initial
+  refine ⟨ex, un, fun state h t ht => ⟨inv state h t ht, ?_⟩⟩
+  exact rest_decay ν f k hk forced hf r hr hγ.le time x₀ state h (inv state h) t ht
+
 #print axioms energy_antisymm
 #print axioms cubic_flux_zero
 #print axioms energy_identity
@@ -640,5 +920,9 @@ theorem mode_sq_le_enstrophy (x : Point n) (i : Fin n) : x i ^ 2 ≤ enstrophy x
 #print axioms enstrophy_identity
 #print axioms enstrophy_certificate
 #print axioms trapped_enstrophy
+#print axioms rest_identity
+#print axioms abs_forcedCubic_le
+#print axioms rest_decay
+#print axioms laminar_attracts
 
 end Gimle.Forseti.GalerkinNS.Family

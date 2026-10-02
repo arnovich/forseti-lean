@@ -114,6 +114,13 @@ info: 'Gimle.Forseti.Nonlinear.energy_contract'
 #print axioms Gimle.Forseti.Nonlinear.energy_contract
 
 /--
+info: 'Gimle.Forseti.Nonlinear.bounded_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Nonlinear.bounded_contract
+
+/--
 info: 'Gimle.Forseti.Nonlinear.refuted'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/

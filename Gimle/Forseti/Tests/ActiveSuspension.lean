@@ -148,4 +148,8 @@ example : (system (actuator 2) "time").Rel ⟨"time", 0⟩ (fun _ _ => 0) early 
 #guard_msgs in
 #print axioms Gimle.Forseti.Dissipative.sublevel
 
+/-- info: 'Gimle.Forseti.Dissipative.decay' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Gimle.Forseti.Dissipative.decay
+
 end Gimle.Forseti.Tests.ActiveSuspension

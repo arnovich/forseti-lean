@@ -222,6 +222,31 @@ gives (`symmetric_invariant_0`), whose flux along the field has no cubic part.
 The design study behind these is gimle-forseti's
 `docs/galerkin-compositional-invariants-design.md`.
 
+**Forcing small relative to viscosity: the laminar line attracts.** The unforced modes' energy
+`E_rest = E − a_forced²/λ(k forced)` (`restEnergy`) loses what the triads
+through the forced mode feed it and nothing else: exactly,
+`E_rest' = −2ν Z_rest − a_forced N_forced(a)` (`rest_identity`), where
+`N_forced` is the forced mode's own cubic term (`forcedCubic`), a quadratic
+form in the unforced amplitudes (`forcedCubic_sym`; a mode couples to nothing
+through itself, `coefficient_self_left`/`right`). Its symmetric matrix's
+absolute entries sum to `K` (`couplingSum`), so `|N_forced| ≤ K Z_rest`
+(`abs_forcedCubic_le`), and on the enstrophy ball `Z ≤ r²` with
+`γ = 2ν − K r ≥ 0`, `E_rest' ≤ −γ Z_rest ≤ −γ E_rest` (`rest_decrease_rate`,
+`restEnergy_le_restEnstrophy`, the second step because `E_rest ≤ Z_rest`).
+`Dissipative.decay` (the integrating factor `e^{γt} E_rest` is antitone) gives
+`E_rest(t) ≤ E_rest(start) e^{−γ (t − start)}` along every solution that stays
+on the ball (`rest_decay`), and with `trapped_enstrophy` the whole statement
+`laminar_attracts`: below the threshold `K r < 2ν`, from any start with
+`Z ≤ r²`, a solution exists, is unique, keeps `Z ≤ r²` and its unforced energy
+decays exponentially — the laminar line attracts, on the whole ball. `K` is the
+entrywise sum of the symmetrised coefficients, a loose bound; the threshold is
+`f < 4ν²/K` in the forcing, read through `r² > f²/(4ν²)`. The
+generated member `T3S` (T3's modes at `ν = 1/2`, `f = 1`; `K = 2/5`, `r = 2`,
+`γ = 1/5`) states it (`rest_decays`) and the contract `rest_contract`,
+`0 ≤ E_rest ≤ 6/5` for all time, through `Nonlinear.bounded_contract`; every
+member exposes `E_rest` as its last observation, and the three at `ν = 1/10`
+and `1/50` are above the threshold, where nothing is claimed.
+
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled
 continuous model, a `Spec` holds:
