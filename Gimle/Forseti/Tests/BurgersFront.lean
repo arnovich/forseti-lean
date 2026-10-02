@@ -5,8 +5,8 @@ notebook that restates its certified truncation, the identification of its
 analytic field with `1/(1 + e^(x − t/2))` on the box, the band `2/5 ≤ u ≤ 3/5`
 and the refuted `u ≤ 27/50` finds them compiled. Nothing here is a Forseti
 statement: the theorems are asgard-lean's (tasks 061, 062 and 063, v1.11.0);
-the window roots `front_band_of_window` and `front_above_of_window` are what
-the decider's analytic-field lane applies. -/
+the window roots `front_band_of_window`, `front_above_of_window` and
+`front_below_of_window` are what the decider's analytic-field lane applies. -/
 
 namespace Gimle.Forseti.Tests.BurgersFront
 
@@ -51,5 +51,10 @@ info: 'Gimle.Asgard.Streams.ColeHopf.front_above_of_window'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms Gimle.Asgard.Streams.ColeHopf.front_above_of_window
+/--
+info: 'Gimle.Asgard.Streams.ColeHopf.front_below_of_window'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Gimle.Asgard.Streams.ColeHopf.front_below_of_window
 
 end Gimle.Forseti.Tests.BurgersFront
