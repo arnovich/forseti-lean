@@ -1,9 +1,6 @@
 ---
 title: Enstrophy identity, certificate and trapping for every Galerkin member, and the two diagonal invariants
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-10-02T14:45:00Z
-branch: feat/enstrophy_family
+state: closed
 priority: medium
 labels: [lean, nonlinear, showcase]
 related: ["037"]
@@ -53,3 +50,12 @@ from its reflection symmetry.
   observation beside the energy and state the enstrophy identity and
   certificate through the family theorem as they do the energy ones
 - released; gimle-forseti task 195 consumes the release
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-10-02T16:30:00Z
+
+Closed with PR #35 (merged, `f89cbfaa`), released as v1.17.0. The per-member
+"only two" statement takes one hypothesis per triad and is proved by a
+`linear_combination` whose multipliers the generator computes exactly; K5
+alone has a `symmetric_invariant_0`, from its reflection symmetry.
