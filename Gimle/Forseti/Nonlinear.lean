@@ -460,6 +460,34 @@ theorem energy_contract (k : Fin b.observations.length)
     (Contract.lift M.outputs.circuit e.time (fun _ bounded => bounded))
     (DomainRespecting.lift _ _ _)
 
+/-- A contract for any observation that every realization keeps in `[lo, hi]`,
+with existence and uniqueness from a `Trapping` the field satisfies. The
+invariance may come from anywhere: a second storage function that decays on
+the trapping's ball, say. -/
+theorem bounded_contract (k : Fin b.observations.length) (lo hi : ℝ)
+    (decrease : ∀ x, T.rate (field M) x ≤ T.alpha * (T.inner - T.energy x))
+    (initial : T.energy M.initial ≤ T.bound)
+    (bounded : ∀ state, M.Realizes state → ∀ t ∈ e.time.domain,
+      lo ≤ M.outputs.circuit.run (state t) k ∧ M.outputs.circuit.run (state t) k ≤ hi) :
+    Contract (LinearEnergyContract.observed M) e.time (LinearEnergyContract.admitted M)
+      (Always e.time fun observation => lo ≤ observation k ∧ observation k ≤ hi) :=
+  have loop : Contract M.feedback e.time (LinearEnergyContract.admitted M)
+      (Always e.time fun x =>
+        lo ≤ M.outputs.circuit.run x k ∧ M.outputs.circuit.run x k ≤ hi) :=
+    { realizable := fun input admit => by
+        obtain ⟨state, realized⟩ := compiled_exists M T decrease initial
+        exact ⟨state, (LinearEnergyContract.feedback_reads M input admit state).mpr realized⟩
+      unique := fun input admit x y hx hy =>
+        compiled_unique M T decrease initial
+          ((LinearEnergyContract.feedback_reads M input admit x).mp hx)
+          ((LinearEnergyContract.feedback_reads M input admit y).mp hy)
+      holds := fun input admit state realized t ht =>
+        bounded state ((LinearEnergyContract.feedback_reads M input admit state).mp realized)
+          t ht }
+  Contract.compose loop
+    (Contract.lift M.outputs.circuit e.time (fun _ bounded => bounded))
+    (DomainRespecting.lift _ _ _)
+
 /-- A bound below the initial value of `V` is refuted by the declared input's
 own realization at the start. -/
 theorem refuted (k : Fin b.observations.length)

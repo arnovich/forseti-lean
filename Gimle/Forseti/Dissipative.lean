@@ -27,6 +27,48 @@ theorem quadratic_derivative {n : Nat} (p : QMatrix n) (state : Signal n)
   exact dotProduct_derivative state (fun t => p.eval (state t)) velocity (p.eval velocity)
     domain t derivative hp'
 
+/-- A checked differential inequality `V' ≤ −γ V` on the forward half-line gives
+exponential decay, `V(t) ≤ V(start) e^{−γ (t − start)}`: the integrating factor
+`e^{γ t} V` is antitone. For `γ = 0` this is monotone decrease. -/
+theorem decay (time : TimeDomain) (value rate : ℝ → ℝ) (gamma : ℝ)
+    (derivative : ∀ t ∈ time.domain, HasDerivWithinAt value (rate t) time.domain t)
+    (decrease : ∀ t ∈ time.domain, rate t ≤ -gamma * value t) :
+    ∀ t ∈ time.domain, value t ≤ value time.start * Real.exp (-gamma * (t - time.start)) := by
+  have factor (t : ℝ) (ht : t ∈ time.domain) :
+      HasDerivWithinAt (fun t => Real.exp (gamma * t) * value t)
+        (Real.exp (gamma * t) * (gamma * value t + rate t)) time.domain t := by
+    have he := (Real.hasDerivAt_exp (gamma * t)).comp t
+      ((hasDerivAt_id t).const_mul gamma)
+    convert! he.hasDerivWithinAt.mul (derivative t ht) using 1
+    simp only [Function.comp_apply]
+    ring
+  have anti : AntitoneOn (fun t => Real.exp (gamma * t) * value t) time.domain := by
+    apply antitoneOn_of_hasDerivWithinAt_nonpos
+      (f' := fun t => Real.exp (gamma * t) * (gamma * value t + rate t))
+      (convex_Ici time.start)
+    · intro t ht
+      exact (factor t ht).continuousWithinAt
+    · intro t ht
+      exact (factor t (interior_subset ht)).mono interior_subset
+    · intro t ht
+      apply mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le
+      have := decrease t (interior_subset ht)
+      linarith
+  intro t ht
+  have h := anti (show time.start ∈ time.domain by simp [TimeDomain.domain]) ht ht
+  have e : Real.exp (-gamma * (t - time.start)) * Real.exp (gamma * t) =
+      Real.exp (gamma * time.start) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have pos := Real.exp_pos (gamma * t)
+  have step : value t * Real.exp (gamma * t) ≤
+      value time.start * Real.exp (-gamma * (t - time.start)) * Real.exp (gamma * t) := by
+    rw [mul_assoc, e]
+    linarith [h, mul_comm (Real.exp (gamma * t)) (value t),
+      mul_comm (Real.exp (gamma * time.start)) (value time.start)]
+  exact le_of_mul_le_mul_right step pos
+
 /-- A checked differential inequality preserves a sublevel on the forward
 half-line. No invariant is assumed on the unknown feedback trajectory. -/
 theorem sublevel (time : TimeDomain) (value rate : ℝ → ℝ) (alpha bound : ℝ)

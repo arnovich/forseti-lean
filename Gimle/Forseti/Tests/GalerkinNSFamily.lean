@@ -2,6 +2,7 @@ import Gimle.Forseti.GalerkinNS.Family
 import Gimle.Forseti.Examples.GalerkinNS.T3
 import Gimle.Forseti.Examples.GalerkinNS.K5
 import Gimle.Forseti.Examples.GalerkinNS.B2
+import Gimle.Forseti.Examples.GalerkinNS.T3S
 
 /-! Coverage for the Galerkin Navier–Stokes family theorems.
 
@@ -96,6 +97,15 @@ example (time : TimeDomain) (x₀ : Point 2) (initial : Family.enstrophy x₀ �
 example (x : Point 3) (i : Fin 3) : x i ^ 2 ≤ Family.enstrophy x :=
   Family.mode_sq_le_enstrophy x i
 
+/-! ### The unforced energy and the laminar line -/
+
+/-- The unforced energy identity on the `±` member: only the forced mode's cubic
+term feeds `E_rest`. -/
+example (x : Point 3) :
+    Family.restRate pair 1 (Family.field (1 / 3) 2 pair 1) x =
+      -2 * (1 / 3) * Family.restEnstrophy 1 x - x 1 * Family.forcedCubic pair 1 x :=
+  Family.rest_identity (1 / 3) 2 pair pair_nonzero 1 rfl x
+
 /-! ### A concrete instance, evaluated by hand -/
 
 /-- T3's modes, a real triad: the couplings are nonzero and cancel in `E'`. -/
@@ -146,6 +156,32 @@ example : Family.rate triad (Family.field 1 1 triad 0) ![1, 2, 3] ≠
   simp [Family.rate, Family.field, Family.coefficient, Family.S, Family.cross, Family.lam,
     Family.enstrophy, Fin.sum_univ_succ, triad]
   norm_num
+
+/-! ### The laminar line on T3's modes -/
+
+/-- T3's forced-mode coupling sum by hand: the pair `{(1,0), (2,1)}` couples to
+`(1,1)` with `c((1,0),(2,1),(1,1)) = 1/2` and `c((2,1),(1,0),(1,1)) = −1/10`, so the
+symmetric coefficient is `1/5` on each order and `K = 2/5`. -/
+example : Family.couplingSum triad 1 = 2 / 5 := by
+  simp only [Family.couplingSum, Family.symCoefficient, Fin.sum_univ_succ, Fin.sum_univ_zero, triad]
+  simp [Family.coefficient, Family.S, Family.cross, Family.lam]
+  norm_num
+
+/-- Laminar attraction for T3's modes at `ν = 1/2`, `f = 1`, on the ball `Z ≤ 4`:
+`γ = 2ν − K r = 1 − (2/5)·2 = 1/5`, and the unforced energy decays at that rate. -/
+example (time : TimeDomain) (x₀ : Point 3) (initial : Family.enstrophy x₀ ≤ 2 ^ 2)
+    (state : Signal 3) (h : Nonlinear.Solves (Family.field (1 / 2) 1 triad 1) time x₀ state) :
+    ∀ t ∈ time.domain, Family.restEnergy triad 1 (state t) ≤
+      Family.restEnergy triad 1 x₀ *
+        Real.exp (-(2 * (1 / 2) - Family.couplingSum triad 1 * 2) * (t - time.start)) := by
+  have K : Family.couplingSum triad 1 = 2 / 5 := by
+    simp only [Family.couplingSum, Family.symCoefficient, Fin.sum_univ_succ, Fin.sum_univ_zero,
+      triad]
+    simp [Family.coefficient, Family.S, Family.cross, Family.lam]
+    norm_num
+  intro t ht
+  exact ((Family.laminar_attracts (1 / 2) 1 (by norm_num) triad (by decide) 1 rfl 2
+    (by norm_num) (by norm_num) (by rw [K]; norm_num) time x₀ initial).2.2 state h t ht).2
 
 /-! ### The generated members are instances -/
 
@@ -432,5 +468,110 @@ info: 'Gimle.Forseti.Examples.GalerkinNS.K5.symmetric_invariant_0'
 -/
 #guard_msgs (whitespace := lax) in
 #print axioms Examples.GalerkinNS.K5.symmetric_invariant_0
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.rest_identity'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.rest_identity
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.abs_forcedCubic_le'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.abs_forcedCubic_le
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.rest_decay'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.rest_decay
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.laminar_attracts'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.laminar_attracts
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.field_eq_family'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.field_eq_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.decrease_family'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.decrease_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.enstrophy_identity'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.enstrophy_identity
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.only_two_diagonal'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.only_two_diagonal
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.decreaseZ_family'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.decreaseZ_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.enstrophy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.enstrophy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.energy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.energy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.gamma_pos'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.gamma_pos
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.couplingSum_eq'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.couplingSum_eq
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.rest_decays'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.rest_decays
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.rest_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3S.rest_contract
 
 end Gimle.Forseti.Tests.GalerkinNSFamily

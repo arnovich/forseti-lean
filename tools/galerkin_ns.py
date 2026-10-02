@@ -89,6 +89,9 @@ MEMBERS = (
     Member("T3", ((1, 0), (1, 1), (2, 1)), F(1, 10), F(1), F(13), 9, F(1), F(26), 6),
     Member("K5", ((1, 0), (0, 1), (1, 1), (2, 1), (1, 2)), F(1, 10), F(1), F(13), 9, F(1), F(26), 6),
     Member("B2", block(2), F(1, 50), F(1), F(313), 51, F(1), F(626), 26),
+    # T3's modes at ν = 1/2, f = 1: f/ν² = 4, and 2ν = 1 > K √C_Z = 4/5, so the
+    # unforced energy decays (task 039).
+    Member("T3S", ((1, 0), (1, 1), (2, 1)), F(1, 2), F(1), F(17, 10), 3, F(1), F(4), 2),
 )
 
 
@@ -419,6 +422,29 @@ def gradient(n: int, form: dict[tuple[int, int], F], u: int) -> Poly:
     return out
 
 
+def coupling_sum(member: Member) -> F:
+    """`K = Σ_{j,l} |(c(k_j, k_l, k_forced) + c(k_l, k_j, k_forced))/2|`, the family's `couplingSum`."""
+    return sum(
+        (abs((coupling(p, q, FORCED) + coupling(q, p, FORCED)) / 2) for p in member.modes for q in member.modes),
+        F(0),
+    )
+
+
+def decay_rate(member: Member) -> F:
+    """`γ = 2ν − K r` with `r = radius_z`, where `r² ≥ C_Z` bounds `|a_forced|`."""
+    return 2 * member.nu - coupling_sum(member) * member.radius_z
+
+
+def rest_weights(member: Member) -> list[F]:
+    """The unforced modes' energy weights: `1/λ` off the forced mode, `0` on it."""
+    return [F(0) if k == FORCED else F(1, lam(k)) for k in member.modes]
+
+
+def rest_energy(member: Member) -> Poly:
+    n = len(member.modes)
+    return combine(*((w, multiply(variable(n, i), variable(n, i))) for i, w in enumerate(rest_weights(member))))
+
+
 def verify(member: Member) -> None:
     """Fail loudly if any identity the Lean will check does not hold exactly."""
     n = len(member.modes)
@@ -466,6 +492,16 @@ def verify(member: Member) -> None:
     assert member.bound_z <= member.radius_z**2, f"{member.name}: enstrophy radius too small"
     assert n <= member.bound_z, f"{member.name}: start enstrophy {n}"
     only_two(member)
+    # E_rest' = −2ν Z_rest − a_f N_f, exactly
+    rhs = field(member)
+    rest_rate = combine(*((2 * w, multiply(variable(n, i), rhs[i])) for i, w in enumerate(rest_weights(member))))
+    rest_enstrophy = combine(*((F(1), multiply(variable(n, i), variable(n, i))) for i in range(n) if i != forced))
+    forced_cubic = {p: c for p, c in rhs[forced].items() if sum(p) == 2}
+    expected_rest = combine((-2 * member.nu, rest_enstrophy), (F(-1), multiply(variable(n, forced), forced_cubic)))
+    assert rest_rate == expected_rest, f"{member.name}: unforced energy identity fails"
+    assert all(powers[forced] == 0 for powers in forced_cubic), f"{member.name}: the forced mode couples through itself"
+    if decay_rate(member) > 0:
+        assert n <= member.bound_z <= member.radius_z**2, f"{member.name}: the decay needs the start inside Z ≤ r²"
     for extra in symmetric_invariants(member):
         # the extra form's derivative along the cubic part vanishes identically
         cubic = [{p: c for p, c in poly.items() if sum(p) == 2} for poly in field(member)]
@@ -547,6 +583,8 @@ def emit(member: Member) -> str:
     forced = member.modes.index(FORCED)
     rhs = field(member)
     ws = weights(member)
+    rws = rest_weights(member)
+    laminar = decay_rate(member) > 0
     star = member.f**2 / (8 * member.nu**2)
     star_z = member.f**2 / (4 * member.nu**2)
     alpha = 2 * member.nu
@@ -568,7 +606,9 @@ def emit(member: Member) -> str:
     w(f"E' ≤ 2ν (f²/(8ν²) − E) = {alpha} · ({star} − E), and the trapped level is")
     w(f"{member.bound} > {star}, from the start (1, …, 1). Enstrophy Z = Σ a_k²;")
     w(f"Z' ≤ 2ν (f²/(4ν²) − Z) = {alpha} · ({star_z} − Z), and the trapped level is")
-    w(f"{member.bound_z} > {star_z}. -/")
+    w(f"{member.bound_z} > {star_z}. Unforced energy E_rest = Σ_{{k ≠ (1,1)}} a_k²/|k|²; the forced")
+    w(f"mode's coupling sum is K = {coupling_sum(member)}, so with r = {member.radius_z} the rate")
+    w(f"2ν − K r = {decay_rate(member)} is " + ("positive: the laminar line attracts and E_rest decays. -/" if laminar else "not positive: no decay is claimed. -/"))
     w("")
     ns = f"Gimle.Forseti.Examples.GalerkinNS.{member.name}"
     w(f"namespace {ns}")
@@ -587,7 +627,7 @@ def emit(member: Member) -> str:
     # body
     inputs = ", ".join(f'⟨"state-{nm}", "{nm}", .state⟩' for nm in names)
     w("/-- The modes as states, the forced mode's equation carrying `f`, and the")
-    w("energy and the enstrophy as the last two observations. -/")
+    w("energy, the enstrophy and the unforced energy as the last three observations. -/")
     w("def body : Body := {")
     w(f"  program := ⟨[{inputs}],")
     w("    equations% {")
@@ -606,9 +646,12 @@ def emit(member: Member) -> str:
     enstrophy_src = sum_source([term_source(F(1), [nm, nm]) for nm in names])
     enstrophy_expr = sum_expr([term_expr(F(1), [i, i]) for i in range(n)])
     w(f"      Z := {enstrophy_src};")
+    rest_src = sum_source([term_source(rw, [nm, nm]) for rw, nm in zip(rws, names) if rw != 0])
+    rest_expr = sum_expr([term_expr(rw, [i, i]) for i, rw in enumerate(rws) if rw != 0])
+    w(f"      R := {rest_src};")
     w("    }⟩")
     obs = ", ".join(f'⟨⟨"obs-{nm}", "{nm}", .output⟩, "state-{nm}"⟩' for nm in names)
-    w(f'  observations := [{obs}, ⟨⟨"obs-e", "E", .output⟩, "E"⟩, ⟨⟨"obs-z", "Z", .output⟩, "Z"⟩]')
+    w(f'  observations := [{obs}, ⟨⟨"obs-e", "E", .output⟩, "E"⟩, ⟨⟨"obs-z", "Z", .output⟩, "Z"⟩, ⟨⟨"obs-r", "R", .output⟩, "R"⟩]')
     w("}")
     w("")
     states = ", ".join(f'⟨"state-{nm}", "d{nm}", "initial-{nm}"⟩' for nm in names)
@@ -640,6 +683,11 @@ def emit(member: Member) -> str:
     w("")
     w("private theorem enstrophy_expression : compiled.outputs.expressions enstrophyIndex =")
     w(f"    ({enstrophy_expr} : Expr {n}) := by decide +kernel")
+    w("")
+    w(f"def restIndex : Fin body.observations.length := ⟨{n + 2}, by decide⟩")
+    w("")
+    w("private theorem rest_expression : compiled.outputs.expressions restIndex =")
+    w(f"    ({rest_expr} : Expr {n}) := by decide +kernel")
     w("")
     ones = ", ".join(["1"] * n)
     w(f"theorem initial_eq : compiled.initial = (![{ones}] : Point {n}) := by")
@@ -744,6 +792,23 @@ def emit(member: Member) -> str:
     w(f"    compiled.outputs.circuit.run compiled.initial enstrophyIndex = {n} := by")
     w("  rw [enstrophy_at, initial_eq]")
     w("  simp [enstrophy, Matrix.cons_val] <;> norm_num")
+    w("")
+    rest_closed = " + ".join(real_term(rw, [i, i]) for i, rw in enumerate(rws) if rw != 0)
+    rest_start = sum(rws)
+    w("/-- `E_rest = Σ_{k ≠ (1,1)} a_k²/|k|²`, the unforced modes' energy. -/")
+    w(f"noncomputable def rest (x : Point {n}) : ℝ := {rest_closed}")
+    w("")
+    w(f"theorem rest_at (x : Point {n}) :")
+    w("    compiled.outputs.circuit.run x restIndex = rest x := by")
+    w("  rw [Selected.circuit, compileOutputs_correct]")
+    w("  change (compiled.outputs.expressions restIndex).eval x = _")
+    w("  rw [rest_expression]")
+    w("  simp [rest, Expr.eval] <;> ring")
+    w("")
+    w("theorem rest_at_initial :")
+    w(f"    compiled.outputs.circuit.run compiled.initial restIndex = {rest_start.numerator} / {rest_start.denominator} := by")
+    w("  rw [rest_at, initial_eq]")
+    w("  simp [rest, Matrix.cons_val] <;> norm_num")
     w("")
     # compositional identities
     w("/-! ## The compositional identities: modes store, triads route -/")
@@ -980,6 +1045,75 @@ def emit(member: Member) -> str:
     w("  rw [← enstrophy_eq_trappingZ, initial_eq]")
     w("  simp [enstrophy, trappingZ, Matrix.cons_val] <;> norm_num")
     w("")
+    w("/-! ## The unforced energy -/")
+    w("")
+    w(f"theorem rest_eq_family (x : Point {n}) :")
+    w("    rest x = GalerkinNS.Family.restEnergy modes forcedIndex x := by")
+    w("  unfold rest GalerkinNS.Family.restEnergy GalerkinNS.Family.energy")
+    w("  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ, Matrix.cons_val] <;> ring")
+    w("")
+    K = coupling_sum(member)
+    w(f"/-- `K = Σ_{{j,l}} |(c(k_j, k_l, (1,1)) + c(k_l, k_j, (1,1)))/2| = {K}`, the forced mode's coupling sum. -/")
+    w("theorem couplingSum_eq :")
+    w(f"    GalerkinNS.Family.couplingSum modes forcedIndex = {K.numerator} / {K.denominator} := by")
+    w("  simp only [GalerkinNS.Family.couplingSum, GalerkinNS.Family.symCoefficient, Fin.sum_univ_succ, Fin.sum_univ_zero, modes, forcedIndex]")
+    w("  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,")
+    w("    GalerkinNS.Family.lam, Matrix.cons_val]")
+    w("  norm_num")
+    w("")
+    if laminar:
+        gamma = decay_rate(member)
+        r = member.radius_z
+        w(f"/-- Below the threshold: `γ = 2ν − K r = {gamma} > 0` with `r = {r}`, `r² = {r * r} ≥ C_Z = {member.bound_z}`. -/")
+        w(f"theorem gamma_pos : (0 : ℝ) < 2 * {nu_real} - GalerkinNS.Family.couplingSum modes forcedIndex * {r} := by")
+        w("  rw [couplingSum_eq]")
+        w("  norm_num")
+        w("")
+        w("/-- **The laminar line attracts.** Every realization keeps `Z ≤ r²` and its")
+        w("unforced energy decays as `E_rest(start) e^{−γ (t − start)}`. -/")
+        w(f"theorem rest_decays (state : Dynamics.Signal {n}) (realized : compiled.Realizes state) :")
+        w("    ∀ t ∈ evolution.time.domain,")
+        w(f"      rest (state t) ≤ rest compiled.initial *")
+        w(f"        Real.exp (-(2 * {nu_real} - GalerkinNS.Family.couplingSum modes forcedIndex * {r}) * (t - evolution.time.start)) := by")
+        w("  have solves := (Nonlinear.realizes_iff compiled state).mp realized")
+        w("  rw [field_eq_family] at solves")
+        w(f"  have start : GalerkinNS.Family.enstrophy (n := {n}) compiled.initial ≤ ({r} : ℝ) ^ 2 := by")
+        w("    rw [initial_eq]")
+        w("    simp [GalerkinNS.Family.enstrophy, Fin.sum_univ_succ, Matrix.cons_val] <;> norm_num")
+        w(f"  have hC : {f_real} ^ 2 / (4 * {nu_real} ^ 2) < ({r} : ℝ) ^ 2 := by norm_num")
+        w(f"  obtain ⟨-, -, inv⟩ := GalerkinNS.Family.laminar_attracts {nu_real} {f_real} (by norm_num) modes modes_nonzero")
+        w(f"    forcedIndex modes_forced {r} (by norm_num) hC gamma_pos evolution.time compiled.initial start")
+        w("  intro t ht")
+        w("  rw [rest_eq_family, rest_eq_family]")
+        w("  exact (inv state solves t ht).2")
+        w("")
+        w(f"theorem rest_bounded (state : Dynamics.Signal {n}) (realized : compiled.Realizes state) :")
+        w("    ∀ t ∈ evolution.time.domain,")
+        w(f"      0 ≤ compiled.outputs.circuit.run (state t) restIndex ∧")
+        w(f"        compiled.outputs.circuit.run (state t) restIndex ≤ {rest_start.numerator} / {rest_start.denominator} := by")
+        w("  intro t ht")
+        w("  rw [rest_at]")
+        w("  have decay := rest_decays state realized t ht")
+        w("  have nonneg : 0 ≤ rest (state t) := by")
+        w("    rw [rest_eq_family]")
+        w("    exact GalerkinNS.Family.restEnergy_nonneg modes modes_nonzero forcedIndex _")
+        w("  have start_value : rest compiled.initial = " + f"{rest_start.numerator} / {rest_start.denominator}" + " := by")
+        w("    rw [initial_eq]")
+        w("    simp [rest, Matrix.cons_val] <;> norm_num")
+        w("  have exp_le : Real.exp (-(2 * " + nu_real + f" - GalerkinNS.Family.couplingSum modes forcedIndex * {r}) * (t - evolution.time.start)) ≤ 1 := by")
+        w("    rw [Real.exp_le_one_iff]")
+        w("    have ht' : evolution.time.start ≤ t := ht")
+        w("    have := gamma_pos")
+        w("    nlinarith")
+        w("  have start_nonneg : 0 ≤ rest compiled.initial := by")
+        w("    rw [rest_eq_family]")
+        w("    exact GalerkinNS.Family.restEnergy_nonneg modes modes_nonzero forcedIndex _")
+        w("  refine ⟨nonneg, ?_⟩")
+        w("  rw [← start_value]")
+        w("  calc rest (state t) ≤ rest compiled.initial * Real.exp _ := decay")
+        w("    _ ≤ rest compiled.initial * 1 := by gcongr")
+        w("    _ = rest compiled.initial := mul_one _")
+        w("")
     w("/-! ## The interface gimle-forseti's trajectory registry cites -/")
     w("")
     w("def observed := LinearEnergyContract.observed compiled")
@@ -1027,6 +1161,15 @@ def emit(member: Member) -> str:
     w(f"        0 ≤ observation enstrophyIndex ∧ observation enstrophyIndex ≤ {member.bound_z}) :=")
     w("  Nonlinear.energy_contract compiled trappingZ enstrophyIndex enstrophy_at_trappingZ decreaseZ initial_leZ")
     w("")
+    if laminar:
+        w(f"/-- **The unforced energy never exceeds its start value `{rest_start}`**, for every")
+        w("admitted input: a consequence of the exponential decay in `rest_decays`. -/")
+        w("theorem rest_contract :")
+        w("    Contract observed evolution.time admitted")
+        w("      (Always evolution.time fun observation =>")
+        w(f"        0 ≤ observation restIndex ∧ observation restIndex ≤ {rest_start.numerator} / {rest_start.denominator}) :=")
+        w(f"  Nonlinear.bounded_contract compiled trappingZ restIndex 0 ({rest_start.numerator} / {rest_start.denominator}) decreaseZ initial_leZ rest_bounded")
+        w("")
     w(f"/-- `{member.refuted}` is not a bound: `E = {start_energy}` at the start. -/")
     w("theorem refuted :")
     w("    ¬ Holds observed evolution.time admitted")
@@ -1046,6 +1189,10 @@ def emit(member: Member) -> str:
     w("#print axioms enstrophy_identity")
     w("#print axioms only_two_diagonal")
     w("#print axioms enstrophy_contract")
+    w("#print axioms couplingSum_eq")
+    if laminar:
+        w("#print axioms rest_decays")
+        w("#print axioms rest_contract")
     w("")
     w(f"end {ns}")
     return "\n".join(lines) + "\n"

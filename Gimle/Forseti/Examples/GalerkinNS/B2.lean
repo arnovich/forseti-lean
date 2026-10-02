@@ -13,7 +13,9 @@ Modes: a01 = (0, 1), a02 = (0, 2), a1m2 = (1, -2), a1m1 = (1, -1), a10 = (1, 0),
 E' ≤ 2ν (f²/(8ν²) − E) = 1/25 · (625/2 − E), and the trapped level is
 313 > 625/2, from the start (1, …, 1). Enstrophy Z = Σ a_k²;
 Z' ≤ 2ν (f²/(4ν²) − Z) = 1/25 · (625 − Z), and the trapped level is
-626 > 625. -/
+626 > 625. Unforced energy E_rest = Σ_{k ≠ (1,1)} a_k²/|k|²; the forced
+mode's coupling sum is K = 13/10, so with r = 26 the rate
+2ν − K r = -844/25 is not positive: no decay is claimed. -/
 
 namespace Gimle.Forseti.Examples.GalerkinNS.B2
 
@@ -29,7 +31,7 @@ set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
 /-- The modes as states, the forced mode's equation carrying `f`, and the
-energy and the enstrophy as the last two observations. -/
+energy, the enstrophy and the unforced energy as the last three observations. -/
 def body : Body := {
   program := ⟨[⟨"state-a01", "a01", .state⟩, ⟨"state-a02", "a02", .state⟩, ⟨"state-a1m2", "a1m2", .state⟩, ⟨"state-a1m1", "a1m1", .state⟩, ⟨"state-a10", "a10", .state⟩, ⟨"state-a11", "a11", .state⟩, ⟨"state-a12", "a12", .state⟩, ⟨"state-a2m2", "a2m2", .state⟩, ⟨"state-a2m1", "a2m1", .state⟩, ⟨"state-a20", "a20", .state⟩, ⟨"state-a21", "a21", .state⟩, ⟨"state-a22", "a22", .state⟩],
     equations% {
@@ -47,8 +49,9 @@ def body : Body := {
       da22 := (-rat(4,25)) * a22 + (-rat(4,5)) * a10 * a12 + rat(4,5) * a01 * a21;
       E := rat(1,1) * a01 * a01 + rat(1,4) * a02 * a02 + rat(1,5) * a1m2 * a1m2 + rat(1,2) * a1m1 * a1m1 + rat(1,1) * a10 * a10 + rat(1,2) * a11 * a11 + rat(1,5) * a12 * a12 + rat(1,8) * a2m2 * a2m2 + rat(1,5) * a2m1 * a2m1 + rat(1,4) * a20 * a20 + rat(1,5) * a21 * a21 + rat(1,8) * a22 * a22;
       Z := rat(1,1) * a01 * a01 + rat(1,1) * a02 * a02 + rat(1,1) * a1m2 * a1m2 + rat(1,1) * a1m1 * a1m1 + rat(1,1) * a10 * a10 + rat(1,1) * a11 * a11 + rat(1,1) * a12 * a12 + rat(1,1) * a2m2 * a2m2 + rat(1,1) * a2m1 * a2m1 + rat(1,1) * a20 * a20 + rat(1,1) * a21 * a21 + rat(1,1) * a22 * a22;
+      R := rat(1,1) * a01 * a01 + rat(1,4) * a02 * a02 + rat(1,5) * a1m2 * a1m2 + rat(1,2) * a1m1 * a1m1 + rat(1,1) * a10 * a10 + rat(1,5) * a12 * a12 + rat(1,8) * a2m2 * a2m2 + rat(1,5) * a2m1 * a2m1 + rat(1,4) * a20 * a20 + rat(1,5) * a21 * a21 + rat(1,8) * a22 * a22;
     }⟩
-  observations := [⟨⟨"obs-a01", "a01", .output⟩, "state-a01"⟩, ⟨⟨"obs-a02", "a02", .output⟩, "state-a02"⟩, ⟨⟨"obs-a1m2", "a1m2", .output⟩, "state-a1m2"⟩, ⟨⟨"obs-a1m1", "a1m1", .output⟩, "state-a1m1"⟩, ⟨⟨"obs-a10", "a10", .output⟩, "state-a10"⟩, ⟨⟨"obs-a11", "a11", .output⟩, "state-a11"⟩, ⟨⟨"obs-a12", "a12", .output⟩, "state-a12"⟩, ⟨⟨"obs-a2m2", "a2m2", .output⟩, "state-a2m2"⟩, ⟨⟨"obs-a2m1", "a2m1", .output⟩, "state-a2m1"⟩, ⟨⟨"obs-a20", "a20", .output⟩, "state-a20"⟩, ⟨⟨"obs-a21", "a21", .output⟩, "state-a21"⟩, ⟨⟨"obs-a22", "a22", .output⟩, "state-a22"⟩, ⟨⟨"obs-e", "E", .output⟩, "E"⟩, ⟨⟨"obs-z", "Z", .output⟩, "Z"⟩]
+  observations := [⟨⟨"obs-a01", "a01", .output⟩, "state-a01"⟩, ⟨⟨"obs-a02", "a02", .output⟩, "state-a02"⟩, ⟨⟨"obs-a1m2", "a1m2", .output⟩, "state-a1m2"⟩, ⟨⟨"obs-a1m1", "a1m1", .output⟩, "state-a1m1"⟩, ⟨⟨"obs-a10", "a10", .output⟩, "state-a10"⟩, ⟨⟨"obs-a11", "a11", .output⟩, "state-a11"⟩, ⟨⟨"obs-a12", "a12", .output⟩, "state-a12"⟩, ⟨⟨"obs-a2m2", "a2m2", .output⟩, "state-a2m2"⟩, ⟨⟨"obs-a2m1", "a2m1", .output⟩, "state-a2m1"⟩, ⟨⟨"obs-a20", "a20", .output⟩, "state-a20"⟩, ⟨⟨"obs-a21", "a21", .output⟩, "state-a21"⟩, ⟨⟨"obs-a22", "a22", .output⟩, "state-a22"⟩, ⟨⟨"obs-e", "E", .output⟩, "E"⟩, ⟨⟨"obs-z", "Z", .output⟩, "Z"⟩, ⟨⟨"obs-r", "R", .output⟩, "R"⟩]
 }
 
 /-- From `(1, …, 1)` at `t = 0`. -/
@@ -77,6 +80,11 @@ def enstrophyIndex : Fin body.observations.length := ⟨13, by decide⟩
 
 private theorem enstrophy_expression : compiled.outputs.expressions enstrophyIndex =
     ((.add (.add (.add (.add (.add (.add (.add (.add (.add (.add (.add (.mul (.mul (.constant (1 / 1)) (.var 0)) (.var 0)) (.mul (.mul (.constant (1 / 1)) (.var 1)) (.var 1))) (.mul (.mul (.constant (1 / 1)) (.var 2)) (.var 2))) (.mul (.mul (.constant (1 / 1)) (.var 3)) (.var 3))) (.mul (.mul (.constant (1 / 1)) (.var 4)) (.var 4))) (.mul (.mul (.constant (1 / 1)) (.var 5)) (.var 5))) (.mul (.mul (.constant (1 / 1)) (.var 6)) (.var 6))) (.mul (.mul (.constant (1 / 1)) (.var 7)) (.var 7))) (.mul (.mul (.constant (1 / 1)) (.var 8)) (.var 8))) (.mul (.mul (.constant (1 / 1)) (.var 9)) (.var 9))) (.mul (.mul (.constant (1 / 1)) (.var 10)) (.var 10))) (.mul (.mul (.constant (1 / 1)) (.var 11)) (.var 11))) : Expr 12) := by decide +kernel
+
+def restIndex : Fin body.observations.length := ⟨14, by decide⟩
+
+private theorem rest_expression : compiled.outputs.expressions restIndex =
+    ((.add (.add (.add (.add (.add (.add (.add (.add (.add (.add (.mul (.mul (.constant (1 / 1)) (.var 0)) (.var 0)) (.mul (.mul (.constant (1 / 4)) (.var 1)) (.var 1))) (.mul (.mul (.constant (1 / 5)) (.var 2)) (.var 2))) (.mul (.mul (.constant (1 / 2)) (.var 3)) (.var 3))) (.mul (.mul (.constant (1 / 1)) (.var 4)) (.var 4))) (.mul (.mul (.constant (1 / 5)) (.var 6)) (.var 6))) (.mul (.mul (.constant (1 / 8)) (.var 7)) (.var 7))) (.mul (.mul (.constant (1 / 5)) (.var 8)) (.var 8))) (.mul (.mul (.constant (1 / 4)) (.var 9)) (.var 9))) (.mul (.mul (.constant (1 / 5)) (.var 10)) (.var 10))) (.mul (.mul (.constant (1 / 8)) (.var 11)) (.var 11))) : Expr 12) := by decide +kernel
 
 theorem initial_eq : compiled.initial = (![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] : Point 12) := by
   change (fun i : Fin 12 => (compiled.initials i : ℝ)) = _
@@ -265,6 +273,21 @@ theorem enstrophy_at_initial :
     compiled.outputs.circuit.run compiled.initial enstrophyIndex = 12 := by
   rw [enstrophy_at, initial_eq]
   simp [enstrophy, Matrix.cons_val] <;> norm_num
+
+/-- `E_rest = Σ_{k ≠ (1,1)} a_k²/|k|²`, the unforced modes' energy. -/
+noncomputable def rest (x : Point 12) : ℝ := x 0 * x 0 + (1 / 4 : ℝ) * x 1 * x 1 + (1 / 5 : ℝ) * x 2 * x 2 + (1 / 2 : ℝ) * x 3 * x 3 + x 4 * x 4 + (1 / 5 : ℝ) * x 6 * x 6 + (1 / 8 : ℝ) * x 7 * x 7 + (1 / 5 : ℝ) * x 8 * x 8 + (1 / 4 : ℝ) * x 9 * x 9 + (1 / 5 : ℝ) * x 10 * x 10 + (1 / 8 : ℝ) * x 11 * x 11
+
+theorem rest_at (x : Point 12) :
+    compiled.outputs.circuit.run x restIndex = rest x := by
+  rw [Selected.circuit, compileOutputs_correct]
+  change (compiled.outputs.expressions restIndex).eval x = _
+  rw [rest_expression]
+  simp [rest, Expr.eval] <;> ring
+
+theorem rest_at_initial :
+    compiled.outputs.circuit.run compiled.initial restIndex = 81 / 20 := by
+  rw [rest_at, initial_eq]
+  simp [rest, Matrix.cons_val] <;> norm_num
 
 /-! ## The compositional identities: modes store, triads route -/
 
@@ -671,6 +694,21 @@ theorem initial_leZ : trappingZ.energy compiled.initial ≤ trappingZ.bound := b
   rw [← enstrophy_eq_trappingZ, initial_eq]
   simp [enstrophy, trappingZ, Matrix.cons_val] <;> norm_num
 
+/-! ## The unforced energy -/
+
+theorem rest_eq_family (x : Point 12) :
+    rest x = GalerkinNS.Family.restEnergy modes forcedIndex x := by
+  unfold rest GalerkinNS.Family.restEnergy GalerkinNS.Family.energy
+  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ, Matrix.cons_val] <;> ring
+
+/-- `K = Σ_{j,l} |(c(k_j, k_l, (1,1)) + c(k_l, k_j, (1,1)))/2| = 13/10`, the forced mode's coupling sum. -/
+theorem couplingSum_eq :
+    GalerkinNS.Family.couplingSum modes forcedIndex = 13 / 10 := by
+  simp only [GalerkinNS.Family.couplingSum, GalerkinNS.Family.symCoefficient, Fin.sum_univ_succ, Fin.sum_univ_zero, modes, forcedIndex]
+  simp [GalerkinNS.Family.coefficient, GalerkinNS.Family.S, GalerkinNS.Family.cross,
+    GalerkinNS.Family.lam, Matrix.cons_val]
+  norm_num
+
 /-! ## The interface gimle-forseti's trajectory registry cites -/
 
 def observed := LinearEnergyContract.observed compiled
@@ -737,5 +775,6 @@ theorem refuted :
 #print axioms enstrophy_identity
 #print axioms only_two_diagonal
 #print axioms enstrophy_contract
+#print axioms couplingSum_eq
 
 end Gimle.Forseti.Examples.GalerkinNS.B2
