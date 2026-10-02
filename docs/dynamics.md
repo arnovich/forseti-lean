@@ -200,6 +200,28 @@ does not emit (a 2-mode list and a list with a `±` pair), evaluates the identit
 by hand on a real triad, shows the identity fails when the forced mode has
 `λ ≠ 2`, and pins the axiom footprint.
 
+The same module proves the **enstrophy** versions for every member, from a
+different antisymmetry: exchanging the ω-index `l` and the enstrophy index
+`i`, the ψ-index `j` fixed, `(p × q) S(p, q, k) = −(p × k) S(p, k, q)`
+(`enstrophy_antisymm`, the discrete `∫ ω J(ψ, ω) = 0`; the weight `1/λ_p` sits on
+the fixed index and is untouched), so the cubic enstrophy flux vanishes
+(`cubic_enstrophy_flux_zero`) and `Z' = −2νP + 2 f a_forced` with the
+palinstrophy `P = Σ λ(k i) a_i²` (`enstrophy_identity`). With `λ ≥ 1` and
+`λ(1, 1) = 2`, `2ν(f²/(4ν²) − Z) − Z' = 2ν Σ_{i ≠ forced} (λ(k i) − 1) a_i² + 2ν (a_forced − f/(2ν))²`
+(`enstrophy_certificate`), so every ball `Z ≤ C`, `C > f²/(4ν²)`, traps
+(`trappingZ`, `trapped_enstrophy`), uniformly in the member, and bounds every
+mode by `√C` (`mode_sq_le_enstrophy`). Each generated member exposes `Z` as its
+last observation and states `enstrophy_identity`, `certificateZ`,
+`decreaseZ_family` and the contract `enstrophy_contract`. Each member also
+states `only_two_diagonal`: a weighting for which every triad is lossless, one
+hypothesis per triad, is a combination of `1/λ` and `1`, by an exact linear
+combination of the triad equations the generator computes; and a member whose
+mode set has a reflection symmetry (`K5`, exchanging `(1,0) ↔ (0,1)` and
+`(2,1) ↔ (1,2)`) states the further conserved quadratic form that symmetry
+gives (`symmetric_invariant_0`), whose flux along the field has no cubic part.
+The design study behind these is gimle-forseti's
+`docs/galerkin-compositional-invariants-design.md`.
+
 [`LinearEnergyContract.lean`](../Gimle/Forseti/LinearEnergyContract.lean) is
 the generic construction behind the oscillator's contract. For any compiled
 continuous model, a `Spec` holds:

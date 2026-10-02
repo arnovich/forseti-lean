@@ -67,6 +67,8 @@ class Member:
     bound: F
     radius: int
     refuted: F
+    bound_z: F
+    radius_z: int
 
 
 def half_plane(k: Vector) -> bool:
@@ -84,9 +86,9 @@ def block(size: int) -> tuple[Vector, ...]:
 
 
 MEMBERS = (
-    Member("T3", ((1, 0), (1, 1), (2, 1)), F(1, 10), F(1), F(13), 9, F(1)),
-    Member("K5", ((1, 0), (0, 1), (1, 1), (2, 1), (1, 2)), F(1, 10), F(1), F(13), 9, F(1)),
-    Member("B2", block(2), F(1, 50), F(1), F(313), 51, F(1)),
+    Member("T3", ((1, 0), (1, 1), (2, 1)), F(1, 10), F(1), F(13), 9, F(1), F(26), 6),
+    Member("K5", ((1, 0), (0, 1), (1, 1), (2, 1), (1, 2)), F(1, 10), F(1), F(13), 9, F(1), F(26), 6),
+    Member("B2", block(2), F(1, 50), F(1), F(313), 51, F(1), F(626), 26),
 )
 
 
@@ -258,6 +260,165 @@ def enstrophy(member: Member) -> Poly:
     return combine(*((F(1), multiply(variable(n, i), variable(n, i))) for i in range(n)))
 
 
+def zrate(member: Member) -> Poly:
+    """Z' along the field: Σ 2 a_k F_k."""
+    n = len(member.modes)
+    rhs = field(member)
+    return combine(*((F(2), multiply(variable(n, i), rhs[i])) for i in range(n)))
+
+
+def palinstrophy(member: Member) -> Poly:
+    n = len(member.modes)
+    return combine(*((F(lam(k)), multiply(variable(n, i), variable(n, i))) for i, k in enumerate(member.modes)))
+
+
+def solve_exact(rows: list[list[F]], target: list[F]) -> list[F] | None:
+    """One exact solution `m` of `Σ_t m_t rows[t] = target`, or None."""
+    t, n = len(rows), len(target)
+    # augmented system: columns are the unknowns m_t, one equation per coordinate
+    system = [[rows[k][i] for k in range(t)] + [target[i]] for i in range(n)]
+    pivots: list[int] = []
+    r = 0
+    for col in range(t):
+        piv = next((k for k in range(r, n) if system[k][col] != 0), None)
+        if piv is None:
+            continue
+        system[r], system[piv] = system[piv], system[r]
+        inv = 1 / system[r][col]
+        system[r] = [x * inv for x in system[r]]
+        for k in range(n):
+            if k != r and system[k][col] != 0:
+                factor = system[k][col]
+                system[k] = [x - factor * y for x, y in zip(system[k], system[r])]
+        pivots.append(col)
+        r += 1
+    for k in range(r, n):
+        if system[k][t] != 0:
+            return None
+    m = [F(0)] * t
+    for k, col in enumerate(pivots):
+        m[col] = system[k][t]
+    return m
+
+
+def nullspace(rows: list[list[F]], width: int) -> list[list[F]]:
+    """A basis of `{v : rows · v = 0}`, exact."""
+    system = [r[:] for r in rows]
+    pivots: list[int] = []
+    r = 0
+    for col in range(width):
+        piv = next((k for k in range(r, len(system)) if system[k][col] != 0), None)
+        if piv is None:
+            continue
+        system[r], system[piv] = system[piv], system[r]
+        inv = 1 / system[r][col]
+        system[r] = [x * inv for x in system[r]]
+        for k in range(len(system)):
+            if k != r and system[k][col] != 0:
+                factor = system[k][col]
+                system[k] = [x - factor * y for x, y in zip(system[k], system[r])]
+        pivots.append(col)
+        r += 1
+    free = [c for c in range(width) if c not in pivots]
+    basis = []
+    for fcol in free:
+        v = [F(0)] * width
+        v[fcol] = F(1)
+        for k, col in enumerate(pivots):
+            v[col] = -system[k][fcol]
+        basis.append(v)
+    return basis
+
+
+def rank(rows: list[list[F]], width: int) -> int:
+    return width - len(nullspace(rows, width))
+
+
+def triad_forms(member: Member) -> list[list[F]]:
+    """One linear form in the weights per triad: `Σ_{cyclic} w C`."""
+    n = len(member.modes)
+    forms = []
+    for triad in triads(member.modes):
+        form = [F(0)] * n
+        for m, c in zip(triad.modes, triad.coefficients):
+            form[member.modes.index(m)] += c
+        forms.append(form)
+    return forms
+
+
+def only_two(member: Member) -> tuple[int, int, F, list[list[F]]]:
+    """The pivot coordinates `(a, forced)`, the scale `r = 1/(1/λ_a − 1/2)`, and
+    per coordinate the exact multipliers writing `w_i − α/λ_i − β` as a
+    combination of the triad forms, where `α = (w_a − w_f) r`, `β = w_f − α/2`."""
+    n = len(member.modes)
+    forced = member.modes.index(FORCED)
+    a = next(i for i, k in enumerate(member.modes) if lam(k) != 2)
+    r = 1 / (F(1, lam(member.modes[a])) - F(1, 2))
+    forms = triad_forms(member)
+    assert len(nullspace(forms, n)) == 2, f"{member.name}: the lossless weights are not two-dimensional"
+    multipliers = []
+    for i in range(n):
+        # target linear form in w: e_i − (1/λ_i)·α(w) − β(w)
+        target = [F(0)] * n
+        target[i] += 1
+        alpha = [F(0)] * n
+        alpha[a] += r
+        alpha[forced] -= r
+        beta = [F(0)] * n
+        beta[forced] += 1
+        for j in range(n):
+            beta[j] -= alpha[j] / 2
+        for j in range(n):
+            target[j] -= alpha[j] / lam(member.modes[i]) + beta[j]
+        m = solve_exact(forms, target)
+        assert m is not None, f"{member.name}: coordinate {i} is not a combination of the triad forms"
+        multipliers.append(m)
+    return a, forced, r, multipliers
+
+
+def symmetric_invariants(member: Member) -> list[dict[tuple[int, int], F]]:
+    """Quadratic forms `Σ_{i≤j} P_ij x_i x_j` conserved by the cubic part, beyond `E` and `Z`,
+    as the form's coefficients."""
+    n = len(member.modes)
+    pairs = [(i, j) for i in range(n) for j in range(i, n)]
+    cubic = [{p: c for p, c in poly.items() if sum(p) == 2} for poly in field(member)]
+    rows_by_monomial: dict[tuple[int, ...], dict[int, F]] = {}
+    for col, (i, j) in enumerate(pairs):
+        for u, v in ([(i, j), (j, i)] if i != j else [(i, i)]):
+            # P_ij contributes x_u * N_v(x) (and symmetrically) to aᵀ P N(a)
+            for powers, c in cubic[v].items():
+                key = list(powers)
+                key[u] += 1
+                k = tuple(key)
+                rows_by_monomial.setdefault(k, {})
+                rows_by_monomial[k][col] = rows_by_monomial[k].get(col, F(0)) + c
+    rows = [[row.get(col, F(0)) for col in range(len(pairs))] for row in rows_by_monomial.values()]
+    basis = nullspace(rows, len(pairs))
+    energy_vec = [F(1, lam(member.modes[i])) if i == j else F(0) for (i, j) in pairs]
+    enstrophy_vec = [F(1) if i == j else F(0) for (i, j) in pairs]
+    chosen = [energy_vec, enstrophy_vec]
+    extras = []
+    for v in basis:
+        if rank([*chosen, v], len(pairs)) > len(chosen):
+            chosen.append(v)
+            # the matrix entry P_ij (i < j) is half the form's coefficient of x_i x_j
+            extras.append({pairs[c]: (x if pairs[c][0] == pairs[c][1] else 2 * x) for c, x in enumerate(v) if x != 0})
+    return extras
+
+
+def gradient(n: int, form: dict[tuple[int, int], F], u: int) -> Poly:
+    """`∂/∂x_u` of `Σ_{i≤j} P_ij x_i x_j`, as a linear polynomial."""
+    out: Poly = {}
+    for (i, j), c in form.items():
+        if i == j == u:
+            out = combine((F(1), out), (2 * c, variable(n, u)))
+        elif i == u:
+            out = combine((F(1), out), (c, variable(n, j)))
+        elif j == u:
+            out = combine((F(1), out), (c, variable(n, i)))
+    return out
+
+
 def verify(member: Member) -> None:
     """Fail loudly if any identity the Lean will check does not hold exactly."""
     n = len(member.modes)
@@ -287,6 +448,29 @@ def verify(member: Member) -> None:
         assert member.bound <= w * member.radius**2, f"{member.name}: radius too small"
     start = sum(weights(member))
     assert member.refuted < start <= member.bound, f"{member.name}: start energy {start}"
+    # Z' = −2νP + 2 f a_f, and 2ν(f²/(4ν²) − Z) − Z' = 2ν Σ_{k≠f} (λ_k − 1) a_k² + 2ν (a_f − f/(2ν))²
+    expected_z = combine((-2 * member.nu, palinstrophy(member)), (2 * member.f, variable(n, forced)))
+    assert zrate(member) == expected_z, f"{member.name}: enstrophy identity fails"
+    star_z = member.f**2 / (4 * member.nu**2)
+    lhs_z = combine(
+        (2 * member.nu, constant(n, star_z)),
+        (-2 * member.nu, enstrophy(member)),
+        (F(-1), zrate(member)),
+    )
+    squares_z = [(2 * member.nu, multiply(shifted, shifted))]
+    for i, k in enumerate(member.modes):
+        if i != forced:
+            squares_z.append((2 * member.nu * (lam(k) - 1), multiply(variable(n, i), variable(n, i))))
+    assert lhs_z == combine(*squares_z), f"{member.name}: enstrophy certificate fails"
+    assert star_z < member.bound_z, f"{member.name}: the enstrophy bound must exceed f²/(4ν²)"
+    assert member.bound_z <= member.radius_z**2, f"{member.name}: enstrophy radius too small"
+    assert n <= member.bound_z, f"{member.name}: start enstrophy {n}"
+    only_two(member)
+    for extra in symmetric_invariants(member):
+        # the extra form's derivative along the cubic part vanishes identically
+        cubic = [{p: c for p, c in poly.items() if sum(p) == 2} for poly in field(member)]
+        flux = combine(*((F(1), multiply(gradient(n, extra, u), cubic[u])) for u in range(n)))
+        assert flux == {}, f"{member.name}: the extra invariant's cubic flux does not vanish"
 
 
 # ----- Lean emission --------------------------------------------------------------
@@ -364,6 +548,7 @@ def emit(member: Member) -> str:
     rhs = field(member)
     ws = weights(member)
     star = member.f**2 / (8 * member.nu**2)
+    star_z = member.f**2 / (4 * member.nu**2)
     alpha = 2 * member.nu
     lines: list[str] = []
     w = lines.append
@@ -381,7 +566,9 @@ def emit(member: Member) -> str:
     w(f"Modes: {', '.join(f'{name} = {k}' for name, k in zip(names, member.modes))}.")
     w(f"ν = {member.nu}, f = {member.f} on cos(x + y). Energy E = Σ a_k²/|k|²;")
     w(f"E' ≤ 2ν (f²/(8ν²) − E) = {alpha} · ({star} − E), and the trapped level is")
-    w(f"{member.bound} > {star}, from the start (1, …, 1). -/")
+    w(f"{member.bound} > {star}, from the start (1, …, 1). Enstrophy Z = Σ a_k²;")
+    w(f"Z' ≤ 2ν (f²/(4ν²) − Z) = {alpha} · ({star_z} − Z), and the trapped level is")
+    w(f"{member.bound_z} > {star_z}. -/")
     w("")
     ns = f"Gimle.Forseti.Examples.GalerkinNS.{member.name}"
     w(f"namespace {ns}")
@@ -400,7 +587,7 @@ def emit(member: Member) -> str:
     # body
     inputs = ", ".join(f'⟨"state-{nm}", "{nm}", .state⟩' for nm in names)
     w("/-- The modes as states, the forced mode's equation carrying `f`, and the")
-    w("energy as the last observation. -/")
+    w("energy and the enstrophy as the last two observations. -/")
     w("def body : Body := {")
     w(f"  program := ⟨[{inputs}],")
     w("    equations% {")
@@ -416,9 +603,12 @@ def emit(member: Member) -> str:
     energy_src = sum_source([term_source(wk, [nm, nm]) for wk, nm in zip(ws, names)])
     energy_expr = sum_expr([term_expr(wk, [i, i]) for i, wk in enumerate(ws)])
     w(f"      E := {energy_src};")
+    enstrophy_src = sum_source([term_source(F(1), [nm, nm]) for nm in names])
+    enstrophy_expr = sum_expr([term_expr(F(1), [i, i]) for i in range(n)])
+    w(f"      Z := {enstrophy_src};")
     w("    }⟩")
     obs = ", ".join(f'⟨⟨"obs-{nm}", "{nm}", .output⟩, "state-{nm}"⟩' for nm in names)
-    w(f'  observations := [{obs}, ⟨⟨"obs-e", "E", .output⟩, "E"⟩]')
+    w(f'  observations := [{obs}, ⟨⟨"obs-e", "E", .output⟩, "E"⟩, ⟨⟨"obs-z", "Z", .output⟩, "Z"⟩]')
     w("}")
     w("")
     states = ", ".join(f'⟨"state-{nm}", "d{nm}", "initial-{nm}"⟩' for nm in names)
@@ -445,6 +635,11 @@ def emit(member: Member) -> str:
     w("")
     w("private theorem energy_expression : compiled.outputs.expressions energyIndex =")
     w(f"    ({energy_expr} : Expr {n}) := by decide +kernel")
+    w("")
+    w(f"def enstrophyIndex : Fin body.observations.length := ⟨{n + 1}, by decide⟩")
+    w("")
+    w("private theorem enstrophy_expression : compiled.outputs.expressions enstrophyIndex =")
+    w(f"    ({enstrophy_expr} : Expr {n}) := by decide +kernel")
     w("")
     ones = ", ".join(["1"] * n)
     w(f"theorem initial_eq : compiled.initial = (![{ones}] : Point {n}) := by")
@@ -534,6 +729,22 @@ def emit(member: Member) -> str:
     w("theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by")
     w("  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]")
     w("")
+    enstrophy_closed = " + ".join(real_term(F(1), [i, i]) for i in range(n))
+    w("/-- `Z = Σ a_k²`. -/")
+    w(f"noncomputable def enstrophy (x : Point {n}) : ℝ := {enstrophy_closed}")
+    w("")
+    w(f"theorem enstrophy_at (x : Point {n}) :")
+    w("    compiled.outputs.circuit.run x enstrophyIndex = enstrophy x := by")
+    w("  rw [Selected.circuit, compileOutputs_correct]")
+    w("  change (compiled.outputs.expressions enstrophyIndex).eval x = _")
+    w("  rw [enstrophy_expression]")
+    w("  simp [enstrophy, Expr.eval] <;> ring")
+    w("")
+    w("theorem enstrophy_at_initial :")
+    w(f"    compiled.outputs.circuit.run compiled.initial enstrophyIndex = {n} := by")
+    w("  rw [enstrophy_at, initial_eq]")
+    w("  simp [enstrophy, Matrix.cons_val] <;> norm_num")
+    w("")
     # compositional identities
     w("/-! ## The compositional identities: modes store, triads route -/")
     w("")
@@ -578,6 +789,53 @@ def emit(member: Member) -> str:
     w("  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, field]")
     w("  simp [Matrix.cons_val] <;> ring")
     w("")
+    w("/-- The enstrophy identity: the same cancellation with the weights `1`, leaving")
+    w("`Z' = −2ν Σ λ_k a_k² + 2 f a_(1,1)`. -/")
+    palinstrophy_closed = " + ".join(real_term(F(lam(k)), [i, i]) for i, k in enumerate(member.modes))
+    w(f"theorem enstrophy_identity (x : Point {n}) :")
+    w(f"    (∑ i, 2 * x i * field x i) =")
+    w(f"      -2 * ({member.nu.numerator} / {member.nu.denominator} : ℝ) * ({palinstrophy_closed}) + 2 * ({member.f.numerator} / {member.f.denominator} : ℝ) * x {forced} := by")
+    w("  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, field]")
+    w("  simp [Matrix.cons_val] <;> ring")
+    w("")
+    # the diagonal invariants: exactly energy and enstrophy
+    a_index, f_index, scale, multipliers = only_two(member)
+    forms = triad_forms(member)
+    w("/-- **Only two diagonal invariants.** A weighting `w` for which every triad is")
+    w("lossless — each hypothesis is one triad's `Σ w C = 0` — is a combination of")
+    w("`1/λ` (energy) and `1` (enstrophy): there is no other diagonal quadratic the")
+    w("triads conserve, so no reweighting of the modes traps tighter than these two. -/")
+    w(f"theorem only_two_diagonal (w : Fin {n} → ℝ)")
+    for t_index, form in enumerate(forms):
+        terms = " + ".join(f"w {i} * ({c.numerator} / {c.denominator})" for i, c in enumerate(form) if c != 0)
+        w(f"    (h{t_index} : {terms} = 0)" + (" :" if t_index == len(forms) - 1 else ""))
+    conj = " ∧\n      ".join(
+        f"w {i} = α * ({F(1, lam(k)).numerator} / {F(1, lam(k)).denominator}) + β" for i, k in enumerate(member.modes)
+    )
+    w(f"    ∃ α β : ℝ, {conj} := by")
+    alpha_term = f"(w {a_index} - w {f_index}) * ({scale.numerator} / {scale.denominator})"
+    w(f"  refine ⟨{alpha_term}, w {f_index} - {alpha_term} / 2, {', '.join(['?_'] * n)}⟩")
+    for i in range(n):
+        combo = " + ".join(f"({m.numerator} / {m.denominator} : ℝ) * h{t}" for t, m in enumerate(multipliers[i]) if m != 0)
+        w(f"  · linear_combination {combo if combo else '0'}")
+    w("")
+    for e_index, form in enumerate(symmetric_invariants(member)):
+        form_terms = " + ".join(real_term(c, [i, j]) for (i, j), c in form.items())
+        grads = [gradient(n, form, u) for u in range(n)]
+        lhs = " + ".join(
+            f"({' + '.join(real_term(c, idx) for c, idx in ordered_terms(member, grads[u]))}) * field x {u}"
+            for u in range(n) if grads[u]
+        )
+        linear = [{p: c for p, c in poly.items() if sum(p) <= 1} for poly in rhs]
+        rhs_poly = combine(*((F(1), multiply(grads[u], linear[u])) for u in range(n)))
+        rhs_text = " + ".join(real_term(c, idx) for c, idx in ordered_terms(member, rhs_poly)) or "0"
+        w(f"/-- A further conserved quadratic form, `{form_terms}`, beyond `E` and `Z`: its")
+        w("flux along the field has no cubic part. It comes from a symmetry of the mode set")
+        w("(a reflection exchanging modes), and no member without one has it. -/")
+        w(f"theorem symmetric_invariant_{e_index} (x : Point {n}) :")
+        w(f"    {lhs} = {rhs_text} := by")
+        w("  simp [field] <;> ring")
+        w("")
     # trapping
     w("/-! ## The trapping data and the contract -/")
     w("")
@@ -653,6 +911,75 @@ def emit(member: Member) -> str:
     w("  rw [← energy_eq_trapping, initial_eq]")
     w("  simp [energy, trapping, Matrix.cons_val] <;> norm_num")
     w("")
+    w("/-! ## The enstrophy ball -/")
+    w("")
+    w(f"/-- Weights `1`, centre `0`, `α = 2ν`, inner level `f²/(4ν²)`, trapped level")
+    w(f"`{member.bound_z}`, sup-norm radius `{member.radius_z}`. -/")
+    w(f"noncomputable def trappingZ : Nonlinear.Trapping {n} where")
+    w("  weights := fun _ => 1")
+    w("  centre := fun _ => 0")
+    w(f"  alpha := {alpha.numerator} / {alpha.denominator}")
+    w(f"  inner := {star_z.numerator} / {star_z.denominator}")
+    w(f"  bound := {member.bound_z}")
+    w(f"  radius := {member.radius_z}")
+    w("  weights_pos := fun _ => one_pos")
+    w("  alpha_pos := by norm_num")
+    w("  margin := by norm_num")
+    w("  radius_nonneg := by norm_num")
+    w("  covers := fun _ => by norm_num")
+    w("")
+    w(f"theorem enstrophy_eq_trappingZ (x : Point {n}) : enstrophy x = trappingZ.energy x := by")
+    w("  simp [enstrophy, trappingZ, Nonlinear.Trapping.energy, Fin.sum_univ_succ] <;> ring")
+    w("")
+    sos_z = [f"(2 * ({member.nu.numerator} / {member.nu.denominator}) : ℝ) * (x {forced} - {shift.numerator} / {shift.denominator}) ^ 2"]
+    for i, k in enumerate(member.modes):
+        if i != forced:
+            coef = 2 * member.nu * (lam(k) - 1)
+            if coef != 0:
+                sos_z.append(f"({coef.numerator} / {coef.denominator} : ℝ) * x {i} ^ 2")
+    w("/-- The enstrophy certificate: `2ν (f²/(4ν²) − Z) − Z'` is a sum of squares,")
+    w("`2ν (a_(1,1) − f/(2ν))² + 2ν Σ (|k|² − 1) a_k²`. -/")
+    w(f"theorem certificateZ (x : Point {n}) :")
+    w(f"    trappingZ.alpha * (trappingZ.inner - trappingZ.energy x) - trappingZ.rate (Nonlinear.field compiled) x =")
+    w(f"      {' + '.join(sos_z)} := by")
+    w("  rw [field_eq]")
+    w("  simp only [trappingZ, Nonlinear.Trapping.rate, Nonlinear.Trapping.energy, field, Fin.sum_univ_succ, Fin.sum_univ_zero]")
+    w("  simp [Matrix.cons_val] <;> ring")
+    w("")
+    w(f"theorem decreaseZ (x : Point {n}) :")
+    w("    trappingZ.rate (Nonlinear.field compiled) x ≤ trappingZ.alpha * (trappingZ.inner - trappingZ.energy x) := by")
+    w("  have h := certificateZ x")
+    w("  have nonneg : 0 ≤ " + " + ".join(sos_z) + " := by positivity")
+    w("  linarith")
+    w("")
+    w(f"theorem rateZ_eq_family (F : Point {n} → Point {n}) (x : Point {n}) :")
+    w("    trappingZ.rate F x = GalerkinNS.Family.zrate F x := by")
+    w("  unfold Nonlinear.Trapping.rate GalerkinNS.Family.zrate")
+    w("  refine Finset.sum_congr rfl fun i _ => ?_")
+    w("  simp [trappingZ]")
+    w("")
+    w(f"theorem enstrophy_eq_family (x : Point {n}) :")
+    w("    trappingZ.energy x = GalerkinNS.Family.enstrophy x := by")
+    w("  unfold Nonlinear.Trapping.energy GalerkinNS.Family.enstrophy")
+    w("  refine Finset.sum_congr rfl fun i _ => ?_")
+    w("  simp [trappingZ]")
+    w("")
+    w("/-- `decreaseZ` again, by the family theorem through `field_eq_family`. -/")
+    w(f"theorem decreaseZ_family (x : Point {n}) :")
+    w("    trappingZ.rate (Nonlinear.field compiled) x ≤")
+    w("      trappingZ.alpha * (trappingZ.inner - trappingZ.energy x) := by")
+    w("  rw [rateZ_eq_family, enstrophy_eq_family, field_eq_family]")
+    w(f"  have alpha_eq : trappingZ.alpha = 2 * {nu_real} := by norm_num [trappingZ]")
+    w(f"  have inner_eq : trappingZ.inner = {f_real} ^ 2 / (4 * {nu_real} ^ 2) := by")
+    w("    norm_num [trappingZ]")
+    w("  rw [alpha_eq, inner_eq]")
+    w(f"  exact GalerkinNS.Family.enstrophy_decrease_rate {nu_real} {f_real} (by norm_num) modes modes_nonzero")
+    w("    forcedIndex modes_forced x")
+    w("")
+    w("theorem initial_leZ : trappingZ.energy compiled.initial ≤ trappingZ.bound := by")
+    w("  rw [← enstrophy_eq_trappingZ, initial_eq]")
+    w("  simp [enstrophy, trappingZ, Matrix.cons_val] <;> norm_num")
+    w("")
     w("/-! ## The interface gimle-forseti's trajectory registry cites -/")
     w("")
     w("def observed := LinearEnergyContract.observed compiled")
@@ -688,6 +1015,18 @@ def emit(member: Member) -> str:
     w(f"        0 ≤ observation energyIndex ∧ observation energyIndex ≤ {member.bound}) :=")
     w("  Nonlinear.energy_contract compiled trapping energyIndex energy_at_trapping decrease initial_le")
     w("")
+    w(f"theorem enstrophy_at_trappingZ (x : Point {n}) :")
+    w("    compiled.outputs.circuit.run x enstrophyIndex = trappingZ.energy x := by")
+    w("  rw [enstrophy_at, enstrophy_eq_trappingZ]")
+    w("")
+    w(f"/-- **The trajectory stays in the enstrophy ball `Z ≤ {member.bound_z}`**, for every")
+    w("admitted input; the level `f²/(4ν²)` is the same for every member of the family. -/")
+    w("theorem enstrophy_contract :")
+    w("    Contract observed evolution.time admitted")
+    w("      (Always evolution.time fun observation =>")
+    w(f"        0 ≤ observation enstrophyIndex ∧ observation enstrophyIndex ≤ {member.bound_z}) :=")
+    w("  Nonlinear.energy_contract compiled trappingZ enstrophyIndex enstrophy_at_trappingZ decreaseZ initial_leZ")
+    w("")
     w(f"/-- `{member.refuted}` is not a bound: `E = {start_energy}` at the start. -/")
     w("theorem refuted :")
     w("    ¬ Holds observed evolution.time admitted")
@@ -704,6 +1043,9 @@ def emit(member: Member) -> str:
     w("#print axioms decrease_family")
     w("#print axioms energy_contract")
     w("#print axioms refuted")
+    w("#print axioms enstrophy_identity")
+    w("#print axioms only_two_diagonal")
+    w("#print axioms enstrophy_contract")
     w("")
     w(f"end {ns}")
     return "\n".join(lines) + "\n"

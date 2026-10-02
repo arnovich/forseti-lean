@@ -69,6 +69,33 @@ example (time : TimeDomain) (x₀ : Point 3) (initial : Family.energy pair x₀ 
 
 example : ContDiff ℝ 1 (Family.field (1 / 3) 2 pair 1) := Family.contDiff_field _ _ _ _
 
+/-! ### The enstrophy ball, on the same members -/
+
+example (x : Point 2) :
+    Family.zrate (Family.field 1 1 two 0) x = -2 * 1 * Family.palinstrophy two x + 2 * 1 * x 0 :=
+  Family.enstrophy_identity 1 1 two two_nonzero 0 x
+
+example (x : Point 3) :
+    2 * (1 / 3) * (2 ^ 2 / (4 * (1 / 3) ^ 2) - Family.enstrophy x) -
+        Family.zrate (Family.field (1 / 3) 2 pair 1) x =
+      2 * (1 / 3) * ∑ i ∈ Finset.univ.erase 1, ((Family.lam (pair i) : ℝ) - 1) * x i ^ 2 +
+        2 * (1 / 3) * (x 1 - 2 / (2 * (1 / 3))) ^ 2 :=
+  Family.enstrophy_certificate (1 / 3) 2 (by norm_num) pair pair_nonzero 1 rfl x
+
+/-- Enstrophy trapping for the 2-mode member at level `1 > f²/(4ν²) = 1/4`: the
+level does not depend on the modes. -/
+example (time : TimeDomain) (x₀ : Point 2) (initial : Family.enstrophy x₀ ≤ 1) :
+    (∃ state, Nonlinear.Solves (Family.field 1 1 two 0) time x₀ state) ∧
+    (∀ x y : Signal 2, Nonlinear.Solves (Family.field 1 1 two 0) time x₀ x →
+      Nonlinear.Solves (Family.field 1 1 two 0) time x₀ y → Set.EqOn x y time.domain) ∧
+    (∀ state, Nonlinear.Solves (Family.field 1 1 two 0) time x₀ state →
+      ∀ t ∈ time.domain, Family.enstrophy (state t) ≤ 1) :=
+  Family.trapped_enstrophy 1 1 (by norm_num) two two_nonzero 0 rfl 1 (by norm_num) time x₀ initial
+
+/-- Every mode is bounded by the enstrophy: `a_i² ≤ Z`. -/
+example (x : Point 3) (i : Fin 3) : x i ^ 2 ≤ Family.enstrophy x :=
+  Family.mode_sq_le_enstrophy x i
+
 /-! ### A concrete instance, evaluated by hand -/
 
 /-- T3's modes, a real triad: the couplings are nonzero and cancel in `E'`. -/
@@ -97,6 +124,18 @@ example : Family.rate triad (Family.field 1 1 triad 1) ![1, 2, 3] = -26 := by
 example : Family.rate triad (Family.field 1 1 triad 1) ![1, 2, 3] = -26 := by
   rw [Family.energy_identity 1 1 triad (by decide) 1 rfl]
   simp [Family.enstrophy, Fin.sum_univ_succ]
+  norm_num
+
+/-- `Z'` at `(1, 2, 3)` with `ν = 1`, `f = 1`: `−2·(1 + 8 + 45) + 2·2 = −104`, directly
+from the field, and the same through the enstrophy identity. -/
+example : Family.zrate (Family.field 1 1 triad 1) ![1, 2, 3] = -104 := by
+  simp [Family.zrate, Family.field, Family.coefficient, Family.S, Family.cross, Family.lam,
+    Fin.sum_univ_succ, triad]
+  norm_num
+
+example : Family.zrate (Family.field 1 1 triad 1) ![1, 2, 3] = -104 := by
+  rw [Family.enstrophy_identity 1 1 triad (by decide) 1]
+  simp [Family.palinstrophy, Family.lam, Fin.sum_univ_succ, triad]
   norm_num
 
 /-- `λ(k forced) = 2` is what the identity uses: forcing `(1, 0)` instead, the
@@ -135,6 +174,24 @@ example (x : Point 12) :
 /-- By proof irrelevance; what this pins is that both routes prove the same
 statement, since the `rfl` only type-checks when the two types coincide. -/
 example : @Examples.GalerkinNS.K5.decrease = @Examples.GalerkinNS.K5.decrease_family := rfl
+
+example : @Examples.GalerkinNS.K5.decreaseZ = @Examples.GalerkinNS.K5.decreaseZ_family := rfl
+
+example (x : Point 12) :
+    Examples.GalerkinNS.B2.trappingZ.rate (Nonlinear.field Examples.GalerkinNS.B2.compiled) x ≤
+      Examples.GalerkinNS.B2.trappingZ.alpha *
+        (Examples.GalerkinNS.B2.trappingZ.inner - Examples.GalerkinNS.B2.trappingZ.energy x) :=
+  Examples.GalerkinNS.B2.decreaseZ_family x
+
+/-- The energy weights themselves are a combination of `1/λ` and `1`, as
+`only_two_diagonal` says of every lossless weighting of T3. -/
+example : ∃ α β : ℝ, (1 : ℝ) = α * (1 / 1) + β ∧ (1 / 2 : ℝ) = α * (1 / 2) + β ∧
+    (1 / 5 : ℝ) = α * (1 / 5) + β :=
+  Examples.GalerkinNS.T3.only_two_diagonal ![1, 1 / 2, 1 / 5] (by simp [Matrix.cons_val]; norm_num)
+
+/-- And a weighting that is not lossless for T3's triad is not a solution: the
+hypothesis fails for `(1, 1, 0)`. -/
+example : ¬ ((1 : ℝ) * (-3 / 20) + 1 * (2 / 5) + 0 * (-1 / 4) = 0) := by norm_num
 
 /-! ### The axiom policy, asserted -/
 
@@ -209,6 +266,41 @@ info: 'Gimle.Forseti.GalerkinNS.Family.trapped'
 #print axioms Family.trapped
 
 /--
+info: 'Gimle.Forseti.GalerkinNS.Family.enstrophy_antisymm'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.enstrophy_antisymm
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.cubic_enstrophy_flux_zero'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.cubic_enstrophy_flux_zero
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.enstrophy_identity'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.enstrophy_identity
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.enstrophy_certificate'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.enstrophy_certificate
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.trapped_enstrophy'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.trapped_enstrophy
+
+/--
 info: 'Gimle.Forseti.Examples.GalerkinNS.T3.field_eq_family'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
@@ -249,5 +341,96 @@ info: 'Gimle.Forseti.Examples.GalerkinNS.B2.decrease_family'
 -/
 #guard_msgs (whitespace := lax) in
 #print axioms Examples.GalerkinNS.B2.decrease_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.enstrophy_identity'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3.enstrophy_identity
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.only_two_diagonal'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3.only_two_diagonal
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.decreaseZ_family'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3.decreaseZ_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.enstrophy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3.enstrophy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.enstrophy_identity'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.K5.enstrophy_identity
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.only_two_diagonal'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.K5.only_two_diagonal
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.decreaseZ_family'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.K5.decreaseZ_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.enstrophy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.K5.enstrophy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.enstrophy_identity'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.B2.enstrophy_identity
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.only_two_diagonal'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.B2.only_two_diagonal
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.decreaseZ_family'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.B2.decreaseZ_family
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.enstrophy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.B2.enstrophy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.symmetric_invariant_0'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.K5.symmetric_invariant_0
 
 end Gimle.Forseti.Tests.GalerkinNSFamily
