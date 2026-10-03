@@ -18,11 +18,14 @@ monomials of degree ≤ 2) whose sublevel set `{V ≤ 1}` is a tube around the
 member's rotating-wave attractor: it holds the orbit from `(1, …, 1)`, lies
 inside `{E ≤ 6}` by an S-lemma certificate, and has `V' ≤ α (inner − V)` on
 the set by a degree-6 sum of squares with a quadratic multiplier, all made
-exact in rationals and replayed in a scratch Lean file
-(`docs/spikes/196-cross-term-trapping/Task213.lean` there). That `V` is not
-coercive about any centre (`V ≈ 13` at the wave's centre of mass, which is
-outside the set), so `LocalTrapping` cannot take it; the quadratic shape
-finds nothing below the laminar level for this member.
+exact in rationals (the field's coefficients included) and replayed in a
+scratch Lean file (`docs/spikes/196-cross-term-trapping/Task213.lean` there),
+which checks the two polynomial inequalities and ties `V'` to the partials
+of `V` and the field; invariance is not checked there. That `V` is a degree-4
+sum of squares, not a quadratic form about a centre (`V ≈ 21` at the wave's
+centre of mass, which lies outside the set), so `LocalTrapping` cannot take
+it; the quadratic shape finds nothing below the laminar level for this
+member.
 
 ## Outcome
 
