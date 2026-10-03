@@ -22,6 +22,7 @@ import Gimle.Forseti.Tests.Lorenz
 import Gimle.Forseti.Tests.Nonlinear
 import Gimle.Forseti.Tests.GalerkinNS
 import Gimle.Forseti.Tests.GalerkinNSFamily
+import Gimle.Forseti.Tests.LocalTrapping
 
 namespace Gimle.Forseti.Tests
 

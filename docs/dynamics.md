@@ -134,6 +134,35 @@ radius `40`), `decrease` and `initial_le`, and gets `compiled_exists`,
 `thirteen_hundred_refuted`; `Tests/Lorenz.lean` and `Tests/Nonlinear.lean` pin
 the names.
 
+**Decrease local to the set**
+([`LocalTrapping.lean`](../Gimle/Forseti/LocalTrapping.lean)). The global
+hypothesis `V' ≤ α(C' − V)` at *every* state has a cost: at an equilibrium the
+rate is zero, so `V(x*) ≤ C'`, and every set a `Trapping` can trap contains
+every equilibrium of the field — for the Galerkin members the laminar point,
+so no level below the laminar energy is reachable. A `LocalTrapping` takes a
+general quadratic `V = (x − c)ᵀP(x − c)`, `P` symmetric with `P ≽ lower · I`
+(`coercive`), and asks the decrease only on the set: `∀ x, V x ≤ C → V' x ≤
+α(C' − V x)` (`Decreases`). Invariance is Mathlib's barrier lemma rather than
+the integrating factor: at a first contact `V = C` the rate is `≤ α(C' − C) <
+0` (`invariant`). Existence and uniqueness reuse the clamped field through the
+diagonal ball `lower · Σ(xᵢ − cᵢ)²`, which the quadratic dominates
+(`ball_energy_le`), so `{V ≤ C}` lies in that ball's box and the glued solution
+is fenced as before (`glued_energy_le`, `exists_solution`, `unique`);
+`local_bounded_contract` lifts any bound every realization keeps to the
+observed contract. The decrease on the set is what a sum-of-squares certificate
+with an S-procedure multiplier states: `α(C' − V) − V' + σ(V − C) ≥ 0`
+everywhere with `σ ≥ 0`. The instance is
+[`GalerkinNS/T3Below12.lean`](../Gimle/Forseti/Examples/GalerkinNS/T3Below12.lean):
+for the 3-mode member at `ν = 1/10`, an ellipsoid with cross terms and a centre
+near the equilibrium the start approaches in simulation (gimle-forseti's spike
+196; not a Lean statement), on which the
+decrease holds by an explicit degree-4 sum of squares (`certificate_sos`), and
+which lies in `{E ≤ 12}` by an S-lemma certificate (`contained`); the contract
+`below12_contract` states `0 ≤ E ≤ 12` for all time, below the laminar `25/2`
+and the family bound `13`. The laminar point `(0, 5, 0)` has `V = 2.54 > 1` for
+that ellipsoid's `V`, so it lies outside the set (`laminar_equilibrium`,
+`laminar_outside`); `Tests/LocalTrapping.lean` pins the shape and the data.
+
 [`Examples/GalerkinNS/`](../Gimle/Forseti/Examples/GalerkinNS/) applies the
 general theorem to a family: Galerkin truncations of 2D incompressible
 Navier–Stokes on the 2π-periodic square, vorticity form, cosine modes only,
