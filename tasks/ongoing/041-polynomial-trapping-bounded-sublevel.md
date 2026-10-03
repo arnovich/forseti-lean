@@ -1,6 +1,9 @@
 ---
 title: Trapping for a polynomial V with a bounded sublevel set, and the 5-mode member's tube below E ≤ 6
-state: open
+state: ongoing
+claimed_by: claude/17d157a0
+claimed_at: 2026-10-03T18:30:00Z
+branch: feat/polynomial_trapping
 priority: medium
 labels: [lean, nonlinear, research]
 related: ["040"]
