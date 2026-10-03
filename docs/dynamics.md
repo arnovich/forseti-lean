@@ -184,6 +184,12 @@ columns of a rounded Cholesky factor of the Gram matrix less `εI` with the exac
 remainder absorbed pair by pair, since an exact `LDLᵀ` of a 56×56 matrix has
 thousand-digit entries; `V'` is tied to the written-out partials and the field.
 `Tests/PolynomialTrapping.lean` pins the shape, the derivative and the data.
+The 3-mode member has the same kind of set
+([`GalerkinNS/T3Below9.lean`](../Gimle/Forseti/Examples/GalerkinNS/T3Below9.lean)):
+a degree-4 tube around the focus the start approaches in simulation, inside
+`{E ≤ 9}`, so `below9_contract` states `0 ≤ E ≤ 9` for all time from
+`(1, 1, 1)`, below the ellipsoid's `12` and the laminar `25/2`; the member's
+standing undecided claim was `E ≤ 10`.
 
 [`Examples/GalerkinNS/`](../Gimle/Forseti/Examples/GalerkinNS/) applies the
 general theorem to a family: Galerkin truncations of 2D incompressible

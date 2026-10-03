@@ -1,5 +1,6 @@
 import Gimle.Forseti.PolynomialTrapping
 import Gimle.Forseti.Examples.GalerkinNS.K5Below6
+import Gimle.Forseti.Examples.GalerkinNS.T3Below9
 
 /-! Coverage for trapping with a polynomial `V` and a bounded sublevel set.
 
@@ -132,6 +133,44 @@ example : Contract Examples.GalerkinNS.K5.observed Examples.GalerkinNS.K5.evolut
         observation Examples.GalerkinNS.K5.energyIndex ≤ 6) :=
   Examples.GalerkinNS.K5.below6_contract
 
+/-! ### The 3-mode member below `E ≤ 9` -/
+
+example : Examples.GalerkinNS.T3.below9.bound = 1 := rfl
+example : Examples.GalerkinNS.T3.below9.radius = 7 := rfl
+example : Examples.GalerkinNS.T3.below9.centre = 0 := rfl
+example : Examples.GalerkinNS.T3.below9.inner < 1 := Examples.GalerkinNS.T3.below9.margin
+example : Examples.GalerkinNS.T3.below9.poly = Examples.GalerkinNS.T3.tubeExpr := rfl
+example : Examples.GalerkinNS.T3.below9.alpha = 247613 / 10000 := rfl
+example : Examples.GalerkinNS.T3.below9.inner = 247603 / 247613 := rfl
+example (x : Point 3) :
+    Examples.GalerkinNS.T3.below9.energy x = Examples.GalerkinNS.T3.tubeV x :=
+  Examples.GalerkinNS.T3.energy_eq_below9 x
+example : ∃ state, Examples.GalerkinNS.T3.compiled.Realizes state :=
+  poly_compiled_exists Examples.GalerkinNS.T3.compiled Examples.GalerkinNS.T3.below9
+    Examples.GalerkinNS.T3.decreases_below9 Examples.GalerkinNS.T3.initial_below9
+
+/-- `9` is below `12`, the level `T3Below12` states, the laminar energy `25/2` and the family
+bound `13` (the numerals; `contained` there carries its `12` as a literal). -/
+example : (9 : ℝ) < 12 ∧ (12 : ℝ) < Examples.GalerkinNS.T3.trapping.inner ∧
+    Examples.GalerkinNS.T3.trapping.inner < Examples.GalerkinNS.T3.trapping.bound := by
+  refine ⟨by norm_num, ?_, ?_⟩ <;> norm_num [Examples.GalerkinNS.T3.trapping]
+
+example : 1 < Examples.GalerkinNS.T3.tubeV ![0, 5, 0] := Examples.GalerkinNS.T3.tube_laminar_outside
+example : Examples.GalerkinNS.T3.tubeV ![1, 1, 1] < 1 := Examples.GalerkinNS.T3.tube_start_inside
+
+/-- The rate is the library's derivative of `tubeExpr` along the compiled field. -/
+example (x : Point 3) :
+    Examples.GalerkinNS.T3.below9.rate (Nonlinear.field Examples.GalerkinNS.T3.compiled) x =
+      Examples.GalerkinNS.T3.tubeVdot x :=
+  Examples.GalerkinNS.T3.rate_eq_below9 x
+
+example : Contract Examples.GalerkinNS.T3.observed Examples.GalerkinNS.T3.evolution.time
+    Examples.GalerkinNS.T3.admitted
+    (Always Examples.GalerkinNS.T3.evolution.time fun observation =>
+      0 ≤ observation Examples.GalerkinNS.T3.energyIndex ∧
+        observation Examples.GalerkinNS.T3.energyIndex ≤ 9) :=
+  Examples.GalerkinNS.T3.below9_contract
+
 /-! ### The axiom policy, asserted -/
 
 /--
@@ -182,5 +221,19 @@ info: 'Gimle.Forseti.Examples.GalerkinNS.K5.decreases_below6'
 -/
 #guard_msgs (whitespace := lax) in
 #print axioms Examples.GalerkinNS.K5.decreases_below6
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.below9_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3.below9_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.decreases_below9'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Examples.GalerkinNS.T3.decreases_below9
 
 end Gimle.Forseti.Tests.PolynomialTrapping
