@@ -1,9 +1,6 @@
 ---
 title: Trapping for a polynomial V with a bounded sublevel set, and the 5-mode member's tube below E ≤ 6
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-10-03T18:30:00Z
-branch: feat/polynomial_trapping
+state: closed
 priority: medium
 labels: [lean, nonlinear, research]
 related: ["040"]
@@ -47,3 +44,20 @@ member.
   the laminar `25/2` and the family bound `13`; the laminar point outside
   the set
 - audited to the three standard axioms; a release
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-10-03T20:00:00Z
+
+Closed with PR #38 (merged, `9fcbfb98`), released as v1.20.0. Delivered as
+`PolynomialTrapping.lean`: `V` as a `Polynomial.Expr` with the symbolic
+`Expr.diff` and its chain rule, the decrease on the set, the box as the
+hypothesis `boxed` (for the tube it follows from the containment in
+`E ≤ 6`), invariance by the barrier lemma, existence and uniqueness through
+a box-only `Trapping`'s clamp, and `poly_bounded_contract`. The instance
+`Examples/GalerkinNS/K5Below6.lean` is generated from the spike's exact data
+(gimle-forseti's `emit_k5below6.py`, committed there with task 214): the
+certificate in Cholesky form, `V'` tied to the library's partials and the
+field, `below6_contract` (`0 ≤ E ≤ 6` for all time from `(1, …, 1)`),
+`laminar_equilibrium`, `laminar_outside`, `start_inside`. The stale sentence
+in `T3Below12`'s docstring is removed in the same release.
