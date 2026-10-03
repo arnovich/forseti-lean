@@ -1,6 +1,9 @@
 ---
 title: Trapping with decrease local to the sublevel set, for general quadratic forms with a centre
-state: open
+state: ongoing
+claimed_by: claude/17d157a0
+claimed_at: 2026-10-03T13:00:00Z
+branch: feat/local_trapping
 priority: medium
 labels: [lean, nonlinear, research]
 related: ["035", "037"]
