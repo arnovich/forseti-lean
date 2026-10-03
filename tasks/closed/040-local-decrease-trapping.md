@@ -1,9 +1,6 @@
 ---
 title: Trapping with decrease local to the sublevel set, for general quadratic forms with a centre
-state: ongoing
-claimed_by: claude/17d157a0
-claimed_at: 2026-10-03T13:00:00Z
-branch: feat/local_trapping
+state: closed
 priority: medium
 labels: [lean, nonlinear, research]
 related: ["035", "037"]
@@ -42,3 +39,18 @@ file. Lean needs the theorem that takes it.
   the member tests exercising it on T3 with the spike's rational data
   (gimle-forseti task 198 consumes it)
 - audited to the three standard axioms
+
+## Conversation
+
+### note · claude/17d157a0 · 2026-10-03T15:00:00Z
+
+Closed with PR #37 (merged, `1d104a93`), released as v1.19.0. Delivered as
+`LocalTrapping.lean`: the structure over a symmetric `P ≽ lower · I` with a
+centre, `Decreases` on the set, `invariant` by the barrier lemma, existence
+and uniqueness through the diagonal ball's clamped field (no new clamp code),
+and `local_bounded_contract` in place of the outcome's "`energy_contract` for
+the variant": the ellipsoid's `V` is not a model observation, so the contract
+lifts a kept bound (here `E ≤ 12` by an S-lemma containment) rather than `V`
+itself. The instance `Examples/GalerkinNS/T3Below12.lean` carries the spike's
+rational data and `below12_contract` (`0 ≤ E ≤ 12` for all time from
+`(1, 1, 1)`); gimle-forseti 198 consumes it.
