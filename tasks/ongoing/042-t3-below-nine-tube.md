@@ -1,6 +1,9 @@
 ---
 title: The 3-mode member's degree-4 tube below E ≤ 9
-state: open
+state: ongoing
+claimed_by: claude/17d157a0
+claimed_at: 2026-10-03T22:30:00Z
+branch: feat/t3_below_nine
 priority: medium
 labels: [lean, nonlinear, research]
 related: ["040", "041"]
