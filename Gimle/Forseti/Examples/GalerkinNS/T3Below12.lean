@@ -17,9 +17,8 @@ energy observation stays in `[0, 12]` for all time: below the laminar level,
 below the family bound `13` of `trapping`.
 
 All numbers are rational with denominator `10⁶` or derived exactly; every
-identity is `ring`. The laminar point has `V = 2.54 > 1`, and so has its mirror
-image under `(a₁, a₂, a₃) ↦ (−a₁, a₂, −a₃)`, the field's symmetry, with
-`V = 8.6`; the start has `V = 0.98`. -/
+identity is `ring`. The laminar point has `V ≈ 2.54 > 1`; the start has
+`V = 0.98`. -/
 
 namespace Gimle.Forseti.Examples.GalerkinNS.T3
 

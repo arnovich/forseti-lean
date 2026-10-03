@@ -23,6 +23,7 @@ import Gimle.Forseti.Tests.Nonlinear
 import Gimle.Forseti.Tests.GalerkinNS
 import Gimle.Forseti.Tests.GalerkinNSFamily
 import Gimle.Forseti.Tests.LocalTrapping
+import Gimle.Forseti.Tests.PolynomialTrapping
 
 namespace Gimle.Forseti.Tests
 

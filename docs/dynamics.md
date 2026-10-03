@@ -163,6 +163,28 @@ and the family bound `13`. The laminar point `(0, 5, 0)` has `V = 2.54 > 1` for
 that ellipsoid's `V`, so it lies outside the set (`laminar_equilibrium`,
 `laminar_outside`); `Tests/LocalTrapping.lean` pins the shape and the data.
 
+**A polynomial `V`**
+([`PolynomialTrapping.lean`](../Gimle/Forseti/PolynomialTrapping.lean)). The
+5-mode member's below-laminar set (gimle-forseti's spike 213) is a sublevel set
+of a degree-4 polynomial, a thin tube around the member's attractor, which in
+simulation is a rotating wave of energy about `4.75`; no quadratic form about a
+centre was found for it (spike 213). A `PolynomialTrapping` takes `V` as a polynomial
+expression (`Gimle.Asgard.Polynomial.Expr`), differentiates it symbolically
+(`Expr.diff`, with the chain rule `Expr.eval_hasDerivWithinAt` along any
+differentiable signal), asks the decrease on the set as before, and places
+`{V ≤ C}` in a sup-norm box by a checkable hypothesis (`boxed`), which for the
+tube follows from its containment in `{E ≤ 6}`. Invariance, existence,
+uniqueness and `poly_bounded_contract` are as for `LocalTrapping`, through a
+`Trapping` of that radius whose only job is the box. The instance is
+[`GalerkinNS/K5Below6.lean`](../Gimle/Forseti/Examples/GalerkinNS/K5Below6.lean):
+`below6_contract` states `0 ≤ E ≤ 6` for all time from `(1, …, 1)`, the level of
+the member's standing undecided claim, below the laminar `25/2` and the family
+bound `13`. Its decrease certificate is a degree-6 sum of squares written as the
+columns of a rounded Cholesky factor of the Gram matrix less `εI` with the exact
+remainder absorbed pair by pair, since an exact `LDLᵀ` of a 56×56 matrix has
+thousand-digit entries; `V'` is tied to the written-out partials and the field.
+`Tests/PolynomialTrapping.lean` pins the shape, the derivative and the data.
+
 [`Examples/GalerkinNS/`](../Gimle/Forseti/Examples/GalerkinNS/) applies the
 general theorem to a family: Galerkin truncations of 2D incompressible
 Navier–Stokes on the 2π-periodic square, vorticity form, cosine modes only,
