@@ -22,3 +22,9 @@ The generator suite checks every current member, hostile bounds are still reject
 
 Update explicit member expectations and construct hostile examples with dataclasses.replace. Run all generator tests and the Lean release build.
 
+
+## Conversation
+
+### note · codex/forseti_review_fixes · 2026-10-04T20:26:45Z
+
+Updated expectations for T3S and hostile energy/enstrophy bounds using dataclasses.replace. All 16 generator tests and the suspension search check pass. The full Lean library/example/regression build passes; the optional equation demo build is running. Independent mathematics review found no blockers.
