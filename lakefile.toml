@@ -1,5 +1,5 @@
 name = "forseti"
-version = "0.16.0"
+version = "0.17.0"
 defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Tests", "Checker"]
 
 [[require]]
