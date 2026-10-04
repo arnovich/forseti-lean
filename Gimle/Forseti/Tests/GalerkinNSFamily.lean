@@ -1,4 +1,5 @@
 import Gimle.Forseti.GalerkinNS.Family
+import Gimle.Forseti.GalerkinNS.Coupling
 import Gimle.Forseti.Examples.GalerkinNS.T3
 import Gimle.Forseti.Examples.GalerkinNS.K5
 import Gimle.Forseti.Examples.GalerkinNS.B2
@@ -573,5 +574,24 @@ info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.rest_contract'
 -/
 #guard_msgs (whitespace := lax) in
 #print axioms Examples.GalerkinNS.T3S.rest_contract
+
+/-! ### The family's coupling is the stream's cosine coupling (asgard-lean 065) -/
+
+example (p q k : Family.Wave) :
+    Family.coefficient p q k = ((Gimle.Asgard.Streams.Torus.cosineCoupling p q k : ℚ) : ℝ) :=
+  Family.coefficient_eq_cosineCoupling p q k
+
+/-- At the `T3` triad both couplings are `−1/2`. -/
+example : Family.coefficient (1, 0) (1, 1) (2, 1) = -1 / 2 := by
+  rw [Family.coefficient_eq_cosineCoupling]
+  norm_num [Gimle.Asgard.Streams.Torus.cosineCoupling, Gimle.Asgard.Streams.Torus.S,
+    Gimle.Asgard.Streams.Torus.cross, Gimle.Asgard.Streams.Torus.lam]
+
+/--
+info: 'Gimle.Forseti.GalerkinNS.Family.coefficient_eq_cosineCoupling'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Family.coefficient_eq_cosineCoupling
 
 end Gimle.Forseti.Tests.GalerkinNSFamily
