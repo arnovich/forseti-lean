@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from fractions import Fraction as F
 from pathlib import Path
 from unittest.mock import patch
@@ -32,7 +33,7 @@ class DerivationTests(unittest.TestCase):
 
     def test_member_sizes_and_triad_counts(self) -> None:
         sizes = {m.name: (len(m.modes), len(gen.triads(m.modes))) for m in gen.MEMBERS}
-        self.assertEqual(sizes, {"T3": (3, 1), "K5": (5, 3), "B2": (12, 22)})
+        self.assertEqual(sizes, {"T3": (3, 1), "K5": (5, 3), "B2": (12, 22), "T3S": (3, 1)})
 
     def test_the_energy_identity_has_no_cubic_terms(self) -> None:
         for member in gen.MEMBERS:
@@ -43,9 +44,16 @@ class DerivationTests(unittest.TestCase):
     def test_verify_accepts_every_member_and_rejects_a_bad_bound(self) -> None:
         for member in gen.MEMBERS:
             gen.verify(member)
-        bad = gen.Member("bad", gen.MEMBERS[0].modes, F(1, 10), F(1), F(12), 9, F(1))
-        with self.assertRaises(AssertionError):
-            gen.verify(bad)
+        for changes, message in (
+            ({"bound": F(12)}, "the bound must exceed"),
+            ({"radius": 1}, "radius too small"),
+            ({"bound_z": F(25)}, "the enstrophy bound must exceed"),
+            ({"radius_z": 1}, "enstrophy radius too small"),
+        ):
+            with self.subTest(changes=changes):
+                bad = replace(gen.MEMBERS[0], name="bad", **changes)
+                with self.assertRaisesRegex(AssertionError, message):
+                    gen.verify(bad)
 
     def test_the_laminar_energy_is_below_every_bound(self) -> None:
         for member in gen.MEMBERS:
