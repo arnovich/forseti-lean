@@ -42,7 +42,7 @@ requested interval, including endpoints. For zero data repackage the zero norm
 bound at arbitrary positive rho, avoiding division by zero. Preserve higher
 boundary coefficients as unconstrained. Refactor EulerContract using reusable
 lemmas without shrinking its classical interval. Add regression proofs after
-Tests/FourierCircuit, covering another initial field, zero and cancelling data,
+Tests/EulerContract, covering another initial field, zero and cancelling data,
 wrong input/circuit, zero radius and exact convergence threshold. Run complete
 builds, optional executable, path guard and axiom audit; review and release.
 
@@ -56,3 +56,11 @@ nonempty mode syntax; duplicate cancellation tests belong to the Lean API.
 ### note · codex/fluid_contracts · 2026-10-05T23:27:57Z
 
 Claimed the authorized second-stage library work from the merged replay repair; implementation and consumer releases remain isolated from PR229.
+
+### note · codex/fluid_contracts · 2026-10-05T23:34:01Z
+
+Generic semantic and finite-table contracts compile with allowed axioms. Regression proofs cover a new two-frequency start, requested truncation, both closed endpoints, zero radius, unconstrained higher boundary coefficients, wrong input and a wrong identity circuit, plus duplicate cancellation at a large finite radius. The existing three-mode theorem retains its original statement and stronger open classical interval. Complete build and implementation panel are next.
+
+### note · codex/fluid_contracts · 2026-10-05T23:35:52Z
+
+All three implementation reviewers pass with no findings: circuit architecture, mathematical semantics and consumer/test adequacy. Full build3598, optional executable6811, path guard, 18 tooling tests and exact certificate regeneration pass. A second checkout is rebuilding without own-package artifacts before release enrollment. Python dispatch/relabeling/zero-bound integration remains the subsequent consumer task.

@@ -260,6 +260,28 @@ viscosity and either OGF or EGF, fixing the boundary's degree-zero slice fixes
 the circuit output to `NS.stream`. The precondition does not provide a solution
 or constrain the boundary's higher coefficients.
 
+[`Euler.contract`](../Gimle/Forseti/Euler.lean) lifts the analytical results to
+any initial Fourier polynomial. Its premises are mean zero, evenness, finite
+support, a geometric coefficient bound `M ρⁿ`, `ρ > 0`, `r ≥ 0` and `ρr < 1`.
+The sole input condition remains `input 0 0 = boundary 0`. Every actual output
+satisfies `Euler.Certified boundary r`: equality to the complete formal solution,
+mean-zero/even coefficients, the prescribed initial field, convergence, and the
+classical Euler equation with all named derivatives and continuity on the closed
+interval `|t| ≤ r`. The strict inequality `ρr < 1` includes both requested
+endpoints inside the theorem's open convergence disc. The certificate constants
+`K`, `M` and `ρ` do not occur in the postcondition.
+
+`Euler.contract_with` conjoins any additional proved output property, such as a
+truncation error or band, with this classical guarantee. `Euler.Table.contract`
+discharges the semantic premises from finite mode/coefficient data, checking
+zero mean and parity on aggregate coefficients so duplicate entries and exact
+cancellation are handled correctly. `Euler.Table.zero_contract` uses a zero norm
+bound at an arbitrary positive growth rate and covers every finite nonnegative
+radius. It does not grant an arbitrary band or error tolerance: such a property
+still needs its own proof. [Regression proofs](../Gimle/Forseti/Tests/GenericEuler.lean)
+cover a different multimode start, zero data, both endpoints, unconstrained higher
+boundary coefficients, and altered input/circuit claims.
+
 [`Examples.EulerContract.euler_contract`](../Gimle/Forseti/Examples/EulerContract.lean)
 applies this to the three-mode initial vorticity at zero viscosity. Its
 postcondition identifies the whole output and proves mean-zero/even coefficients,
