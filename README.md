@@ -37,6 +37,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Active suspension](Gimle/Forseti/Examples/ActiveSuspension.lean) | A searched invariant proves travel, force and acceleration bounds through nested traces, shared by two actuator implementations |
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
+| [Euler circuit contract](Gimle/Forseti/Examples/EulerContract.lean) | From the three-mode initial vorticity alone, the Asgard Fourier feedback circuit has a unique formal output; every output has the certified truncation error and field band and is a classical Euler solution on `|t| < 1/648` |
 | [Stream observations](Gimle/Forseti/Examples/StreamObservation.lean) | Polynomial certificates lifted to total contracts over Asgard's formal heat circuit |
 | [Heat field bound](Gimle/Forseti/Examples/HeatFieldBound.lean) | Bounds on the evaluated real field of the heat circuit's output, proved and refuted |
 | [Algebraic counterexamples](Gimle/Forseti/Examples/AlgebraicCounterexamples.lean) | Entailments refuted only at irrational points, such as `x² = 2 ⊨ x < 0` at `√2` |

@@ -23,3 +23,25 @@ The existing Euler results are ordinary Asgard stream theorems. The owner reques
 ## Plan
 
 Study the existing stream and continuous circuit semantics. Add regression statements first, implement the circuit/contract bridge, then check all build targets and independent panel findings. Keep the mathematical stream as the semantic reference and keep feedback relational; never assume an arbitrary loop has a solution.
+
+## Validation
+
+Implemented `Fourier.lean` (total contracts, consequence, composition,
+expression and feedback-solution rules), `Examples/EulerContract.lean` and
+`Tests/EulerContract.lean`. Regression statements first failed on the absent
+example module. The completed contract binds initial data to the actual circuit
+and transports the existing analytical results to every related output.
+
+Asgard is pinned to `b6a8420f185df7bdc7c63030ad00c88bb96b8927`, submitted in
+https://github.com/arnovich/asgard-lean/pull/32. The final dependency checkout
+is clean at that exact commit. `lake build` (3,596 jobs), `lake build equation_demo`,
+`python3 tools/search_suspension.py --check`, and all 16 tool unittests pass.
+The 24 existing Galerkin linter warnings are unchanged; no new module warns.
+The guarded Euler contract axiom report has only propext, Classical.choice
+and Quot.sound. `git diff --check` passes.
+
+A three-role panel (architecture, mathematical proof boundaries, integration
+and claims) passed without blocking findings. The Python notebook and decider
+still use their existing release: adopting the new contract there requires a
+separate release-pin and theorem-root migration, rather than silently changing
+old checked claims.
