@@ -1,11 +1,8 @@
 ---
 title: Reproducible Galerkin compiled artifacts
-state: ongoing
+state: closed
 priority: high
 labels: [lean, ci, reproducibility]
-claimed_by: codex/fluid_contracts
-claimed_at: 2026-10-05T22:14:47Z
-branch: fix/reproducible_galerkin
 ---
 
 # Reproducible Galerkin compiled artifacts
@@ -42,3 +39,7 @@ Two builds of unchanged v1.25.0 differ only in Family, B2, T3 and T3S compiled m
 ### note · codex/fluid_contracts · 2026-10-05T22:22:48Z
 
 Full lake build (3596 jobs), equation_demo (6811 jobs), all 18 Python tool tests and generated-file checks pass. Three-role panel found no blocking issues; final B2 follow-up reviewed. Both checkout path guards pass and 103 completed module artifacts already match byte-for-byte. The second full build and complete replay-closure comparison remain the release acceptance gate.
+
+### note · codex/fluid_contracts · 2026-10-05T22:51:32Z
+
+PR45 passed Lean CI (run 37382099351) and merged at 11c7961ef61ecb04653a2d64ce99351d806a938d; v1.26.0 is published at that commit. Both full builds pass; all 107 compiled module artifacts match and all 18 replay closures verify byte-identically across checkout roots. The two-directory regression reproduces the old failure and confirms the repair. Python consumer enrollment and notebook refresh continue under gimle-forseti task 222.
