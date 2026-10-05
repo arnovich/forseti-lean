@@ -27,8 +27,18 @@ The strict content hashes correctly refuse these different compiled bytes.
 
 ## Plan
 
-Fix Family's unused simp argument; update the Galerkin generator to name unused
-hypotheses anonymously, omit unused simp entries, and emit bare linear_combination
+Fix Family's unused simp argument; update the Galerkin generator to explicitly reference unused
+hypotheses while preserving their public names, omit unused simp entries, and emit bare linear_combination
 for an empty combination. Regenerate examples, test the path guard against the
 currently failing artifacts, and compare clean builds from distinct roots. Run
 the role-based review panel and Lean CI before merging and releasing.
+
+## Conversation
+
+### note · codex/fluid_contracts · 2026-10-05T22:17:32Z
+
+Two builds of unchanged v1.25.0 differ only in Family, B2, T3 and T3S compiled modules. Their persisted mathlib lintLogExt includes absolute source paths. The new guard rejects all four; fixing proof warnings keeps every theorem statement and named hypothesis intact. The guard is an early regression check, not a substitute for whole-closure byte comparison.
+
+### note · codex/fluid_contracts · 2026-10-05T22:22:48Z
+
+Full lake build (3596 jobs), equation_demo (6811 jobs), all 18 Python tool tests and generated-file checks pass. Three-role panel found no blocking issues; final B2 follow-up reviewed. Both checkout path guards pass and 103 completed module artifacts already match byte-for-byte. The second full build and complete replay-closure comparison remain the release acceptance gate.

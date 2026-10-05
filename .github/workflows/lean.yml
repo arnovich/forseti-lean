@@ -1,6 +1,8 @@
 name: Lean verification
 
 on:
+  pull_request:
+    paths-ignore: ["tasks/**", "docs/**"]
   push:
     branches: [main]
     paths-ignore: ["tasks/**", "docs/**"]
@@ -37,5 +39,7 @@ jobs:
         run: lake exe cache get
       - name: Check libraries, examples and regression proofs
         run: lake build
+      - name: Check compiled artifacts contain no checkout paths
+        run: python3 tools/check_build_paths.py
       - name: Build optional equation demo
         run: lake build equation_demo
