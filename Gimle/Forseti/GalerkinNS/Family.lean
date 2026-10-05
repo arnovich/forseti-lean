@@ -744,7 +744,7 @@ theorem rest_identity (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0) 
     restRate k forced (field ν f k forced) x =
       -2 * ν * restEnstrophy forced x - x forced * forcedCubic k forced x := by
   rw [restRate, energy_identity ν f k hk forced hf x, restEnstrophy]
-  simp only [field, forcedCubic, hf, lam_one_one, if_pos rfl]
+  simp only [field, forcedCubic, hf, lam_one_one]
   push_cast
   ring
 

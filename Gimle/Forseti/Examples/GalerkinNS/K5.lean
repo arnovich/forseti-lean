@@ -294,9 +294,9 @@ theorem only_two_diagonal (w : Fin 5 → ℝ)
       w 3 = α * (1 / 5) + β ∧
       w 4 = α * (1 / 5) + β := by
   refine ⟨(w 0 - w 2) * (2 / 1), w 2 - (w 0 - w 2) * (2 / 1) / 2, ?_, ?_, ?_, ?_, ?_⟩
-  · linear_combination 0
+  · linear_combination
   · linear_combination (4 / 1 : ℝ) * h0
-  · linear_combination 0
+  · linear_combination
   · linear_combination (-4 / 1 : ℝ) * h2
   · linear_combination (-12 / 5 : ℝ) * h0 + (4 / 1 : ℝ) * h1
 
@@ -442,7 +442,7 @@ theorem initial_leZ : trappingZ.energy compiled.initial ≤ trappingZ.bound := b
 theorem rest_eq_family (x : Point 5) :
     rest x = GalerkinNS.Family.restEnergy modes forcedIndex x := by
   unfold rest GalerkinNS.Family.restEnergy GalerkinNS.Family.energy
-  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ, Matrix.cons_val] <;> ring
+  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ] <;> ring
 
 /-- `K = Σ_{j,l} |(c(k_j, k_l, (1,1)) + c(k_l, k_j, (1,1)))/2| = 4/5`, the forced mode's coupling sum. -/
 theorem couplingSum_eq :

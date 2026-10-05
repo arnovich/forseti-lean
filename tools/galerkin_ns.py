@@ -878,11 +878,15 @@ def emit(member: Member) -> str:
         f"w {i} = α * ({F(1, lam(k)).numerator} / {F(1, lam(k)).denominator}) + β" for i, k in enumerate(member.modes)
     )
     w(f"    ∃ α β : ℝ, {conj} := by")
+    unused = [f"h{t}" for t in range(len(forms)) if not any(row[t] for row in multipliers)]
+    # Keep public named hypotheses without persistent unused-variable diagnostics.
+    for name in unused:
+        w(f"  have _ := {name}")
     alpha_term = f"(w {a_index} - w {f_index}) * ({scale.numerator} / {scale.denominator})"
     w(f"  refine ⟨{alpha_term}, w {f_index} - {alpha_term} / 2, {', '.join(['?_'] * n)}⟩")
     for i in range(n):
         combo = " + ".join(f"({m.numerator} / {m.denominator} : ℝ) * h{t}" for t, m in enumerate(multipliers[i]) if m != 0)
-        w(f"  · linear_combination {combo if combo else '0'}")
+        w("  · linear_combination" + (f" {combo}" if combo else ""))
     w("")
     for e_index, form in enumerate(symmetric_invariants(member)):
         form_terms = " + ".join(real_term(c, [i, j]) for (i, j), c in form.items())
@@ -1050,7 +1054,7 @@ def emit(member: Member) -> str:
     w(f"theorem rest_eq_family (x : Point {n}) :")
     w("    rest x = GalerkinNS.Family.restEnergy modes forcedIndex x := by")
     w("  unfold rest GalerkinNS.Family.restEnergy GalerkinNS.Family.energy")
-    w("  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ, Matrix.cons_val] <;> ring")
+    w("  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ] <;> ring")
     w("")
     K = coupling_sum(member)
     w(f"/-- `K = Σ_{{j,l}} |(c(k_j, k_l, (1,1)) + c(k_l, k_j, (1,1)))/2| = {K}`, the forced mode's coupling sum. -/")
@@ -1079,7 +1083,7 @@ def emit(member: Member) -> str:
         w("  rw [field_eq_family] at solves")
         w(f"  have start : GalerkinNS.Family.enstrophy (n := {n}) compiled.initial ≤ ({r} : ℝ) ^ 2 := by")
         w("    rw [initial_eq]")
-        w("    simp [GalerkinNS.Family.enstrophy, Fin.sum_univ_succ, Matrix.cons_val] <;> norm_num")
+        w("    simp [GalerkinNS.Family.enstrophy, Fin.sum_univ_succ] <;> norm_num")
         w(f"  have hC : {f_real} ^ 2 / (4 * {nu_real} ^ 2) < ({r} : ℝ) ^ 2 := by norm_num")
         w(f"  obtain ⟨-, -, inv⟩ := GalerkinNS.Family.laminar_attracts {nu_real} {f_real} (by norm_num) modes modes_nonzero")
         w(f"    forcedIndex modes_forced {r} (by norm_num) hC gamma_pos evolution.time compiled.initial start")

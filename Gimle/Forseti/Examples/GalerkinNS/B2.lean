@@ -550,13 +550,25 @@ theorem only_two_diagonal (w : Fin 12 → ℝ)
       w 9 = α * (1 / 4) + β ∧
       w 10 = α * (1 / 5) + β ∧
       w 11 = α * (1 / 8) + β := by
+  have _ := h2
+  have _ := h10
+  have _ := h12
+  have _ := h13
+  have _ := h14
+  have _ := h15
+  have _ := h16
+  have _ := h17
+  have _ := h18
+  have _ := h19
+  have _ := h20
+  have _ := h21
   refine ⟨(w 0 - w 5) * (2 / 1), w 5 - (w 0 - w 5) * (2 / 1) / 2, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · linear_combination 0
+  · linear_combination
   · linear_combination (-15 / 4 : ℝ) * h0 + (1 / 4 : ℝ) * h1 + (-5 / 4 : ℝ) * h8 + (6 / 1 : ℝ) * h9
   · linear_combination (-4 / 1 : ℝ) * h0 + (32 / 5 : ℝ) * h9
   · linear_combination (4 / 1 : ℝ) * h9
   · linear_combination (4 / 1 : ℝ) * h1
-  · linear_combination 0
+  · linear_combination
   · linear_combination (4 / 1 : ℝ) * h3
   · linear_combination (-35 / 8 : ℝ) * h0 + (7 / 24 : ℝ) * h1 + (-5 / 4 : ℝ) * h4 + (-35 / 24 : ℝ) * h5 + (-35 / 24 : ℝ) * h8 + (7 / 1 : ℝ) * h9 + (14 / 3 : ℝ) * h11
   · linear_combination (-4 / 1 : ℝ) * h0 + (4 / 15 : ℝ) * h1 + (-4 / 3 : ℝ) * h5 + (-4 / 3 : ℝ) * h8 + (32 / 5 : ℝ) * h9 + (64 / 15 : ℝ) * h11
@@ -699,7 +711,7 @@ theorem initial_leZ : trappingZ.energy compiled.initial ≤ trappingZ.bound := b
 theorem rest_eq_family (x : Point 12) :
     rest x = GalerkinNS.Family.restEnergy modes forcedIndex x := by
   unfold rest GalerkinNS.Family.restEnergy GalerkinNS.Family.energy
-  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ, Matrix.cons_val] <;> ring
+  simp [modes, forcedIndex, GalerkinNS.Family.lam, Fin.sum_univ_succ] <;> ring
 
 /-- `K = Σ_{j,l} |(c(k_j, k_l, (1,1)) + c(k_l, k_j, (1,1)))/2| = 13/10`, the forced mode's coupling sum. -/
 theorem couplingSum_eq :
