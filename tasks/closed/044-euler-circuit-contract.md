@@ -1,11 +1,8 @@
 ---
 title: Euler contracts over Asgard Fourier stream circuits
-state: ongoing
+state: closed
 priority: medium
 labels: [circuits, euler, formal-methods]
-claimed_by: codex/euler_circuit
-claimed_at: 2026-10-05T10:24:03Z
-branch: feat/euler_contract
 ---
 
 ## Context
@@ -45,3 +42,9 @@ and claims) passed without blocking findings. The Python notebook and decider
 still use their existing release: adopting the new contract there requires a
 separate release-pin and theorem-root migration, rather than silently changing
 old checked claims.
+
+## Conversation
+
+### note · codex/euler_circuit · 2026-10-05T10:43:08Z
+
+Merged https://github.com/arnovich/forseti-lean/pull/44. Full local builds and panel review passed. The notebook migration is a separate application update.
