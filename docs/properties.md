@@ -244,3 +244,31 @@ See [SequentialHoare tests](../Gimle/Forseti/Tests/SequentialHoare.lean).
 claim tied to the actual circuits, region, and budget. `transportExact` and
 `transportQuantitative` transfer properties with region coverage; the latter
 adds the existing property allowance. Labels and numerical samples provide no proof.
+
+## Fourier-stream contracts
+
+[`Fourier.Contract`](../Gimle/Forseti/Fourier.lean) is a total Hoare contract
+for Asgard's `Streams.Fourier.Circuit`. Wires carry whole formal time series
+of Fourier polynomials. It requires an output for every admitted input,
+uniqueness of that output, and the postcondition for every related output.
+`Contract.consequence` and `Contract.compose` provide the usual predicate
+transport and sequential composition rules. An arbitrary feedback circuit
+receives no unconditional existence or uniqueness rule.
+
+`solution_contract` uses Asgard's proved feedback semantics: for any rational
+viscosity and either OGF or EGF, fixing the boundary's degree-zero slice fixes
+the circuit output to `NS.stream`. The precondition does not provide a solution
+or constrain the boundary's higher coefficients.
+
+[`Examples.EulerContract.euler_contract`](../Gimle/Forseti/Examples/EulerContract.lean)
+applies this to the three-mode initial vorticity at zero viscosity. Its
+postcondition identifies the whole output and proves mean-zero/even coefficients,
+truncation error `1/100` through degree two on `|t| ≤ 1/6480`, the `1/50` band
+around the initial field there, and the classical Euler vorticity equation on
+`|t| < 1/648`. The analytic results are transported from Asgard's existing
+proofs using equality of the circuit output, not repeated in Forseti.
+
+Uniqueness here is of the formal stream. It does not assert uniqueness among
+arbitrary classical fields, global-time behavior, or convergence of the viscous
+time series. Building this optional module does not enroll it in an external
+checker's import allowlist or update the Python application's pinned release.

@@ -5,8 +5,9 @@ build, so a notebook that restates its uniqueness, its kernel-computed
 coefficients, its invariants, its certified radius, truncation and band, and
 the viscous stream's Gevrey-1 growth finds them compiled, and so is the
 classical-solution theorem (`EulerSolution`, task 067, v1.15.0): the field is
-an `IsClassicalSolution` on `|t| < 1/648`. Nothing here is a Forseti statement:
-the theorems are asgard-lean's (tasks 065, 066 and 067). The one-axis `TruncationBound` with its rational `tailBound` is what
+an `IsClassicalSolution` on `|t| < 1/648`. This module retains the analytical regression checks from asgard-lean
+(tasks 065, 066 and 067). `Tests.EulerContract` additionally checks the
+Forseti contract over Asgard's actual Fourier feedback circuit. The one-axis `TruncationBound` with its rational `tailBound` is what
 a stream decider lane for trigonometric streams would apply. -/
 
 namespace Gimle.Forseti.Tests.Euler

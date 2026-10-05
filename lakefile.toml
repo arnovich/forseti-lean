@@ -5,7 +5,7 @@ defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Test
 [[require]]
 name = "asgard"
 git = "https://github.com/arnovich/asgard-lean.git"
-rev = "a01f63152e84938e6e99ee0430399023d739805c"
+rev = "b6a8420f185df7bdc7c63030ad00c88bb96b8927"
 
 [[lean_lib]]
 name = "Gimle.Forseti"
