@@ -33,7 +33,7 @@ standard-axiom audit, replay-path guard, panel review and CI pass before release
 
 ## Plan
 
-Reuse the existing relational contract abstraction with a mild-circuit
+Follow the existing total relational contract pattern with a mild-circuit
 adapter. Instantiate solution totality and uniqueness from Asgard, then package
 classical and dissipation results for the actual output. Reuse finite Fourier
 initial-table certificates from Euler. Export both rational bound constructors
@@ -45,3 +45,22 @@ review with three roles, build and publish in dependency order.
 Development follows the reviewed Asgard task070 commit while earlier CI runs.
 The merge order remains replay repair, generalized Euler consumer, Asgard
 mild circuit/bounds/classical releases, then this contract and Python consumers.
+
+## Implementation and validation
+
+`Mild.Contract` supplies total existence, uniqueness, consequence and sequential
+composition over Asgard's actual typed circuit relation. `MildVorticity.Certified`
+binds the full Wild output, invariants, initial field, absolute convergence,
+Fourier reconstruction, classical solution and spectral dissipation to one
+postcondition. Both finite-table bound constructors and semantic-zero data are
+supported. `contract_with` preserves this guarantee for numerical claims.
+
+Focused regression proofs pass (3443 jobs), including wrong-initial and wire
+replacement rejection, nonvacuous existence, higher-boundary noise, both
+numerical conjunctions, ν=0, zero data and endpoints. Standard axiom reports
+only. Full build passes (3637 jobs), the optional equation demo passes (6811 jobs),
+all 18 path-guard tests pass and compiled artifacts contain no checkout paths.
+All three panel roles passed; the added exact carrier replay roots were also
+reviewed. CI and ordered publication remain pending.
+The Asgard development pin is reviewed task070 commit b7664107a3cc12477d6479015b0c5d5220b41813;
+publication will follow the ordered upstream merges and release.
