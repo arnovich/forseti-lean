@@ -333,3 +333,35 @@ conjunctions, zero data, zero viscosity and closed endpoints. No uniqueness
 among arbitrary classical fields, continuation or inviscid-limit result is
 asserted. Consumers must enroll the new imports and the audited release pair
 before these declarations are available to foreign-candidate checking.
+
+
+## Independent classical vorticity fields
+
+[`ClassicalVorticity.Solves`](../Gimle/Forseti/ClassicalVorticity.lean) describes
+ordinary scalar fields and a periodic stream function on a closed time strip.
+It records spatial derivative witnesses, joint continuity, the vorticity PDE,
+and initial data. Time derivatives and the PDE are required only in the
+interior. Velocity is `(-ψ_y, ψ_x)`; a spatially constant, continuous time-dependent gauge
+may be added to `ψ`. Competing fields need not have even symmetry or a stream
+representation.
+
+`of_mild` puts every existing `IsMildClassicalSolution` in this independent
+class, proving periodicity directly from the integer Fourier modes.
+`Solves.difference_equation` subtracts two independent PDEs. The separate
+[`Comparison`](../Gimle/Forseti/ClassicalVorticity/Comparison.lean) module proves
+`D(t) ≤ exp(C*t)*D(0)` from the explicit premise `D' ≤ C*D`, with continuity on
+`[0,T]` and derivatives only on `(0,T)`. Nonnegative `D` with zero initial value
+then vanishes, including at both endpoints. These are conditional scalar
+lemmas, not a classical PDE uniqueness theorem.
+
+[`PeriodicCalculus`](../Gimle/Forseti/ClassicalVorticity/PeriodicCalculus.lean)
+proves one-dimensional periodic integration by parts and the nonpositive
+viscous pairing. The two-dimensional energy difference estimate, differentiation under its
+integral, periodic elliptic norm estimate, and passage from zero square
+integral to pointwise equality remain unproved (task 048). Consequently the notebook's
+bounds have not been transferred to arbitrary classical solutions.
+
+[Regressions](../Gimle/Forseti/Tests/ClassicalVorticity.lean) include the mild
+membership bridge, an odd sine Euler solution, a continuous stream-function
+gauge with a time corner, refusal of wrong initial data, the closed upper
+endpoint, a collapsed time interval, and the viscous sign on a sine profile.
