@@ -136,3 +136,14 @@ the claim with the task open; the broader PDE uniqueness outcome is unfinished.
 Owner requested continuation on draft PR #48 toward the full theorem.
 Starting with the periodic elliptic estimate and two-dimensional integral
 identities, then connecting the energy difference to the checked comparison.
+
+### note · codex/ns_uniqueness · 2026-10-06
+
+The continuation closes the analytic gap. The full vorticity and velocity
+uniqueness theorems have elaborated with only the allowed axioms, and all three
+review roles approve their mathematical scope and argument. Full repository
+builds and final example/regression checks are in progress before commit.
+
+### note · codex/ns_uniqueness · 2026-10-06
+
+Full vorticity and velocity uniqueness is checked, including the notebook bounds; both builds and the three-role review passed. Implementation is on draft PR #48; the notebook release pin is unchanged.
