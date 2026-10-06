@@ -1,12 +1,9 @@
 ---
 title: Generic classical Euler contracts over Fourier circuits
-state: ongoing
+state: closed
 priority: medium
 labels: [lean, circuits, euler, contracts]
 related: ["044", "045"]
-claimed_by: codex/fluid_contracts
-claimed_at: 2026-10-05T23:27:57Z
-branch: feat/generic_euler_contracts
 ---
 
 # Generic classical Euler contracts over Fourier circuits
@@ -64,3 +61,7 @@ Generic semantic and finite-table contracts compile with allowed axioms. Regress
 ### note · codex/fluid_contracts · 2026-10-05T23:35:52Z
 
 All three implementation reviewers pass with no findings: circuit architecture, mathematical semantics and consumer/test adequacy. Full build3598, optional executable6811, path guard, 18 tooling tests and exact certificate regeneration pass. A second checkout is rebuilding without own-package artifacts before release enrollment. Python dispatch/relabeling/zero-bound integration remains the subsequent consumer task.
+
+### note · codex/fluid_contracts · 2026-10-06T03:46:42Z
+
+Merged https://github.com/arnovich/forseti-lean/pull/46 at `444d4a574c782c88a2bac3f6f4b7305cddf2429d`. Published v1.27.0 from the audited merge tree. The complete build, optional examples, regression proofs, path guard and CI pass. All 109 owned compiled artifacts match independent checkout roots, all 19 consumer replay closures verify, and the circuit, mathematical and consumer review panel passes.

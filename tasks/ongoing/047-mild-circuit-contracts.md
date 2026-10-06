@@ -40,12 +40,6 @@ initial-table certificates from Euler. Export both rational bound constructors
 without making solver choices part of admission. Add regressions and docs,
 review with three roles, build and publish in dependency order.
 
-## Conversation
-
-Development follows the reviewed Asgard task070 commit while earlier CI runs.
-The merge order remains replay repair, generalized Euler consumer, Asgard
-mild circuit/bounds/classical releases, then this contract and Python consumers.
-
 ## Implementation and validation
 
 `Mild.Contract` supplies total existence, uniqueness, consequence and sequential
@@ -64,3 +58,24 @@ All three panel roles passed; the added exact carrier replay roots were also
 reviewed. CI and ordered publication remain pending.
 The Asgard development pin is reviewed task070 commit b7664107a3cc12477d6479015b0c5d5220b41813;
 publication will follow the ordered upstream merges and release.
+
+## Conversation
+
+Development follows the reviewed Asgard task070 commit while earlier CI runs.
+The merge order remains replay repair, generalized Euler consumer, Asgard
+mild circuit/bounds/classical releases, then this contract and Python consumers.
+
+### note · codex/root · 2026-10-06T04:27:00Z
+
+Asgard PR35 passed CI and merged; v1.19.0 now pins commit
+411dfdffc44c37320f12b977fc60da7a3117a679. The reviewed source is unchanged.
+The final library pin is being rebuilt in two independent roots before the
+contract PR’s final CI. The independent Lean releases proceed while the
+Python consumers retain PR229 → PR230 → mild consumer merge order.
+
+### note · codex/root · 2026-10-06T04:28:00Z
+
+Final pin validation passes in both independent checkouts: full builds 3637
+jobs, optional builds 6811 jobs, all 326 owned compiled artifacts identical,
+no missing artifacts or checkout paths, exact certificate search and 18 tool
+tests pass. No Lean source changed from the reviewed candidate.
