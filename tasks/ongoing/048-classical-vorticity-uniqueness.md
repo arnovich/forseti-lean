@@ -1,6 +1,9 @@
 ---
 title: Classical vorticity uniqueness on certified intervals
-state: open
+state: ongoing
+claimed_by: codex/ns_uniqueness
+claimed_at: 2026-10-06T09:27:56Z
+branch: feat/048_classical_vorticity_uniqueness
 priority: medium
 labels: [lean, analysis, navier-stokes]
 ---
@@ -127,3 +130,9 @@ has been made.
 Checked foundation checkpoint: [draft PR #48](https://github.com/arnovich/forseti-lean/pull/48),
 branch `feat/048_classical_vorticity_uniqueness`. Both builds passed. Releasing
 the claim with the task open; the broader PDE uniqueness outcome is unfinished.
+
+### note · codex/ns_uniqueness · 2026-10-06T09:27:56Z
+
+Owner requested continuation on draft PR #48 toward the full theorem.
+Starting with the periodic elliptic estimate and two-dimensional integral
+identities, then connecting the energy difference to the checked comparison.
