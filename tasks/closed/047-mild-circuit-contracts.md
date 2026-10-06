@@ -1,12 +1,9 @@
 ---
 title: Total contracts for the classical dissipative mild vorticity circuit
-state: ongoing
+state: closed
 priority: medium
 labels: [streams, lean, contracts]
 related: ["046"]
-claimed_by: codex/fluid_contracts
-claimed_at: 2026-10-06T02:12:43Z
-branch: feat/mild_circuit_contracts
 ---
 
 # Total contracts for the classical dissipative mild vorticity circuit
@@ -79,3 +76,7 @@ Final pin validation passes in both independent checkouts: full builds 3637
 jobs, optional builds 6811 jobs, all 326 owned compiled artifacts identical,
 no missing artifacts or checkout paths, exact certificate search and 18 tool
 tests pass. No Lean source changed from the reviewed candidate.
+
+### note · codex/fluid_contracts · 2026-10-06T04:47:24Z
+
+Merged https://github.com/arnovich/forseti-lean/pull/47 at `8c6efd72ff7bbacf6a0f78f056390e0d670b3200`. Released as v1.28.0 on Asgard v1.19.0 after green CI and three-role panel review. Full builds (3637 jobs), optional builds (6811), path guards, 18 tooling tests and standard axiom reports pass. Two independent roots match all 326 owned compiled artifacts and the consumer's 20 replay closures. The merged source and final pin match the reviewed candidate; totality, whole-output uniqueness and numerical conjunctions retain the complete certified output guarantee.
