@@ -1,11 +1,8 @@
 ---
 title: Check a Bernstein matrix replay pilot for AIF startup tubes
-state: ongoing
+state: closed
 priority: medium
 labels: [research, certificates, nonlinear]
-claimed_by: codex/dynamics-research
-claimed_at: 2026-10-06T10:00:00Z
-branch: feat/049_bernstein_matrix_replay
 ---
 
 # Check a Bernstein matrix replay pilot for AIF startup tubes
@@ -26,13 +23,13 @@ that the full startup trajectory or original-model circuit binding is proved.
 
 ## Outcome
 
-- [ ] A reusable Lean theorem proves tensor Bernstein matrix positivity on the
+- [x] A reusable Lean theorem proves tensor Bernstein matrix positivity on the
   closed unit box from exact weighted-square coefficient certificates.
-- [ ] An actual candidate matrix polynomial is replayed, with exact rational
+- [x] An actual candidate matrix polynomial is replayed, with exact rational
   coefficients and identifiable source data, and its kernel cost is recorded.
-- [ ] Regression proofs exercise box boundaries and reject invalid coefficient
+- [x] Regression proofs exercise box boundaries and reject invalid coefficient
   certificates; no extra axioms or native computation are trusted.
-- [ ] A reproducible pilot and its limits explain the next full-replay gate.
+- [x] A reproducible pilot and its limits explain the next full-replay gate.
 
 ## Plan
 
@@ -43,9 +40,36 @@ that the full startup trajectory or original-model circuit binding is proved.
 4. Measure replay, inspect axiom reports, run both required Lake builds and a
    correctness/performance/scientific-scope review panel.
 
+## Results
+
+`BernsteinMatrix.lean` proves tensor positivity and the cubic conversion.
+`AIFMetricPilot.lean` recomputes the selected Hermite metric's coefficients and
+checks four exact square decompositions, proving coercivity for every real
+error vector throughout physical time [33/5,67/10]. The source retains the
+rational endpoint values/slopes and identifies the original candidate hash.
+No trajectory or circuit theorem is inferred from this metric inequality.
+
+Validation: `lake build` passed (3,658 jobs); `lake build equation_demo` passed
+(6,811 jobs). New regressions, generator reproduction, altered-input rejection,
+Black, isort, Flake8 and whitespace checks passed. A fresh source replay passed
+in 42.42 seconds wall time, 11.60 seconds Lean CPU, with 2.58 GiB peak RSS;
+see [the measurement and limits](../../docs/aif-replay-pilot.md). The new
+mathematical results depend only on the three standard axioms.
+
+The review panel covered mathematical correctness, exact arithmetic and
+reproducibility, and scientific scope. Its sole medium finding requested the
+replay measurement; that is recorded and re-reviewed. No open findings remain.
+Next, replay a complete drift polynomial before expanding to all 2,960 slabs.
+
 ## Conversation
 
 ### note · codex/dynamics-research · 2026-10-06T10:00:00Z
 
 Claimed the Lean replay pilot after the owner requested merging PR #235 and
 continuing research. The full trajectory theorem remains a separate obligation.
+
+### note · codex/dynamics-research · 2026-10-06T12:01:10Z
+
+Completed the checked one-slab metric pilot and both required builds. The full
+startup trajectory theorem remains open; explicit drift certificates and
+original-model binding are the next proof obligations.
