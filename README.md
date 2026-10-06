@@ -36,6 +36,7 @@ Open an example in VS Code with the Lean 4 extension:
 | [Disturbed feedback](Gimle/Forseti/Examples/DisturbedFeedback.lean) | Component storage identities compose through a trace to prove `\|x(t)\| ≤ 1` under continuous disturbances bounded by one |
 | [Active suspension](Gimle/Forseti/Examples/ActiveSuspension.lean) | A searched invariant proves travel, force and acceleration bounds through nested traces, shared by two actuator implementations |
 | [AIF metric pilot](Gimle/Forseti/Examples/AIFMetricPilot.lean) | Exact Bernstein certificates prove coercivity of one candidate cubic metric on `t ∈ [6.6,6.7]`; this is a [replay pilot](docs/aif-replay-pilot.md), not a startup trajectory theorem |
+| [AIF drift box](Gimle/Forseti/Examples/AIFDriftPilot.lean) | A [one-box certificate](docs/aif-drift-pilot.md) for the moving-center energy drift on `t ∈ [6.6,6.7]`, fixed `eta ∈ [8,8.5]` and `e₂ ∈ [-0.015,0.015]`; trajectory containment remains open |
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
 | [Mild vorticity contracts](Gimle/Forseti/MildVorticity.lean) | Total Hoare contracts for Asgard's typed mild circuit: actual output, initial field, absolute convergence and Fourier reconstruction, classical viscous PDE, and infinite spectral energy/enstrophy dissipation. Both physical bounds, exact-zero data and zero viscosity are supported; numerical claims retain the complete guarantee ([regressions](Gimle/Forseti/Tests/MildVorticity.lean)) |
@@ -55,6 +56,7 @@ Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
 - [Dynamics and safety certificates](docs/dynamics.md)
 - [Active suspension and exact invariant search](docs/active-suspension.md)
 - [AIF Bernstein matrix replay pilot](docs/aif-replay-pilot.md)
+- [AIF drift-box replay](docs/aif-drift-pilot.md)
 - [Finite linear output equivalence](docs/finite-linear-equivalence.md)
 - [Compiled linear circuits and Hoare invariants](docs/linear-circuit-equivalence.md)
 - [Standalone proof checker](docs/checker.md)
