@@ -1,4 +1,4 @@
-import Gimle.Forseti.Fourier
+import Gimle.Forseti.Euler
 import Gimle.Asgard.Examples.EulerBand
 
 /-! Three-mode Euler, certified as a property of a typed Asgard feedback circuit.
@@ -32,12 +32,17 @@ def certified : Predicate 1 := fun output =>
 /-- A complete circuit contract: formal existence, uniqueness, and the certified
 band, truncation and local classical Euler property of every output. -/
 theorem euler_contract : Contract circuit admitted certified := by
-  apply (solution_contract .ogf 0 start).consequence (fun _ h => h)
+  apply (Gimle.Forseti.Euler.contract start ω₀_meanZero ω₀_isEven start_sizeLE geometric
+    (by norm_num) (by norm_num : (0 : ℝ) ≤ 1 / 6480) (by norm_num)).consequence
+    (fun _ h => h)
   intro output h
-  subst output
-  refine ⟨rfl, fun n => ⟨coeff_meanZero 0 n, coeff_isEven 0 n⟩, truncation, ?_, ?_⟩
-  · exact fun _ x ht => band x ht
-  · exact fun _ x ht => classical ht x
+  refine ⟨h.formal_eq, fun n => ⟨h.mean_zero n, h.even n⟩, ?_, ?_, ?_⟩
+  · rw [h.formal_eq]
+    exact truncation
+  · rw [h.formal_eq]
+    exact fun _ x ht => band x ht
+  · rw [h.formal_eq]
+    exact fun _ x ht => classical ht x
 
 #print axioms euler_contract
 
