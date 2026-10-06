@@ -121,3 +121,9 @@ The foundation milestone checks, including the concrete notebook field and an
 odd comparison solution. The broader theorem is not proved; the remaining
 physical-space estimates are listed above. No notebook or release-pin change
 has been made.
+
+### note · codex/ns_uniqueness · 2026-10-06T09:25:35Z
+
+Checked foundation checkpoint: [draft PR #48](https://github.com/arnovich/forseti-lean/pull/48),
+branch `feat/048_classical_vorticity_uniqueness`. Both builds passed. Releasing
+the claim with the task open; the broader PDE uniqueness outcome is unfinished.
