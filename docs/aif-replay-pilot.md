@@ -76,8 +76,9 @@ the other 2,959 intervals, the nonlinear coordinate and output bounds, either
 drift block, coverage, derivative identities, joins, existence, nonnegativity,
 local continuation or the original typed circuit. Even success here does not
 show that replay of the larger 5-by-5 drift coefficients scales acceptably.
-The next experiment must bind and replay a full drift polynomial, then measure
-whole-candidate cost before claiming the startup bound x2 <= 16/5. If explicit
+The [drift-box pilot](aif-drift-pilot.md) extends this experiment to a full
+drift polynomial. Whole-candidate cost still needs measuring before claiming
+the startup bound x2 <= 16/5. If explicit
 LDL literals dominate source size, a computable Lean proposal function could
 construct the square data from each target. Its output would still have to pass
 `WeightedSquares.Represents`; the proposal algorithm itself need not be trusted.
