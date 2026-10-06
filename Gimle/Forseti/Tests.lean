@@ -1,3 +1,6 @@
+import Gimle.Forseti.Tests.ClassicalElliptic
+import Gimle.Forseti.Tests.ClassicalUniqueness
+import Gimle.Forseti.Tests.ClassicalVorticity
 import Gimle.Forseti.Tests.MildVorticity
 import Gimle.Forseti.Tests.MildStream
 import Gimle.Forseti

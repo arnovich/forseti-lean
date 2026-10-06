@@ -329,7 +329,69 @@ convergence. `contract_with` conjoins a truncation or band with the full
 [Regression proofs](../Gimle/Forseti/Tests/MildVorticity.lean) reject a wrong
 initial slice and replacement of feedback by a wire, prove nonvacuous total
 existence with arbitrary higher boundary data, and cover both numerical
-conjunctions, zero data, zero viscosity and closed endpoints. No uniqueness
-among arbitrary classical fields, continuation or inviscid-limit result is
-asserted. Consumers must enroll the new imports and the audited release pair
-before these declarations are available to foreign-candidate checking.
+conjunctions, zero data, zero viscosity and closed endpoints. Classical
+uniqueness is supplied by the separate comparison theorem below. These
+contracts assert no continuation or inviscid-limit result. Consumers must enroll
+the new imports and the audited release pair before these declarations are available to foreign-candidate checking.
+
+
+## Independent classical vorticity fields
+
+[`ClassicalVorticity.Solves`](../Gimle/Forseti/ClassicalVorticity.lean) describes
+ordinary scalar fields and a periodic stream function on a closed time strip.
+It records spatial derivative witnesses, joint continuity, the vorticity PDE,
+and initial data. Time derivatives and the PDE are required only in the
+interior. Velocity is `(-ψ_y, ψ_x)` for periodic `ψ`, fixing the velocity’s
+spatial mean to zero; a spatially constant, continuous time-dependent gauge may be added
+to `ψ`. Competing fields need not have even symmetry or a stream
+representation.
+
+[`Solves.vorticity_unique`](../Gimle/Forseti/ClassicalVorticity/Uniqueness.lean)
+proves that two such solutions with the same initial vorticity, nonnegative
+viscosity, and common horizon `T ≥ 0` agree at every spatial point for
+`0 ≤ t ≤ T`. `Solves.velocity_unique` also identifies their velocities.
+The stream functions retain their spatially constant gauge freedom. The theorem
+compares existing classical solutions on their common interval; it supplies
+neither a longer existence interval nor a weak-solution uniqueness result.
+
+For the vorticity difference `d`, write `D(t)` for its normalized squared area
+integral over the period square. The proof derives, from the PDE and the stated
+regularity,
+
+```text
+D'(t) = -2ν average(|∇d|²) - 2 average(d (u₁-u₂)·∇ω₂),
+D'(t) ≤ (M + 2(2π)²) D(t),
+```
+
+where compactness supplies `M ≥ |∇ω₂|²` on the closed time-space cell.
+[`square_poincare`](../Gimle/Forseti/ClassicalVorticity/SquareEstimates.lean)
+and [`periodic_elliptic_estimate`](../Gimle/Forseti/ClassicalVorticity/SquareCalculus.lean)
+prove `average(|u₁-u₂|²) ≤ 2(2π)² D(t)` using a mean-subtracted stream function.
+[`SpatialCalculus`](../Gimle/Forseti/ClassicalVorticity/SpatialCalculus.lean)
+derives derivative periodicity and extends equality from the fundamental
+square to its whole covering space.
+[`TimeCalculus`](../Gimle/Forseti/ClassicalVorticity/TimeCalculus.lean)
+justifies differentiation under the integral; joint continuity supplies the
+uniform domination. [`EnergyCalculus`](../Gimle/Forseti/ClassicalVorticity/EnergyCalculus.lean)
+proves diffusion and incompressible transport cancellation. Finally,
+[`difference_eq_zero`](../Gimle/Forseti/ClassicalVorticity/Comparison.lean)
+uses the zero initial difference and closed-interval continuity. The energy
+estimate, elliptic estimate and gradient bound are proved consequences, not
+extra assumptions in `Solves`.
+
+`of_mild` puts every existing `IsMildClassicalSolution` in this independent
+class. [`MildComparison`](../Gimle/Forseti/ClassicalVorticity/MildComparison.lean)
+exposes comparison with a certified output and lifts it to the total mild Hoare
+contract. The concrete [Navier–Stokes example](../Gimle/Forseti/Examples/ClassicalNavierStokes.lean)
+therefore proves that every comparison solution for the notebook's three-mode
+data and viscosity `1/10` has `|ω| ≤ 3519/1000` and four-term truncation error
+at most `21/1024`, throughout `0 ≤ t ≤ 1/5760`. The notebook application's
+existing release pin is separate; this library change does not update it.
+
+[Uniqueness regressions](../Gimle/Forseti/Tests/ClassicalUniqueness.lean) cover
+that notebook field, zero viscosity, odd sine data, a continuous gauge with a
+time corner, a collapsed time interval, and spatial points outside the
+fundamental square. [Spatial regressions](../Gimle/Forseti/Tests/ClassicalElliptic.lean)
+exercise affine fields with both spatial derivatives and a periodic mixed mode.
+The earlier [class regressions](../Gimle/Forseti/Tests/ClassicalVorticity.lean)
+also reject wrong initial data and check the viscous sign.
