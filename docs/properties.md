@@ -294,3 +294,42 @@ Uniqueness here is of the formal stream. It does not assert uniqueness among
 arbitrary classical fields, global-time behavior, or convergence of the viscous
 time series. Building this optional module does not enroll it in an external
 checker's import allowlist or update the Python application's pinned release.
+
+## Mild vorticity circuit contracts
+
+[`Mild.Contract`](../Gimle/Forseti/Mild.lean) follows the same total relational
+contract pattern as the Fourier adapter: existence for every admitted input,
+uniqueness of its whole output, and a postcondition for every related output.
+Its consequence and sequential composition rules preserve all three. A missing
+feedback solution cannot certify a false postcondition.
+
+[`MildVorticity.contract`](../Gimle/Forseti/MildVorticity.lean) admits precisely
+inputs whose initial slice is the embedded finite Fourier profile `P`.
+Higher boundary slices are unrestricted. Its `Certified ν P T output` binds
+all conclusions to that output: equality to the entire Wild stream, evenness,
+mean zero, the initial field, absolute convergence on `[0,T]`, reconstruction
+from the summed Fourier coefficients, classical realization and spectral
+dissipation. Numerical parameters are proof premises, never part of admission.
+
+The classical time derivative and PDE hold on `(0,T)`. The initial time has a
+right derivative for `T>0`; spatial regularity and all required continuity
+hold on `[0,T]`. Spectral quantities use `Z=ΣW_k²`, `E=ΣW_k²/|k|²`, with zero
+inverse weight at the mean mode and no factor of one half. They satisfy
+`Z'=-2νΣ|k|²W_k²`, `E'=-2νZ` and are nonincreasing on the closed interval.
+
+`Table.euler_contract` and `Table.catalan_contract` prove the same certified
+postcondition using the two physical bounds. `Table.zero_contract` accepts
+aggregate cancellation, including the mean mode, at any nonnegative finite
+horizon and viscosity. Finite symmetry and zero-mean certificates are reused
+from `Euler.Table`. Zero viscosity uses the Euler-scale route; the Catalan
+route explicitly requires positive viscosity. Both require strict geometric
+convergence. `contract_with` conjoins a truncation or band with the full
+`Certified` property, so a band never silently drops convergence or the PDE.
+
+[Regression proofs](../Gimle/Forseti/Tests/MildVorticity.lean) reject a wrong
+initial slice and replacement of feedback by a wire, prove nonvacuous total
+existence with arbitrary higher boundary data, and cover both numerical
+conjunctions, zero data, zero viscosity and closed endpoints. No uniqueness
+among arbitrary classical fields, continuation or inviscid-limit result is
+asserted. Consumers must enroll the new imports and the audited release pair
+before these declarations are available to foreign-candidate checking.

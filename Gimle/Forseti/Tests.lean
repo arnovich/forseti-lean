@@ -1,3 +1,5 @@
+import Gimle.Forseti.Tests.MildVorticity
+import Gimle.Forseti.Tests.MildStream
 import Gimle.Forseti
 import Gimle.Forseti.Tests.LinearEnergy
 import Gimle.Forseti.Tests.Discrete

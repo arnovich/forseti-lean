@@ -33,15 +33,49 @@ standard-axiom audit, replay-path guard, panel review and CI pass before release
 
 ## Plan
 
-Reuse the existing relational contract abstraction with a mild-circuit
+Follow the existing total relational contract pattern with a mild-circuit
 adapter. Instantiate solution totality and uniqueness from Asgard, then package
 classical and dissipation results for the actual output. Reuse finite Fourier
 initial-table certificates from Euler. Export both rational bound constructors
 without making solver choices part of admission. Add regressions and docs,
 review with three roles, build and publish in dependency order.
 
+## Implementation and validation
+
+`Mild.Contract` supplies total existence, uniqueness, consequence and sequential
+composition over Asgard's actual typed circuit relation. `MildVorticity.Certified`
+binds the full Wild output, invariants, initial field, absolute convergence,
+Fourier reconstruction, classical solution and spectral dissipation to one
+postcondition. Both finite-table bound constructors and semantic-zero data are
+supported. `contract_with` preserves this guarantee for numerical claims.
+
+Focused regression proofs pass (3443 jobs), including wrong-initial and wire
+replacement rejection, nonvacuous existence, higher-boundary noise, both
+numerical conjunctions, ν=0, zero data and endpoints. Standard axiom reports
+only. Full build passes (3637 jobs), the optional equation demo passes (6811 jobs),
+all 18 path-guard tests pass and compiled artifacts contain no checkout paths.
+All three panel roles passed; the added exact carrier replay roots were also
+reviewed. CI and ordered publication remain pending.
+The Asgard development pin is reviewed task070 commit b7664107a3cc12477d6479015b0c5d5220b41813;
+publication will follow the ordered upstream merges and release.
+
 ## Conversation
 
 Development follows the reviewed Asgard task070 commit while earlier CI runs.
 The merge order remains replay repair, generalized Euler consumer, Asgard
 mild circuit/bounds/classical releases, then this contract and Python consumers.
+
+### note · codex/root · 2026-10-06T04:27:00Z
+
+Asgard PR35 passed CI and merged; v1.19.0 now pins commit
+411dfdffc44c37320f12b977fc60da7a3117a679. The reviewed source is unchanged.
+The final library pin is being rebuilt in two independent roots before the
+contract PR’s final CI. The independent Lean releases proceed while the
+Python consumers retain PR229 → PR230 → mild consumer merge order.
+
+### note · codex/root · 2026-10-06T04:28:00Z
+
+Final pin validation passes in both independent checkouts: full builds 3637
+jobs, optional builds 6811 jobs, all 326 owned compiled artifacts identical,
+no missing artifacts or checkout paths, exact certificate search and 18 tool
+tests pass. No Lean source changed from the reviewed candidate.
