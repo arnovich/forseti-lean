@@ -133,6 +133,9 @@ Earlier interrupted import attempts provide no proof acceptance/rejection result
 
 ## Next coverage gate
 
+The next increment is the [parameterized six-slab replay](aif-slab-coverage.md),
+covering representative slabs at each step size in the extreme eta bins.
+
 The candidate has eight eta bins and 370 intervals per bin: 40 intervals of
 width 1/200, 40 of width 1/50, and 290 of width 1/10. A later batch must cover
 multiple eta bins and all three step sizes, whose physical-time factors ds/dt

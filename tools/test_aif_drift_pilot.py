@@ -86,6 +86,25 @@ class DriftProposalTests(unittest.TestCase):
         self.assertEqual(polynomial[(0, 0)], F(2))
         self.assertEqual(sum(polynomial.values()), F(3))
 
+    def test_all_candidate_step_sizes_preserve_physical_slopes(self) -> None:
+        """Every mesh scale interpolates endpoint values and physical rates."""
+        for step in (F(1, 200), F(1, 50), F(1, 10)):
+            with self.subTest(step=step):
+                p = drift.hermite(F(2), F(3), F(5), F(7), step=step)
+                rate = drift.dt(p, step=step)
+                self.assertEqual(p[(0, 0)], 2)
+                self.assertEqual(sum(p.values()), 3)
+                self.assertEqual(rate[(0, 0)], 5)
+                self.assertEqual(sum(rate.values()), 7)
+                self.assertEqual(
+                    drift.dt({(1, 0): F(1)}, step=step), {(0, 0): 1 / step}
+                )
+        for step in (F(0), F(-1)):
+            with self.assertRaisesRegex(ValueError, "positive"):
+                drift.hermite(F(2), F(3), F(5), F(7), step=step)
+            with self.assertRaisesRegex(ValueError, "positive"):
+                drift.dt({}, step=step)
+
     def test_tensor_reconstruction_retains_both_axes(self) -> None:
         """Reconstruct a mixed degree-nine/degree-three polynomial exactly."""
         polynomial = {(0, 0): F(2), (9, 3): F(7, 11), (2, 1): F(-3, 5)}

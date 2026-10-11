@@ -47,19 +47,23 @@ def const(v: F | int) -> Poly:
     return {(0, 0): F(v)} if v else {}
 
 
-def hermite(a: F, b: F, c: F, d: F) -> Poly:
-    """Cubic interpolant over the fixed physical step 1/10."""
+def hermite(a: F, b: F, c: F, d: F, *, step: F = F(1, 10)) -> Poly:
+    """Cubic interpolant retaining physical endpoint slopes on a positive step."""
+    if step <= 0:
+        raise ValueError("step must be positive")
     return {
         (0, 0): a,
-        (1, 0): c / 10,
-        (2, 0): 3 * (b - a) - (2 * c + d) / 10,
-        (3, 0): 2 * (a - b) + (c + d) / 10,
+        (1, 0): step * c,
+        (2, 0): 3 * (b - a) - step * (2 * c + d),
+        (3, 0): 2 * (a - b) + step * (c + d),
     }
 
 
-def dt(p: Poly) -> Poly:
-    """Physical time derivative, ds/dt=10."""
-    return {(i - 1, j): 10 * i * v for (i, j), v in p.items() if i}
+def dt(p: Poly, *, step: F = F(1, 10)) -> Poly:
+    """Physical time derivative, ds/dt=1/step."""
+    if step <= 0:
+        raise ValueError("step must be positive")
+    return {(i - 1, j): i * v / step for (i, j), v in p.items() if i}
 
 
 def bernstein(p: Poly, a: int, b: int) -> F:
