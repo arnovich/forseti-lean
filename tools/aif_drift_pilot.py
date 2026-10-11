@@ -76,7 +76,33 @@ def bernstein(p: Poly, a: int, b: int) -> F:
     )
 
 
-def generate(candidate: Path) -> dict[str, str]:
+def certificate_source(
+    a: int, b: int, coefficients: list[list[F]], *, compact: bool = False
+) -> str:
+    """Render literal or computed proposals with the identical kernel check."""
+    if compact:
+        source = (
+            f"def cert_{a}_{b} : WeightedSquares {len(coefficients)} :=\n"
+            f"  Gimle.Forseti.RationalLDL.propose (coefficients {a} {b})\n\n"
+        )
+    else:
+        weights, rows = ldl(coefficients)
+        source = f"""def cert_{a}_{b} : WeightedSquares {len(coefficients)} where
+  count := {len(coefficients)}
+  weight := {vector(weights)}
+  vector := {matrix(rows)}
+
+"""
+    return source + f"""set_option maxRecDepth 100000 in
+set_option maxHeartbeats 8000000 in
+theorem valid_{a}_{b} : cert_{a}_{b}.Represents (coefficients {a} {b}) := by
+  unfold WeightedSquares.Represents
+  decide +kernel
+
+"""
+
+
+def generate(candidate: Path, *, compact: bool = False) -> dict[str, str]:
     """Bind the known candidate bytes and emit both complete endpoint families."""
     payload = candidate.read_bytes()
     if hashlib.sha256(payload).hexdigest() != CANDIDATE_SHA256:
@@ -178,7 +204,12 @@ def generate(candidate: Path) -> dict[str, str]:
             for a in range(10)
         ]
         source = "import Gimle.Forseti.Examples.AIFDriftModel\n\n"
-        source += "/-! Generated exact proposals; every target identity and square is checked. -/\n"
+        if compact:
+            source = "import Gimle.Forseti.RationalLDL\n" + source
+        source += (
+            "/-! Generated exact proposals; every target identity "
+            "and square is checked. -/\n"
+        )
         source += f"namespace Gimle.Forseti.Examples.AIFDrift{label}\n"
         source += "open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix\n"
         source += "open Gimle.Forseti.Examples.AIFDriftModel\n\n"
@@ -192,19 +223,7 @@ def generate(candidate: Path) -> dict[str, str]:
         )
         for a in range(10):
             for b in range(4):
-                weights, rows = ldl(matrices[a][b])
-                source += f"""def cert_{a}_{b} : WeightedSquares 5 where
-  count := 5
-  weight := {vector(weights)}
-  vector := {matrix(rows)}
-
-set_option maxRecDepth 100000 in
-set_option maxHeartbeats 8000000 in
-theorem valid_{a}_{b} : cert_{a}_{b}.Represents (coefficients {a} {b}) := by
-  unfold WeightedSquares.Represents
-  decide +kernel
-
-"""
+                source += certificate_source(a, b, matrices[a][b], compact=compact)
         source += "def certificates : Fin 10 → Fin 4 → WeightedSquares 5 :=\n  !["
         source += (
             ",\n    ".join(
@@ -263,9 +282,19 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--compact", action="store_true")
+    parser.add_argument("--output-directory", type=Path)
     args = parser.parse_args()
-    for name, source in generate(args.candidate).items():
-        path = ROOT / name
+    if args.compact and (
+        args.output_directory is None
+        or args.output_directory.resolve() == ROOT.resolve()
+    ):
+        parser.error("--compact requires a separate --output-directory")
+    destination = args.output_directory or ROOT
+    if not args.check:
+        destination.mkdir(parents=True, exist_ok=True)
+    for name, source in generate(args.candidate, compact=args.compact).items():
+        path = destination / name
         if args.check:
             if not path.is_file() or path.read_bytes() != source.encode("utf-8"):
                 raise SystemExit(f"generated {name} differs")

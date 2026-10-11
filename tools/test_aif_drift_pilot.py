@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from fractions import Fraction as F
+from io import StringIO
 from math import comb
 from pathlib import Path
 from unittest.mock import patch
@@ -14,6 +16,66 @@ import aif_drift_pilot as drift
 
 class DriftProposalTests(unittest.TestCase):
     """Check scaling, both polynomial axes and rejected input bytes."""
+
+    def test_compact_certificate_preserves_kernel_check(self) -> None:
+        """Compact proposals change data construction, never the validity rule."""
+        matrix = [[F(2), F(1)], [F(1), F(2)]]
+        literal = drift.certificate_source(0, 1, matrix, compact=False)
+        compact = drift.certificate_source(0, 1, matrix, compact=True)
+        proof = literal.partition("set_option")[2]
+        self.assertEqual(compact.partition("set_option")[2], proof)
+        self.assertIn("decide +kernel", proof)
+        self.assertIn("RationalLDL.propose (coefficients 0 1)", compact)
+        self.assertNotIn("weight :=", compact)
+
+    def test_compact_mode_requires_separate_output(self) -> None:
+        """An experiment cannot overwrite the checked literal pilot by default."""
+        for extra in ([], ["--output-directory", str(drift.ROOT)]):
+            with (
+                patch(
+                    "sys.argv", ["aif_drift_pilot.py", "unused.gz", "--compact", *extra]
+                ),
+                redirect_stderr(StringIO()),
+            ):
+                with self.assertRaises(SystemExit) as error:
+                    drift.main()
+            self.assertEqual(error.exception.code, 2)
+
+    def test_compact_check_never_creates_or_repairs_outputs(self) -> None:
+        """Check mode validates the selected representation without writing."""
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory) / "compact"
+            expected = "-- compact proposal\n"
+            with (
+                patch.object(
+                    drift, "generate", return_value={"Example.lean": expected}
+                ) as gen,
+                patch(
+                    "sys.argv",
+                    [
+                        "aif_drift_pilot.py",
+                        "unused.gz",
+                        "--compact",
+                        "--check",
+                        "--output-directory",
+                        str(destination),
+                    ],
+                ),
+            ):
+                with self.assertRaises(SystemExit):
+                    drift.main()
+                self.assertFalse(destination.exists())
+                destination.mkdir()
+                output = destination / "Example.lean"
+                output.write_text(expected)
+                stamp = output.stat().st_mtime_ns
+                drift.main()
+                self.assertEqual(output.stat().st_mtime_ns, stamp)
+                gen.assert_called_with(Path("unused.gz"), compact=True)
+                output.write_text("changed")
+                with self.assertRaises(SystemExit):
+                    drift.main()
+                self.assertEqual(output.read_text(), "changed")
 
     def test_hermite_physical_endpoint_derivatives(self) -> None:
         """Endpoint slopes are physical rates on a slab of width 1/10."""
