@@ -114,6 +114,22 @@ class SlabCoverageTests(unittest.TestCase):
         ):
             self.assertIn(f"  {field} := ![![({value} / 1), ({value+1} / 1)", source)
 
+    def test_polynomial_binding_uses_checked_model_identity(self) -> None:
+        """The optional backend replaces only the binding, retaining all certificates."""
+        zero_matrix = [[F(0) for _ in range(5)] for _ in range(5)]
+        tables = [[zero_matrix for _ in range(4)] for _ in range(10)]
+        for label, sign in (("Negative", -1), ("Positive", 1)):
+            source = coverage.endpoint_source(label, tables, polynomial_binding=True)
+            self.assertIn("theorem checked", source)
+            self.assertIn("RationalPolynomial.equivalent", source)
+            self.assertIn(f"AIFPolynomialBinding.block slab ({sign} * (3/200))", source)
+            self.assertIn("AIFPolynomialBinding.tensor coefficients", source)
+            self.assertIn("decide +kernel", source)
+            self.assertIn("AIFPolynomialBinding.binding slab", source)
+            self.assertIn("target_nonnegative certificates valid (binding s u)", source)
+            self.assertNotIn("ring1", source)
+            self.assertEqual(source.count("theorem valid_"), 40)
+
     def test_rejects_changed_candidate(self) -> None:
         """Different bytes never become a new candidate implicitly."""
         with tempfile.TemporaryDirectory() as directory:

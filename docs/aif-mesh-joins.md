@@ -110,3 +110,6 @@ throughout the mesh, initial containment, trajectory existence and the energy
 chain rule, original typed circuit binding, and terminal continuation. Endpoint
 agreement preserves energy at a join but does not itself prove that a trajectory
 stays inside the tube on either neighboring interval.
+
+The [polynomial-binding increment](aif-polynomial-binding.md) replaces repeated
+expanded bindings with shared algebra and per-slab rational equality checks.

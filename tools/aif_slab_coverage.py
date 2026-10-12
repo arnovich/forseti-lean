@@ -117,7 +117,12 @@ def coefficient_matrices(
     return result
 
 
-def endpoint_source(label: str, matrices: list[list[list[list[F]]]]) -> str:
+def endpoint_source(
+    label: str,
+    matrices: list[list[list[list[F]]]],
+    *,
+    polynomial_binding: bool = False,
+) -> str:
     """Bind every compact certificate to the independent parameterized model."""
     sign = -1 if label == "Negative" else 1
     source = f"namespace {label}\n"
@@ -144,12 +149,27 @@ def endpoint_source(label: str, matrices: list[list[list[list[F]]]]) -> str:
         "  intro i j\n  fin_cases i <;> fin_cases j\n"
     )
     source += "".join(f"  · exact valid_{a}_{b}\n" for a in range(10) for b in range(4))
-    # Select entries and normalize vector lookups and binomial constants before ring.
-    # Entry identities bind supplied Bernstein tables to the independent model.
-    source += (
-        "\nset_option maxRecDepth 100000 in\nset_option maxHeartbeats 16000000 in\n"
-    )
-    source += f"""theorem binding (s u : ℝ) :
+    if polynomial_binding:
+        source += f"""
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 16000000 in
+theorem checked : ∀ i j, RationalPolynomial.equivalent
+    (AIFPolynomialBinding.block slab ({sign} * (3/200)) i j)
+    (AIFPolynomialBinding.tensor coefficients i j) = true := by
+  intro i j
+  fin_cases i <;> fin_cases j <;> decide +kernel
+
+theorem binding (s u : ℝ) :
+    block slab s u ({sign} * (3/200)) = tensorMatrix coefficients s u := by
+  simpa using AIFPolynomialBinding.binding slab ({sign} * (3/200)) coefficients checked s u
+"""
+    else:
+        # Select entries and normalize vector lookups and binomial constants before ring.
+        # Entry identities bind supplied Bernstein tables to the independent model.
+        source += (
+            "\nset_option maxRecDepth 100000 in\nset_option maxHeartbeats 16000000 in\n"
+        )
+        source += f"""theorem binding (s u : ℝ) :
     block slab s u ({sign} * (3/200)) = tensorMatrix coefficients s u := by
   ext i j
   fin_cases i <;> fin_cases j <;>
@@ -162,7 +182,8 @@ def endpoint_source(label: str, matrices: list[list[list[list[F]]]]) -> str:
       Matrix.vecHead, Matrix.vecTail, metric, metricRate,
       center, centerRate, hermite, hermiteRate, eta,
       slab, basis, Nat.choose] <;> ring1
-
+"""
+    source += f"""
 theorem nonnegative (s u : ℝ) (hs : s ∈ Set.Icc (0 : ℝ) 1)
     (hu : u ∈ Set.Icc (0 : ℝ) 1) (x : Fin 5 → ℝ) :
     0 ≤ matrixForm (block slab s u ({sign} * (3/200))) x :=
@@ -174,7 +195,7 @@ end {label}
     return source
 
 
-def generate(candidate: Path) -> dict[str, str]:
+def generate(candidate: Path, *, polynomial_binding: bool = False) -> dict[str, str]:
     """Select the six declared slabs from the immutable candidate bytes."""
     payload = candidate.read_bytes()
     if hashlib.sha256(payload).hexdigest() != CANDIDATE_SHA256:
@@ -206,8 +227,11 @@ def generate(candidate: Path) -> dict[str, str]:
             [[F(v, denominator) for v in row] for row in raw[k][t]]
             for k, t in ((4, index), (4, index + 1), (5, index), (5, index + 1))
         ]
-        name = f"AIFCoverageBin{bin_index}Slab{index}"
+        prefix = "AIFPolynomial" if polynomial_binding else "AIFCoverage"
+        name = f"{prefix}Bin{bin_index}Slab{index}"
         source = "import Gimle.Forseti.Examples.AIFSlabModel\nimport Gimle.Forseti.RationalLDL\n\n"
+        if polynomial_binding:
+            source += "import Gimle.Forseti.Examples.AIFPolynomialBinding\n\n"
         source += f"/-! Candidate SHA-256: {CANDIDATE_SHA256}.\n"
         source += f"Bin {bin_index}, interval {index}: t in [{start},{end}], eta in [{eta_lo},{eta_hi}].\n"
         source += (
@@ -232,7 +256,9 @@ def generate(candidate: Path) -> dict[str, str]:
         for label, matrices in coefficient_matrices(
             vectors, metrics, step, eta_lo, eta_hi
         ).items():
-            source += endpoint_source(label, matrices)
+            source += endpoint_source(
+                label, matrices, polynomial_binding=polynomial_binding
+            )
         source += """
 theorem metric_symmetric (s : ℝ) (i j : Fin 4) :
     metric slab s i j = metric slab s j i := by
@@ -264,11 +290,12 @@ def main() -> None:
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--output-directory", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--polynomial-binding", action="store_true")
     args = parser.parse_args()
     destination = args.output_directory
     if destination.resolve() == drift.ROOT.resolve():
         parser.error("coverage experiments require a separate output directory")
-    outputs = generate(args.candidate)
+    outputs = generate(args.candidate, polynomial_binding=args.polynomial_binding)
     if not args.check:
         destination.mkdir(parents=True, exist_ok=True)
     for name, source in outputs.items():
