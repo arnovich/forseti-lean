@@ -95,3 +95,6 @@ time joins. Drift replay on the remaining slabs, coercivity and output bounds
 across the candidate, initial containment, trajectory existence and the energy
 chain rule,
 original typed circuit binding, and terminal continuation still require proofs.
+
+For selected polynomial-backed companions and the sixteen interior cells, see
+[interior tube containment](aif-interior-containment.md).

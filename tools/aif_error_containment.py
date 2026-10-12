@@ -1,20 +1,27 @@
 #!/usr/bin/env python3
-"""Generate metric-containment companions for the six checked AIF slab modules."""
+"""Generate metric-containment companions for selected checked AIF slab modules."""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-from aif_slab_coverage import SELECTIONS
+from aif_slab_coverage import SELECTIONS, parse_cell, validate_selections
 
 
-def generate() -> dict[str, str]:
+def generate(
+    *,
+    selections: tuple[tuple[int, int], ...] = SELECTIONS,
+    polynomial_binding: bool = False,
+) -> dict[str, str]:
     """Reuse imported slab data and drift proofs; Lean checks every new proposal."""
+    validate_selections(selections)
     outputs = {}
-    for b, i in SELECTIONS:
-        base = f"AIFCoverageBin{b}Slab{i}"
-        name = f"AIFContainmentBin{b}Slab{i}"
+    base_prefix = "AIFPolynomial" if polynomial_binding else "AIFCoverage"
+    prefix = "AIFPolynomialContainment" if polynomial_binding else "AIFContainment"
+    for b, i in selections:
+        base = f"{base_prefix}Bin{b}Slab{i}"
+        name = f"{prefix}Bin{b}Slab{i}"
         source = f"""import Gimle.Forseti.Examples.AIFSlabContainment
 import Gimle.Forseti.Examples.{base}
 
@@ -74,10 +81,24 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-directory", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--polynomial-binding", action="store_true")
+    parser.add_argument(
+        "--cell",
+        type=parse_cell,
+        action="append",
+        help="select BIN:SLAB; repeat for a batch (default: six representatives)",
+    )
     args = parser.parse_args()
+    try:
+        outputs = generate(
+            selections=tuple(args.cell) if args.cell is not None else SELECTIONS,
+            polynomial_binding=args.polynomial_binding,
+        )
+    except ValueError as error:
+        parser.error(str(error))
     if not args.check:
         args.output_directory.mkdir(parents=True, exist_ok=True)
-    for name, source in generate().items():
+    for name, source in outputs.items():
         path = args.output_directory / name
         if args.check:
             if not path.is_file() or path.read_bytes() != source.encode():

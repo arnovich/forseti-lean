@@ -87,3 +87,6 @@ receipts while comparing their contents exactly, rejecting compilation in
 verification-only logs, and requiring successful historical records before counting
 them. The prioritized synthesis is retained in `panel-review.json` alongside the
 verified evidence.
+
+The subsequent [interior tube containment](aif-interior-containment.md) increment
+supplies the error-coordinate bound from tube membership for these sixteen cells.
