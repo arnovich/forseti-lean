@@ -19,5 +19,31 @@ example : equivalent (AIFPolynomialBinding.tensor table 0 0)
 example : equivalent (AIFPolynomialBinding.tensor table 0 0)
     (power time 2) = false := by decide +kernel
 
+-- Unequal degrees, signed coefficients, and asymmetric matrix entries.
+private def signedTable : Fin 2 → Fin 3 → LinearEnergy.QMatrix 2 := fun a b =>
+  let v := (![![1, -1, 2], ![-2, 0, 3]] : Fin 2 → Fin 3 → ℚ) a b
+  ![![v, 2*v], ![-3*v, 0]]
+
+private def signedPolynomial : Poly :=
+  [⟨0, 0, 1⟩, ⟨0, 1, -4⟩, ⟨0, 2, 5⟩,
+    ⟨1, 0, -3⟩, ⟨1, 1, 8⟩, ⟨1, 2, -4⟩]
+
+example : equivalent (AIFPolynomialBinding.tensor signedTable 0 0)
+    signedPolynomial = true := by decide +kernel
+example : equivalent (AIFPolynomialBinding.tensor signedTable 0 1)
+    (mul (constant 2) signedPolynomial) = true := by decide +kernel
+example : equivalent (AIFPolynomialBinding.tensor signedTable 1 0)
+    (mul (constant (-3)) signedPolynomial) = true := by decide +kernel
+example : equivalent (AIFPolynomialBinding.tensor signedTable 1 1)
+    [] = true := by decide +kernel
+example : equivalent (AIFPolynomialBinding.tensor signedTable 0 0)
+    (neg signedPolynomial) = false := by decide +kernel
+
+-- Both degree-zero axes reduce to the single supplied rational coefficient.
+private def constantTable : Fin 1 → Fin 1 → LinearEnergy.QMatrix 1 :=
+  fun _ _ => ![![(-7/11)]]
+example : equivalent (AIFPolynomialBinding.tensor constantTable 0 0)
+    (constant (-7/11)) = true := by decide +kernel
+
 #print axioms AIFPolynomialBinding.binding
 end Gimle.Forseti.Tests.AIFPolynomialBinding

@@ -130,10 +130,11 @@ def bernsteinBasis (degree index : Nat) (v : Poly) : Poly :=
   constant (degree.choose index) ⊠ power v index ⊠
     power (constant 1 ⊞ ⊟v) (degree-index)
 
+/-- Collect each parameter row before multiplying by its time basis. -/
 def tensor {n td pd : Nat} (c : Fin (td+1) → Fin (pd+1) → QMatrix n)
     (i j : Fin n) : Poly :=
-  finSum fun a => finSum fun b =>
-    bernsteinBasis td a time ⊠ bernsteinBasis pd b parameter ⊠ constant (c a b i j)
+  finSum fun a => bernsteinBasis td a time ⊠
+    (finSum fun b => bernsteinBasis pd b parameter ⊠ constant (c a b i j))
 
 @[simp] theorem eval_bernsteinBasis (degree index : Nat) (v : Poly) (s u : ℝ) :
     eval (bernsteinBasis degree index v) s u = basis degree index (eval v s u) := by
@@ -141,7 +142,7 @@ def tensor {n td pd : Nat} (c : Fin (td+1) → Fin (pd+1) → QMatrix n)
 
 theorem eval_tensor {n td pd : Nat} (c : Fin (td+1) → Fin (pd+1) → QMatrix n)
     (s u : ℝ) (i j : Fin n) : eval (tensor c i j) s u = tensorMatrix c s u i j := by
-  simp [tensor, tensorMatrix, Finset.sum_apply]
+  simp [tensor, tensorMatrix, Finset.sum_apply, Finset.mul_sum, mul_assoc]
 
 /-- Only the small rational equality test depends on the concrete slab and table. -/
 theorem binding {td pd : Nat} (d : Slab) (ec : ℚ)

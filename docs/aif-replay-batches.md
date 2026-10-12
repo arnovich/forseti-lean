@@ -87,3 +87,5 @@ The full build (3,677 jobs, 732 allowed-only reports), demo (6,811 jobs, 63 repo
 and exact suspension checks pass. Mathematical-scope, Python-correctness and
 evidence reviews resolved the incomplete toolchain fingerprint, relative-import
 resolution, and verification-log matching findings; their regressions are included.
+
+For the subsequent measured optimization, see [factored Bernstein reconstruction](aif-factored-tensor.md). Its changed shared import requires fresh replay receipts.
