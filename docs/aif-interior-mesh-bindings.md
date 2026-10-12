@@ -92,3 +92,6 @@ The required panel reviewed mathematical scope, generator integration and
 evidence integrity, with no blockers. Its synthesis and the consolidated check
 record are retained as `panel-review.json` and `verification.json` in the evidence
 directory, alongside the complete logs.
+
+The [moving-energy chain rule](aif-energy-chain-rule.md) now supplies the derivative
+identity for a supplied solution. Tube invariance remains a separate obligation.
