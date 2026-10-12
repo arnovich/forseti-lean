@@ -89,3 +89,6 @@ evidence reviews resolved the incomplete toolchain fingerprint, relative-import
 resolution, and verification-log matching findings; their regressions are included.
 
 For the subsequent measured optimization, see [factored Bernstein reconstruction](aif-factored-tensor.md). Its changed shared import requires fresh replay receipts.
+
+For the subsequent two interior time slices across all parameter bins, see
+[interior drift batches](aif-interior-batches.md).
