@@ -88,7 +88,9 @@ Regression tests cover all three physical rates, both time endpoints, the upper
 eta endpoint, rejection of the old factor 10 on a fine slab, independent target
 entries at both endpoints, changed candidate bytes and nonmutating output checks.
 
-The explicit error-coordinate hypothesis still needs containment from the metric.
+This milestone retains an explicit error-coordinate hypothesis; the
+[containment increment](aif-error-containment.md) derives it from the metric on
+these same six slabs.
 The other 2,954 slabs, metric/output bounds, joins, initial containment, trajectory
 existence and energy chain rule, original typed circuit binding and terminal
 continuation remain separate obligations. Six representatives do not establish
