@@ -90,6 +90,8 @@ point, rejection of a zero-metric proposal for the required margin, and
 deterministic nonmutating companion generation.
 
 These six pointwise results do not establish containment along any trajectory.
-The remaining slabs, coercivity and output bounds across the candidate, slab
-joins, initial containment, trajectory existence and the energy chain rule,
+The [mesh increment](aif-mesh-joins.md) checks complete geometric coverage and
+time joins. Drift replay on the remaining slabs, coercivity and output bounds
+across the candidate, initial containment, trajectory existence and the energy
+chain rule,
 original typed circuit binding, and terminal continuation still require proofs.
