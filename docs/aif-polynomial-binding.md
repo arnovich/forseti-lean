@@ -97,3 +97,6 @@ The full-mesh replay remains a later obligation. These measurements do not
 establish throughput or drift coverage for the remaining 2,954 cells, metric and
 output bounds, or a trajectory theorem. The original checker and the default
 expanded-binding generator remain available for comparisons.
+
+For subsequent selected-cell runs and provenance-checked resume, see
+[resumable drift batches](aif-replay-batches.md).

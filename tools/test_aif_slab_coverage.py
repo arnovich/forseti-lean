@@ -83,9 +83,22 @@ class SlabCoverageTests(unittest.TestCase):
                 patch.object(coverage, "coefficient_matrices", return_value={}),
             ):
                 output = coverage.generate(path)
+                selected = coverage.generate(
+                    path, polynomial_binding=True, selections=((3, 40),)
+                )
         self.assertEqual(
             set(output),
             {f"AIFCoverageBin{b}Slab{i}.lean" for b in (0, 7) for i in (0, 40, 80)},
+        )
+        self.assertEqual(set(selected), {"AIFPolynomialBin3Slab40.lean"})
+        self.assertIn(
+            "loStart := ![(304000 / 1)", selected["AIFPolynomialBin3Slab40.lean"]
+        )
+        self.assertIn(
+            "loEnd := ![(304100 / 1)", selected["AIFPolynomialBin3Slab40.lean"]
+        )
+        self.assertIn(
+            "loStartSlope := ![(324000 / 1)", selected["AIFPolynomialBin3Slab40.lean"]
         )
         source = output["AIFCoverageBin7Slab40.lean"]
         for field, expected in (
@@ -129,6 +142,22 @@ class SlabCoverageTests(unittest.TestCase):
             self.assertIn("target_nonnegative certificates valid (binding s u)", source)
             self.assertNotIn("ring1", source)
             self.assertEqual(source.count("theorem valid_"), 40)
+
+    def test_selection_rejects_empty_duplicate_or_out_of_mesh_cells(self) -> None:
+        """A declared replay set cannot silently omit or duplicate a cell."""
+        for cells in (
+            (),
+            ((0, 0), (0, 0)),
+            ((-1, 0),),
+            ((8, 0),),
+            ((0, -1),),
+            ((0, 370),),
+            ((True, 0),),
+            ((0, 1.0),),
+        ):
+            with self.subTest(cells=cells), self.assertRaises(ValueError):
+                coverage.validate_selections(cells)
+        coverage.validate_selections(((0, 0), (7, 369)))
 
     def test_rejects_changed_candidate(self) -> None:
         """Different bytes never become a new candidate implicitly."""

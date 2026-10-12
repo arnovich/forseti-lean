@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a six-slab AIF coverage experiment; only Lean grants proof authority."""
+"""Generate selected AIF coverage cells; only Lean grants proof authority."""
 
 from __future__ import annotations
 
@@ -195,8 +195,41 @@ end {label}
     return source
 
 
-def generate(candidate: Path, *, polynomial_binding: bool = False) -> dict[str, str]:
-    """Select the six declared slabs from the immutable candidate bytes."""
+def validate_selections(selections: tuple[tuple[int, int], ...]) -> None:
+    """Require a nonempty set of distinct cells in the immutable 8-by-370 mesh."""
+    if not selections:
+        raise ValueError("select at least one mesh cell")
+    for cell in selections:
+        if (
+            not isinstance(cell, tuple)
+            or len(cell) != 2
+            or any(type(index) is not int for index in cell)
+        ):
+            raise ValueError("each cell requires integer bin and slab indices")
+        if not (0 <= cell[0] < 8 and 0 <= cell[1] < 370):
+            raise ValueError("cell lies outside the 8-by-370 mesh")
+    if len(set(selections)) != len(selections):
+        raise ValueError("duplicate mesh cells")
+
+
+def parse_cell(value: str) -> tuple[int, int]:
+    """Parse one explicit BIN:SLAB selection for argparse."""
+    try:
+        cell = tuple(map(int, value.split(":")))
+        validate_selections((cell,))
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+    return cell
+
+
+def generate(
+    candidate: Path,
+    *,
+    polynomial_binding: bool = False,
+    selections: tuple[tuple[int, int], ...] = SELECTIONS,
+) -> dict[str, str]:
+    """Render the declared cells from immutable candidate bytes."""
+    validate_selections(selections)
     payload = candidate.read_bytes()
     if hashlib.sha256(payload).hexdigest() != CANDIDATE_SHA256:
         raise ValueError("candidate SHA-256 mismatch")
@@ -205,7 +238,7 @@ def generate(candidate: Path, *, polynomial_binding: bool = False) -> dict[str, 
     edges = list(map(F, data["eta_edges"]))
     denominator = data["denominator"]
     output = {}
-    for bin_index, index in SELECTIONS:
+    for bin_index, index in selections:
         raw = data["tubes"][bin_index]
         start, end = (times[index], times[index + 1])
         step = end - start
@@ -291,11 +324,21 @@ def main() -> None:
     parser.add_argument("--output-directory", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--polynomial-binding", action="store_true")
+    parser.add_argument(
+        "--cell",
+        type=parse_cell,
+        action="append",
+        help="select BIN:SLAB; repeat for a batch (default: six representatives)",
+    )
     args = parser.parse_args()
     destination = args.output_directory
     if destination.resolve() == drift.ROOT.resolve():
         parser.error("coverage experiments require a separate output directory")
-    outputs = generate(args.candidate, polynomial_binding=args.polynomial_binding)
+    outputs = generate(
+        args.candidate,
+        polynomial_binding=args.polynomial_binding,
+        selections=tuple(args.cell) if args.cell is not None else SELECTIONS,
+    )
     if not args.check:
         destination.mkdir(parents=True, exist_ok=True)
     for name, source in outputs.items():
