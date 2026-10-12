@@ -48,3 +48,6 @@ No Lean warnings or errors remain; reported axioms are limited to `propext`,
 panel found no blockers. Logs, source/artifact hashes, the checking-environment
 fingerprint and review synthesis are retained under `.lake/aif_energy_chain_rule/`.
 Existing generated certificate modules were unchanged and were not replayed.
+
+The [local invariance theorem](aif-local-invariance.md) now uses this chain rule to
+preserve tube membership for a supplied solution on one certified slab.
