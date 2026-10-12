@@ -113,3 +113,6 @@ stays inside the tube on either neighboring interval.
 
 The [polynomial-binding increment](aif-polynomial-binding.md) replaces repeated
 expanded bindings with shared algebra and per-slab rational equality checks.
+
+For the subsequent sixteen polynomial-backed interior transports, see
+[interior mesh bindings](aif-interior-mesh-bindings.md).

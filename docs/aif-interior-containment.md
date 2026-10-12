@@ -89,3 +89,6 @@ warnings occur. The mathematical, integration and evidence panel found no remain
 blockers after the prerequisite-hash continuity and passed-batch acceptance checks
 were made explicit. The consolidated record and prioritized review are saved as
 `verification.json` and `panel-review.json` beside the proof evidence.
+
+The subsequent [interior mesh bindings](aif-interior-mesh-bindings.md) transport
+these sixteen in-tube drift results to their exact global-mesh entries.

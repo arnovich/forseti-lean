@@ -9,7 +9,9 @@ import json
 import re
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from fractions import Fraction
+from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
@@ -107,6 +109,124 @@ class MeshTests(unittest.TestCase):
                 change(altered)
                 with self.assertRaises(ValueError):
                     mesh.validate(altered)
+
+    def test_polynomial_binding_targets_exact_mesh_and_companion(self) -> None:
+        """Each equality and transport uses the same selected bin and interval."""
+        source = mesh.binding_source(7, 300, polynomial_binding=True)
+        self.assertIn(
+            "namespace Gimle.Forseti.Examples.AIFPolynomialMeshBindingBin7Slab300",
+            source,
+        )
+        self.assertIn(
+            "import Gimle.Forseti.Examples.AIFPolynomialContainmentBin7Slab300", source
+        )
+        self.assertIn(
+            "AIFCandidateMesh.mesh.slab 7 300 = AIFPolynomialBin7Slab300.slab", source
+        )
+        self.assertIn(
+            "exact AIFPolynomialContainmentBin7Slab300.drift_bound_in_tube t p e ht hp he",
+            source,
+        )
+        self.assertEqual(source.count("decide +kernel"), 1)
+        self.assertEqual(source.count("#print axioms"), 2)
+        self.assertNotIn("AIFCoverage", source)
+        self.assertNotIn("def slab", source)
+
+    def test_selected_output_keeps_geometry_and_can_emit_bindings_only(self) -> None:
+        """Selected bindings leave all ten shared geometric sources unchanged."""
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp) / "candidate.gz"
+            payload = gzip.compress(json.dumps(fixture()).encode())
+            candidate.write_bytes(payload)
+            cells = ((1, 200), (7, 300))
+            with patch.object(
+                mesh, "CANDIDATE_SHA256", hashlib.sha256(payload).hexdigest()
+            ):
+                default = mesh.generate(candidate)
+                full = mesh.generate(
+                    candidate, selections=cells, polynomial_binding=True
+                )
+                bindings = mesh.generate(
+                    candidate,
+                    selections=cells,
+                    polynomial_binding=True,
+                    bindings_only=True,
+                )
+            expected = {f"AIFPolynomialMeshBindingBin{b}Slab{i}.lean" for b, i in cells}
+            self.assertEqual(set(bindings), expected)
+            self.assertEqual({k: v for k, v in full.items() if k in expected}, bindings)
+            geometry = {k: v for k, v in default.items() if "Binding" not in k}
+            self.assertEqual(len(geometry), 10)
+            self.assertEqual(
+                {k: v for k, v in full.items() if k not in expected}, geometry
+            )
+            candidate.write_bytes(b"changed")
+            with self.assertRaisesRegex(ValueError, "SHA-256"):
+                mesh.generate(candidate, bindings_only=True)
+
+    def test_invalid_cells_fail_before_reading_or_writing(self) -> None:
+        """Empty, duplicate and invalid mesh selections never create output."""
+        for cells in ((), ((0, 0), (0, 0)), ((8, 0),), ((0, 370),), ((True, 0),)):
+            with self.subTest(cells=cells), self.assertRaises(ValueError):
+                mesh.generate(Path("missing.gz"), selections=cells)
+        with self.assertRaises(ValueError):
+            mesh.binding_source(-1, 300)
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "absent"
+            argv = [
+                "mesh",
+                "missing.gz",
+                "--output-directory",
+                str(output),
+                "--cell",
+                "1:200",
+                "--cell",
+                "1:200",
+            ]
+            with patch("sys.argv", argv), redirect_stderr(
+                StringIO()
+            ), self.assertRaises(SystemExit):
+                mesh.main()
+            self.assertFalse(output.exists())
+
+    def test_selected_cli_check_preserves_exact_bytes(self) -> None:
+        """The CLI emits only requested bindings and never repairs tampered bytes."""
+        with tempfile.TemporaryDirectory() as tmp:
+            candidate = Path(tmp) / "candidate.gz"
+            payload = gzip.compress(json.dumps(fixture()).encode())
+            candidate.write_bytes(payload)
+            output = Path(tmp) / "output"
+            argv = [
+                "mesh",
+                str(candidate),
+                "--output-directory",
+                str(output),
+                "--cell",
+                "7:300",
+                "--polynomial-binding",
+                "--bindings-only",
+            ]
+            with patch.object(
+                mesh, "CANDIDATE_SHA256", hashlib.sha256(payload).hexdigest()
+            ):
+                with patch("sys.argv", argv):
+                    mesh.main()
+                self.assertEqual(
+                    {p.name for p in output.iterdir()},
+                    {"AIFPolynomialMeshBindingBin7Slab300.lean"},
+                )
+                path = next(output.iterdir())
+                before = (path.read_bytes(), path.stat().st_mtime_ns)
+                with patch("sys.argv", argv + ["--check"]):
+                    mesh.main()
+                self.assertEqual(before, (path.read_bytes(), path.stat().st_mtime_ns))
+                altered = path.read_bytes().replace(b"\n", b"\r\n")
+                path.write_bytes(altered)
+                with patch("sys.argv", argv + ["--check"]), self.assertRaises(
+                    SystemExit
+                ):
+                    mesh.main()
+                self.assertEqual(path.read_bytes(), altered)
 
     def test_hash_and_nonmutating_check(self) -> None:
         """Only exact candidate bytes are decoded; check mode never writes."""

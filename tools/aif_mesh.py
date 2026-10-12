@@ -11,7 +11,7 @@ from fractions import Fraction as F
 from pathlib import Path
 
 from aif_metric_pilot import CANDIDATE_SHA256, matrix, vector
-from aif_slab_coverage import SELECTIONS
+from aif_slab_coverage import SELECTIONS, parse_cell, validate_selections
 
 
 def validate(data: dict) -> None:
@@ -170,17 +170,29 @@ end Gimle.Forseti.Examples.AIFCandidateMesh
 """
 
 
-def binding_source(b: int, i: int) -> str:
+def binding_source(b: int, i: int, *, polynomial_binding: bool = False) -> str:
     """Bind the new representation to each already checked drift slab exactly."""
-    name = f"AIFMeshBindingBin{b}Slab{i}"
-    old = f"AIFCoverageBin{b}Slab{i}"
+    validate_selections(((b, i),))
+    prefix = "AIFPolynomialMeshBinding" if polynomial_binding else "AIFMeshBinding"
+    base_prefix = "AIFPolynomial" if polynomial_binding else "AIFCoverage"
+    companion_prefix = (
+        "AIFPolynomialContainment" if polynomial_binding else "AIFContainment"
+    )
+    name = f"{prefix}Bin{b}Slab{i}"
+    old = f"{base_prefix}Bin{b}Slab{i}"
+    companion = f"{companion_prefix}Bin{b}Slab{i}"
     source = header(
         name,
         [
             "Gimle.Forseti.Examples.AIFCandidateMesh",
-            f"Gimle.Forseti.Examples.AIFContainmentBin{b}Slab{i}",
+            f"Gimle.Forseti.Examples.{companion}",
         ],
     )
+    if polynomial_binding:
+        source = source.replace(
+            "Geometry and joins only; no unverified drift certificate is assumed.",
+            "Exact slab binding and transport of an imported, checked in-tube drift theorem.",
+        )
     return source + f"""
 deriving instance DecidableEq for Slab
 
@@ -200,7 +212,7 @@ theorem drift_in_mesh (t p : ℝ) (e : Fin 4 → ℝ)
         (1/100) * (1/40000 - matrixForm (metric (AIFCandidateMesh.mesh.slab {b} {i})
           (timeCoordinate (AIFCandidateMesh.mesh.slab {b} {i}) t)) e) - 1/16000000 := by
   rw [slab_binding] at *
-  exact AIFContainmentBin{b}Slab{i}.drift_bound_in_tube t p e ht hp he
+  exact {companion}.drift_bound_in_tube t p e ht hp he
 
 #print axioms slab_binding
 #print axioms drift_in_mesh
@@ -208,20 +220,32 @@ end Gimle.Forseti.Examples.{name}
 """
 
 
-def generate(candidate: Path) -> dict[str, str]:
-    """Decode the immutable full candidate and generate all geometric modules."""
+def generate(
+    candidate: Path,
+    *,
+    selections: tuple[tuple[int, int], ...] = SELECTIONS,
+    polynomial_binding: bool = False,
+    bindings_only: bool = False,
+) -> dict[str, str]:
+    """Generate selected bindings and optional shared geometry from the fixed candidate."""
+    validate_selections(selections)
     payload = candidate.read_bytes()
     if hashlib.sha256(payload).hexdigest() != CANDIDATE_SHA256:
         raise ValueError("candidate SHA-256 mismatch")
     data = json.loads(gzip.decompress(payload))
     validate(data)
-    outputs = {"AIFMeshGeometry.lean": geometry_source(data)}
-    outputs.update({f"AIFMeshBin{b}.lean": bin_source(data, b) for b in range(8)})
-    outputs["AIFCandidateMesh.lean"] = root_source()
+    outputs = {}
+    if not bindings_only:
+        outputs["AIFMeshGeometry.lean"] = geometry_source(data)
+        outputs.update({f"AIFMeshBin{b}.lean": bin_source(data, b) for b in range(8)})
+        outputs["AIFCandidateMesh.lean"] = root_source()
+    prefix = "AIFPolynomialMeshBinding" if polynomial_binding else "AIFMeshBinding"
     outputs.update(
         {
-            f"AIFMeshBindingBin{b}Slab{i}.lean": binding_source(b, i)
-            for b, i in SELECTIONS
+            f"{prefix}Bin{b}Slab{i}.lean": binding_source(
+                b, i, polynomial_binding=polynomial_binding
+            )
+            for b, i in selections
         }
     )
     return outputs
@@ -233,8 +257,28 @@ def main() -> None:
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--output-directory", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--cell",
+        type=parse_cell,
+        action="append",
+        help="select BIN:SLAB; repeat for a batch (default: six representatives)",
+    )
+    parser.add_argument("--polynomial-binding", action="store_true")
+    parser.add_argument(
+        "--bindings-only",
+        action="store_true",
+        help="omit shared geometry and nodal modules",
+    )
     args = parser.parse_args()
-    outputs = generate(args.candidate)
+    try:
+        outputs = generate(
+            args.candidate,
+            selections=tuple(args.cell) if args.cell is not None else SELECTIONS,
+            polynomial_binding=args.polynomial_binding,
+            bindings_only=args.bindings_only,
+        )
+    except ValueError as error:
+        parser.error(str(error))
     if not args.check:
         args.output_directory.mkdir(parents=True, exist_ok=True)
     for name, source in outputs.items():
