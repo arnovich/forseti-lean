@@ -63,3 +63,8 @@ suspension checks. All reports use only `propext`, `Classical.choice` and
 integration and evidence panel found no blockers after validation and provenance
 checks. Its synthesis and the consolidated record are `panel-review.json` and
 `verification.json` in the evidence directory.
+
+The [mesh-composition theorem](aif-mesh-composition.md) now propagates local bounds
+through exact joins, and the saved shifted startup state has checked zero initial
+energy in all eight bins. Complete drift coverage and the remaining circuit and
+trajectory obligations are still required.
