@@ -1,0 +1,245 @@
+import Gimle.Forseti.Examples.GalerkinNS.T3
+import Gimle.Forseti.Examples.GalerkinNS.K5
+import Gimle.Forseti.Examples.GalerkinNS.B2
+import Gimle.Forseti.Examples.GalerkinNS.T3S
+
+/-! Coverage for the Galerkin members' trajectory contracts.
+
+These constants are a stable interface, named alike in each member; each
+`example` restates one with its exact statement so a change fails here rather
+than downstream. The axiom policy is asserted with `#guard_msgs`.
+The members are generated, so the names are the
+same in every member; T3 is pinned in full and the others by their contracts.
+-/
+
+namespace Gimle.Forseti.Tests.GalerkinNS
+
+open Gimle.Forseti.Trajectory
+open Gimle.Asgard
+
+/-! ### T3, in full -/
+
+example : Model.Body := Gimle.Forseti.Examples.GalerkinNS.T3.body
+example : Model.Evolution := Gimle.Forseti.Examples.GalerkinNS.T3.evolution
+example : Model.ContinuousModel Gimle.Forseti.Examples.GalerkinNS.T3.body
+    Gimle.Forseti.Examples.GalerkinNS.T3.evolution :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.compiled
+example : Fin Gimle.Forseti.Examples.GalerkinNS.T3.body.observations.length :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.energyIndex
+example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial = ![1, 1, 1] :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.initial_eq
+example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.outputs.circuit.run
+    Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial
+    Gimle.Forseti.Examples.GalerkinNS.T3.energyIndex = 17 / 10 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.energy_at_initial
+example : Fin Gimle.Forseti.Examples.GalerkinNS.T3.body.observations.length :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex
+example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.outputs.circuit.run
+    Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial
+    Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex = 3 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.enstrophy_at_initial
+
+example : Fin Gimle.Forseti.Examples.GalerkinNS.T3.body.observations.length :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.restIndex
+example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.outputs.circuit.run
+    Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial
+    Gimle.Forseti.Examples.GalerkinNS.T3.restIndex = 6 / 5 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.rest_at_initial
+
+/-! ### T3S, the same modes at `ν = 1/2` (`f/ν² = 4`, below the threshold) -/
+
+example : Model.ContinuousModel Gimle.Forseti.Examples.GalerkinNS.T3S.body
+    Gimle.Forseti.Examples.GalerkinNS.T3S.evolution :=
+  Gimle.Forseti.Examples.GalerkinNS.T3S.compiled
+example : Gimle.Forseti.Examples.GalerkinNS.T3S.compiled.initial = ![1, 1, 1] :=
+  Gimle.Forseti.Examples.GalerkinNS.T3S.initial_eq
+example : Gimle.Forseti.Examples.GalerkinNS.T3S.compiled.outputs.circuit.run
+    Gimle.Forseti.Examples.GalerkinNS.T3S.compiled.initial
+    Gimle.Forseti.Examples.GalerkinNS.T3S.restIndex = 6 / 5 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3S.rest_at_initial
+
+/-- Below the threshold: `K = 2/5`, `r = 2`, `γ = 2ν − K r = 1/5 > 0`. -/
+example : Gimle.Forseti.GalerkinNS.Family.couplingSum Gimle.Forseti.Examples.GalerkinNS.T3S.modes
+    Gimle.Forseti.Examples.GalerkinNS.T3S.forcedIndex = 2 / 5 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3S.couplingSum_eq
+
+/-- The unforced energy never exceeds its start value `6/5`, from the decay. -/
+example : Contract Gimle.Forseti.Examples.GalerkinNS.T3S.observed
+    Gimle.Forseti.Examples.GalerkinNS.T3S.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.T3S.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.T3S.evolution.time fun observation =>
+      0 ≤ observation Gimle.Forseti.Examples.GalerkinNS.T3S.restIndex ∧
+        observation Gimle.Forseti.Examples.GalerkinNS.T3S.restIndex ≤ 6 / 5) :=
+  Gimle.Forseti.Examples.GalerkinNS.T3S.rest_contract
+
+/-- And the same modes at `ν = 1/10` are above the threshold: with T3's `K = 2/5` and the
+ball `Z ≤ 26 ≤ 6²`, `γ = 2ν − K r = −11/5`. -/
+example : (2 * (1 / 10 : ℝ) - Gimle.Forseti.GalerkinNS.Family.couplingSum
+    Gimle.Forseti.Examples.GalerkinNS.T3.modes Gimle.Forseti.Examples.GalerkinNS.T3.forcedIndex * 6) < 0 := by
+  rw [Gimle.Forseti.Examples.GalerkinNS.T3.couplingSum_eq]
+  norm_num
+
+/-- The enstrophy ball `Z ≤ 26`, above the level `f²/(4ν²) = 25`. -/
+example : Contract Gimle.Forseti.Examples.GalerkinNS.T3.observed
+    Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.T3.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time fun observation =>
+      0 ≤ observation Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex ∧
+        observation Gimle.Forseti.Examples.GalerkinNS.T3.enstrophyIndex ≤ 26) :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.enstrophy_contract
+
+/-- No linear view: the contract is `Nonlinear`'s. -/
+example : Gimle.Forseti.Examples.GalerkinNS.T3.compiled.linear.isNone = true := by
+  decide +kernel
+
+example : ∃ state, Gimle.Forseti.Examples.GalerkinNS.T3.compiled.Realizes state :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.compiled_exists
+
+example : Gimle.Forseti.Examples.GalerkinNS.T3.admitted =
+    Initialized Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time (fun _ => True)
+      (· = Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial) := rfl
+
+example (input : Dynamics.Signal (0 + Gimle.Forseti.Examples.GalerkinNS.T3.evolution.states.length))
+    (admit : Gimle.Forseti.Examples.GalerkinNS.T3.admitted input)
+    (state : Dynamics.Signal Gimle.Forseti.Examples.GalerkinNS.T3.evolution.states.length) :
+    Gimle.Forseti.Examples.GalerkinNS.T3.compiled.feedback.Rel
+        Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time input state ↔
+      Gimle.Forseti.Examples.GalerkinNS.T3.compiled.Realizes state :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.feedback_reads input admit state
+
+example (t : ℝ) : t ∈ Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time.domain ↔ 0 ≤ t :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.domain_iff t
+
+example : Contract Gimle.Forseti.Examples.GalerkinNS.T3.observed
+    Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.T3.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time fun observation =>
+      0 ≤ observation Gimle.Forseti.Examples.GalerkinNS.T3.energyIndex ∧
+        observation Gimle.Forseti.Examples.GalerkinNS.T3.energyIndex ≤ 13) :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.energy_contract
+
+example : Gimle.Forseti.Examples.GalerkinNS.T3.admitted
+    (Dynamics.signalAppend Model.noDrivers fun _ =>
+      Gimle.Forseti.Examples.GalerkinNS.T3.compiled.initial) :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.declared_input_admitted
+
+example : ¬ Holds Gimle.Forseti.Examples.GalerkinNS.T3.observed
+    Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.T3.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.T3.evolution.time fun observation =>
+      observation Gimle.Forseti.Examples.GalerkinNS.T3.energyIndex ≤ 1) :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.refuted
+
+/-- The one triad's flows cancel with the energy weights and with weights one. -/
+example : (1 / 1 : ℝ) * (-3 / 20) + (1 / 2 : ℝ) * (2 / 5) + (1 / 5 : ℝ) * (-1 / 4) = 0 ∧
+    (-3 / 20 : ℝ) + (2 / 5) + (-1 / 4) = 0 :=
+  Gimle.Forseti.Examples.GalerkinNS.T3.triad_0
+
+/-- The trapped level exceeds the laminar energy `f²/(8ν²) = 25/2`, which the
+certificate needs strictly. -/
+example : Gimle.Forseti.Examples.GalerkinNS.T3.trapping.inner = 25 / 2 := rfl
+example : Gimle.Forseti.Examples.GalerkinNS.T3.trapping.bound = 13 := rfl
+
+/-! ### K5 and B2, by their contracts -/
+
+example : Contract Gimle.Forseti.Examples.GalerkinNS.K5.observed
+    Gimle.Forseti.Examples.GalerkinNS.K5.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.K5.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.K5.evolution.time fun observation =>
+      0 ≤ observation Gimle.Forseti.Examples.GalerkinNS.K5.energyIndex ∧
+        observation Gimle.Forseti.Examples.GalerkinNS.K5.energyIndex ≤ 13) :=
+  Gimle.Forseti.Examples.GalerkinNS.K5.energy_contract
+
+example : Gimle.Forseti.Examples.GalerkinNS.K5.compiled.initial = ![1, 1, 1, 1, 1] :=
+  Gimle.Forseti.Examples.GalerkinNS.K5.initial_eq
+
+example : Contract Gimle.Forseti.Examples.GalerkinNS.B2.observed
+    Gimle.Forseti.Examples.GalerkinNS.B2.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.B2.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.B2.evolution.time fun observation =>
+      0 ≤ observation Gimle.Forseti.Examples.GalerkinNS.B2.energyIndex ∧
+        observation Gimle.Forseti.Examples.GalerkinNS.B2.energyIndex ≤ 313) :=
+  Gimle.Forseti.Examples.GalerkinNS.B2.energy_contract
+
+example : Gimle.Forseti.Examples.GalerkinNS.B2.trapping.inner = 625 / 2 := rfl
+
+example : ¬ Holds Gimle.Forseti.Examples.GalerkinNS.B2.observed
+    Gimle.Forseti.Examples.GalerkinNS.B2.evolution.time
+    Gimle.Forseti.Examples.GalerkinNS.B2.admitted
+    (Always Gimle.Forseti.Examples.GalerkinNS.B2.evolution.time fun observation =>
+      observation Gimle.Forseti.Examples.GalerkinNS.B2.energyIndex ≤ 1) :=
+  Gimle.Forseti.Examples.GalerkinNS.B2.refuted
+
+/-! ### The axiom policy, asserted -/
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.energy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.T3.energy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.energy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.K5.energy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.energy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.B2.energy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.refuted'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.B2.refuted
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.energy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.T3S.energy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.enstrophy_contract'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.T3S.enstrophy_contract
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3.couplingSum_eq'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.T3.couplingSum_eq
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.K5.couplingSum_eq'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.K5.couplingSum_eq
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.B2.couplingSum_eq'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.B2.couplingSum_eq
+
+/--
+info: 'Gimle.Forseti.Examples.GalerkinNS.T3S.couplingSum_eq'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in
+#print axioms Gimle.Forseti.Examples.GalerkinNS.T3S.couplingSum_eq
+
+end Gimle.Forseti.Tests.GalerkinNS
