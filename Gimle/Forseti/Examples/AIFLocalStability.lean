@@ -1,0 +1,168 @@
+import Gimle.Forseti.Examples.AIFInvariance
+import Gimle.Forseti.Examples.AIFPhysicalCoordinates
+
+/-! Fixed local Lyapunov region for the shifted AIF field.
+The rational quadratic and its four endpoint square certificates come from
+Task 243's AifLocal research evidence. All identities are checked again here.
+Entry into this region is a premise; the startup-to-local join is separate. -/
+namespace Gimle.Forseti.Examples.AIFLocalStability
+noncomputable section
+set_option maxHeartbeats 4000000
+def energy (a b c d : ℝ) : ℝ := (11399 / 50000 : ℝ) * a * a + (8053 / 25000 : ℝ) * a * b + (-6353 / 50000 : ℝ) * a * c + (19 / 2500 : ℝ) * a * d + (32597 / 100000 : ℝ) * b * b + (-3073 / 6250 : ℝ) * b * c + (-19 / 10000 : ℝ) * b * d + (19513 / 50000 : ℝ) * c * c + (-13 / 625 : ℝ) * c * d + (5579 / 100000 : ℝ) * d * d
+def normSq (a b c d : ℝ) : ℝ := a^2 + b^2 + c^2 + d^2
+def rate (e s a b c d : ℝ) : ℝ := 2 * ((11399 / 50000 : ℝ) * a + (8053 / 50000 : ℝ) * b + (-6353 / 100000 : ℝ) * c + (19 / 5000 : ℝ) * d) * (-a+c) + 2 * ((8053 / 50000 : ℝ) * a + (32597 / 100000 : ℝ) * b + (-3073 / 12500 : ℝ) * c + (-19 / 20000 : ℝ) * d) * (a-b) + 2 * ((-6353 / 100000 : ℝ) * a + (-3073 / 12500 : ℝ) * b + (19513 / 50000 : ℝ) * c + (-13 / 1250 : ℝ) * d) * (-c-(2+s)*d) + 2 * ((19 / 5000 : ℝ) * a + (-19 / 20000 : ℝ) * b + (-13 / 1250 : ℝ) * c + (5579 / 100000 : ℝ) * d) * (e*(b-c-(2+s)*d))
+lemma positive_0 (a b c d : ℝ) : 0 ≤ energy a b c d - (1/25)*normSq a b c d := by
+  have h : (0 : ℝ) ≤ (9399 / 50000 : ℝ) * ((1 / 1 : ℝ) * a + (8053 / 9399 : ℝ) * b + (-6353 / 18798 : ℝ) * c + (190 / 9399 : ℝ) * d) ^ 2 + (27816317 / 187980000 : ℝ) * ((1 / 1 : ℝ) * b + (-179904307 / 139081585 : ℝ) * c + (-790609 / 27816317 : ℝ) * d) ^ 2 + (2258685630383 / 27816317000000 : ℝ) * ((1 / 1 : ℝ) * c + (-404895317070 / 2258685630383 : ℝ) * d) ^ 2 + (1466373391368741 / 112934281519150000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by positivity
+  have hi : energy a b c d - (1/25)*normSq a b c d = (9399 / 50000 : ℝ) * ((1 / 1 : ℝ) * a + (8053 / 9399 : ℝ) * b + (-6353 / 18798 : ℝ) * c + (190 / 9399 : ℝ) * d) ^ 2 + (27816317 / 187980000 : ℝ) * ((1 / 1 : ℝ) * b + (-179904307 / 139081585 : ℝ) * c + (-790609 / 27816317 : ℝ) * d) ^ 2 + (2258685630383 / 27816317000000 : ℝ) * ((1 / 1 : ℝ) * c + (-404895317070 / 2258685630383 : ℝ) * d) ^ 2 + (1466373391368741 / 112934281519150000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by
+    dsimp [energy, normSq, rate]
+    ring
+  linarith only [h, hi]
+lemma positive_1 (a b c d : ℝ) : 0 ≤ -rate (8 / 1 : ℝ) (-1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d := by
+  have h : (0 : ℝ) ≤ (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-3425 / 9384 : ℝ) * b + (-985 / 1173 : ℝ) * c + (-8989 / 18768 : ℝ) * d) ^ 2 + (576777551 / 938400000 : ℝ) * ((1 / 1 : ℝ) * b + (-568577176 / 576777551 : ℝ) * c + (-1583707949 / 1153555102 : ℝ) * d) ^ 2 + (1087896918877 / 28838877550000 : ℝ) * ((1 / 1 : ℝ) * c + (667088614394 / 1087896918877 : ℝ) * d) ^ 2 + (16004092162125327 / 217579383775400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by positivity
+  have hi : -rate (8 / 1 : ℝ) (-1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d = (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-3425 / 9384 : ℝ) * b + (-985 / 1173 : ℝ) * c + (-8989 / 18768 : ℝ) * d) ^ 2 + (576777551 / 938400000 : ℝ) * ((1 / 1 : ℝ) * b + (-568577176 / 576777551 : ℝ) * c + (-1583707949 / 1153555102 : ℝ) * d) ^ 2 + (1087896918877 / 28838877550000 : ℝ) * ((1 / 1 : ℝ) * c + (667088614394 / 1087896918877 : ℝ) * d) ^ 2 + (16004092162125327 / 217579383775400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by
+    dsimp [energy, normSq, rate]
+    ring
+  linarith only [h, hi]
+lemma positive_2 (a b c d : ℝ) : 0 ≤ -rate (8 / 1 : ℝ) (1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d := by
+  have h : (0 : ℝ) ≤ (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-3425 / 9384 : ℝ) * b + (-985 / 1173 : ℝ) * c + (-5205 / 6256 : ℝ) * d) ^ 2 + (576777551 / 938400000 : ℝ) * ((1 / 1 : ℝ) * b + (-568577176 / 576777551 : ℝ) * c + (-2082058191 / 1153555102 : ℝ) * d) ^ 2 + (1087896918877 / 28838877550000 : ℝ) * ((1 / 1 : ℝ) * c + (1171283641120 / 1087896918877 : ℝ) * d) ^ 2 + (6225500909100931 / 217579383775400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by positivity
+  have hi : -rate (8 / 1 : ℝ) (1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d = (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-3425 / 9384 : ℝ) * b + (-985 / 1173 : ℝ) * c + (-5205 / 6256 : ℝ) * d) ^ 2 + (576777551 / 938400000 : ℝ) * ((1 / 1 : ℝ) * b + (-568577176 / 576777551 : ℝ) * c + (-2082058191 / 1153555102 : ℝ) * d) ^ 2 + (1087896918877 / 28838877550000 : ℝ) * ((1 / 1 : ℝ) * c + (1171283641120 / 1087896918877 : ℝ) * d) ^ 2 + (6225500909100931 / 217579383775400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by
+    dsimp [energy, normSq, rate]
+    ring
+  linarith only [h, hi]
+lemma positive_3 (a b c d : ℝ) : 0 ≤ -rate (12 / 1 : ℝ) (-1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d := by
+  have h : (0 : ℝ) ≤ (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-215 / 408 : ℝ) * b + (-265 / 391 : ℝ) * c + (-4429 / 18768 : ℝ) * d) ^ 2 + (24834217 / 40800000 : ℝ) * ((1 / 1 : ℝ) * b + (-23372472 / 24834217 : ℝ) * c + (-87145499 / 49668434 : ℝ) * d) ^ 2 + (1020674930557 / 28559349550000 : ℝ) * ((1 / 1 : ℝ) * c + (952794769769 / 1020674930557 : ℝ) * d) ^ 2 + (5529585028452387 / 204134986111400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by positivity
+  have hi : -rate (12 / 1 : ℝ) (-1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d = (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-215 / 408 : ℝ) * b + (-265 / 391 : ℝ) * c + (-4429 / 18768 : ℝ) * d) ^ 2 + (24834217 / 40800000 : ℝ) * ((1 / 1 : ℝ) * b + (-23372472 / 24834217 : ℝ) * c + (-87145499 / 49668434 : ℝ) * d) ^ 2 + (1020674930557 / 28559349550000 : ℝ) * ((1 / 1 : ℝ) * c + (952794769769 / 1020674930557 : ℝ) * d) ^ 2 + (5529585028452387 / 204134986111400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by
+    dsimp [energy, normSq, rate]
+    ring
+  linarith only [h, hi]
+lemma positive_4 (a b c d : ℝ) : 0 ≤ -rate (12 / 1 : ℝ) (1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d := by
+  have h : (0 : ℝ) ≤ (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-215 / 408 : ℝ) * b + (-265 / 391 : ℝ) * c + (-8015 / 18768 : ℝ) * d) ^ 2 + (24834217 / 40800000 : ℝ) * ((1 / 1 : ℝ) * b + (-23372472 / 24834217 : ℝ) * c + (-108907273 / 49668434 : ℝ) * d) ^ 2 + (1020674930557 / 28559349550000 : ℝ) * ((1 / 1 : ℝ) * c + (1018962750385 / 1020674930557 : ℝ) * d) ^ 2 + (56382711164578711 / 204134986111400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by positivity
+  have hi : -rate (12 / 1 : ℝ) (1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d = (1173 / 12500 : ℝ) * ((1 / 1 : ℝ) * a + (-215 / 408 : ℝ) * b + (-265 / 391 : ℝ) * c + (-8015 / 18768 : ℝ) * d) ^ 2 + (24834217 / 40800000 : ℝ) * ((1 / 1 : ℝ) * b + (-23372472 / 24834217 : ℝ) * c + (-108907273 / 49668434 : ℝ) * d) ^ 2 + (1020674930557 / 28559349550000 : ℝ) * ((1 / 1 : ℝ) * c + (1018962750385 / 1020674930557 : ℝ) * d) ^ 2 + (56382711164578711 / 204134986111400000 : ℝ) * ((1 / 1 : ℝ) * d) ^ 2 := by
+    dsimp [energy, normSq, rate]
+    ring
+  linarith only [h, hi]
+lemma local_decrease (e a b c d : ℝ)
+    (he0 : 8 ≤ e) (he1 : e ≤ 12) (hc0 : -(1/2 : ℝ) ≤ c)
+    (hc1 : c ≤ (1/2 : ℝ)) : rate e c a b c d ≤ -(1/25)*normSq a b c d := by
+  have w0 : (0 : ℝ) ≤ ((12-e)/4)*(1/2-c) := mul_nonneg (by linarith) (by linarith)
+  have h0 := mul_nonneg w0 (positive_1 a b c d)
+  have w1 : (0 : ℝ) ≤ ((12-e)/4)*(c+1/2) := mul_nonneg (by linarith) (by linarith)
+  have h1 := mul_nonneg w1 (positive_2 a b c d)
+  have w2 : (0 : ℝ) ≤ ((e-8)/4)*(1/2-c) := mul_nonneg (by linarith) (by linarith)
+  have h2 := mul_nonneg w2 (positive_3 a b c d)
+  have w3 : (0 : ℝ) ≤ ((e-8)/4)*(c+1/2) := mul_nonneg (by linarith) (by linarith)
+  have h3 := mul_nonneg w3 (positive_4 a b c d)
+  have hi : -rate e c a b c d - (1/25)*normSq a b c d = (((12-e)/4)*(1/2-c)) * (-rate (8 / 1 : ℝ) (-1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d) + (((12-e)/4)*(c+1/2)) * (-rate (8 / 1 : ℝ) (1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d) + (((e-8)/4)*(1/2-c)) * (-rate (12 / 1 : ℝ) (-1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d) + (((e-8)/4)*(c+1/2)) * (-rate (12 / 1 : ℝ) (1 / 2 : ℝ) a b c d - (1/25)*normSq a b c d) := by
+    unfold rate normSq
+    ring
+  linarith only [h0, h1, h2, h3, hi]
+theorem local_bounds (e a b c d : ℝ) (he0 : 8 ≤ e) (he1 : e ≤ 12)
+    (hV : energy a b c d ≤ (1/100 : ℝ)) :
+    (1/25 : ℝ)*normSq a b c d ≤ energy a b c d ∧
+    c^2 ≤ (1/4 : ℝ) ∧ b^2 ≤ (1/4 : ℝ) ∧
+    rate e c a b c d ≤ -(1/25)*normSq a b c d := by
+  have hp := positive_0 a b c d
+  have hc : c^2 ≤ (1/4 : ℝ) := by
+    unfold normSq at hp
+    nlinarith only [hp, hV, sq_nonneg a, sq_nonneg b, sq_nonneg d]
+  have hb : b^2 ≤ (1/4 : ℝ) := by
+    unfold normSq at hp
+    nlinarith only [hp, hV, sq_nonneg a, sq_nonneg c, sq_nonneg d]
+  have hc0 : -(1/2 : ℝ) ≤ c := by nlinarith [sq_nonneg (c + 1/2)]
+  have hc1 : c ≤ (1/2 : ℝ) := by nlinarith [sq_nonneg (c - 1/2)]
+  exact ⟨by linarith, hc, hb, local_decrease e a b c d he0 he1 hc0 hc1⟩
+
+
+
+/-- The local quadratic is bounded above by the Euclidean squared norm. -/
+theorem energy_le_normSq (a b c d : ℝ) : energy a b c d ≤ normSq a b c d := by
+  unfold energy normSq
+  nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg c, sq_nonneg d,
+    sq_nonneg (a-b), sq_nonneg (a+c), sq_nonneg (a-d),
+    sq_nonneg (b+c), sq_nonneg (b+d), sq_nonneg (c+d)]
+
+/-- The polynomial rate is the derivative along the actual shifted vector field. -/
+theorem energy_derivative (eta : ℝ) (state : ℝ → Fin 4 → ℝ)
+    (domain : Set ℝ) (t : ℝ)
+    (hx : ∀ i, HasDerivWithinAt (fun s => state s i)
+      (AIFDriftModel.field eta (state t) i) domain t) :
+    HasDerivWithinAt
+      (fun s => energy (state s 0) (state s 1) (state s 2) (state s 3))
+      (rate eta (state t 2) (state t 0) (state t 1) (state t 2) (state t 3))
+      domain t := by
+  have h00 := ((hx 0).mul (hx 0)).const_mul (11399/50000)
+  have h01 := ((hx 0).mul (hx 1)).const_mul (8053/25000)
+  have h02 := ((hx 0).mul (hx 2)).const_mul (-6353/50000)
+  have h03 := ((hx 0).mul (hx 3)).const_mul (19/2500)
+  have h11 := ((hx 1).mul (hx 1)).const_mul (32597/100000)
+  have h12 := ((hx 1).mul (hx 2)).const_mul (-3073/6250)
+  have h13 := ((hx 1).mul (hx 3)).const_mul (-19/10000)
+  have h22 := ((hx 2).mul (hx 2)).const_mul (19513/50000)
+  have h23 := ((hx 2).mul (hx 3)).const_mul (-13/625)
+  have h33 := ((hx 3).mul (hx 3)).const_mul (5579/100000)
+  have h := (((((((((h00.add h01).add h02).add h03).add h11).add h12).add h13).add h22).add h23).add h33)
+  convert! h using 1
+  · funext s
+    dsimp [energy]
+    ring
+  · dsimp [rate, AIFDriftModel.field]
+    ring
+
+/-- Any supplied shifted solution entering the local region stays there through
+both closed endpoints. Fixed eta ranges over the complete interval [8,12]. -/
+theorem invariant (eta : ℝ) (heta : eta ∈ Set.Icc (8 : ℝ) 12)
+    (state : ℝ → Fin 4 → ℝ) (a b : ℝ)
+    (derivative : ∀ t ∈ Set.Icc a b, ∀ i,
+      HasDerivWithinAt (fun s => state s i) (AIFDriftModel.field eta (state t) i)
+        (Set.Icc a b) t)
+    (entry : energy (state a 0) (state a 1) (state a 2) (state a 3) ≤ 1/100) :
+    ∀ t ∈ Set.Icc a b,
+      energy (state t 0) (state t 1) (state t 2) (state t 3) ≤ 1/100 := by
+  apply AIFInvariance.sublevel_of_boundary_derivative
+    (fun t => energy (state t 0) (state t 1) (state t 2) (state t 3))
+    (fun t => rate eta (state t 2) (state t 0) (state t 1) (state t 2) (state t 3))
+    a b (1/100)
+  · intro t ht
+    exact energy_derivative eta state _ t (derivative t ht)
+  · exact entry
+  · intro t _ hb
+    have h := (local_bounds eta (state t 0) (state t 1) (state t 2) (state t 3)
+      heta.1 heta.2 (le_of_eq hb)).2.2.2
+    have hupper := energy_le_normSq (state t 0) (state t 1) (state t 2) (state t 3)
+    linarith
+
+/-- Local membership alone bounds the observed shifted coordinate. -/
+theorem shifted_output_bound (a b c d : ℝ) (h : energy a b c d ≤ 1/100) :
+    b ≤ 1/2 := by
+  have hp := positive_0 a b c d
+  unfold normSq at hp
+  nlinarith [sq_nonneg a, sq_nonneg c, sq_nonneg d, sq_nonneg (b-1/2)]
+
+/-- After an explicit local entry, every supplied original physical solution has
+x2 at most 5/2. This theorem does not assert entry from the zero initial state. -/
+theorem physical_output_bound (eta : ℝ) (heta : eta ∈ Set.Icc (8 : ℝ) 12)
+    (state : ℝ → Fin 4 → ℝ) (a b : ℝ)
+    (derivative : ∀ t ∈ Set.Icc a b, ∀ i,
+      HasDerivWithinAt (fun s => state s i)
+        (AIFPhysicalCoordinates.physicalField eta (state t) i) (Set.Icc a b) t)
+    (entry : energy (AIFPhysicalCoordinates.shift eta (state a) 0)
+      (AIFPhysicalCoordinates.shift eta (state a) 1)
+      (AIFPhysicalCoordinates.shift eta (state a) 2)
+      (AIFPhysicalCoordinates.shift eta (state a) 3) ≤ 1/100) :
+    ∀ t ∈ Set.Icc a b, state t 1 ≤ 5/2 := by
+  have hi := invariant eta heta (fun t => AIFPhysicalCoordinates.shift eta (state t))
+    a b (fun t ht => AIFPhysicalCoordinates.shift_derivative eta state _ t
+      (derivative t ht)) entry
+  intro t ht
+  have h := shifted_output_bound _ _ _ _ (hi t ht)
+  simp only [AIFPhysicalCoordinates.shift, Matrix.cons_val_one, Matrix.cons_val_zero] at h
+  linarith
+
+#print axioms local_bounds
+#print axioms energy_le_normSq
+#print axioms energy_derivative
+#print axioms invariant
+#print axioms shifted_output_bound
+#print axioms physical_output_bound
+end
+end Gimle.Forseti.Examples.AIFLocalStability
