@@ -44,6 +44,8 @@ example : Contract observed evolution.time admitted
 
 example : admitted witnessInput := witness_input_admitted
 
+example : evolution.Admitted drivers (fun _ _ => 0) := zero_admitted
+
 example {d : Dynamics.Signal width} (admit : evolution.Admitted drivers d) :
     ∃ state, compiled.Realizes d state := compiled_exists admit
 
