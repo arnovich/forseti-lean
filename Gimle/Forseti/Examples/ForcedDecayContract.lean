@@ -287,6 +287,10 @@ theorem admitted_of {d : Signal width} (hcont : Continuous fun t => d t uIndex)
   subst hp
   exact ⟨duIndex, index_du, fun t _ => (hderiv t).hasDerivWithinAt⟩
 
+/-- The zero driver, with its zero derivative, is admitted. -/
+theorem zero_admitted : evolution.Admitted drivers (fun _ _ => 0) :=
+  admitted_of continuous_const (fun t => hasDerivAt_const t 0)
+
 /-- `u = sin`, `du = cos`. -/
 noncomputable def sinDrivers : Signal width :=
   fun t i => if i.val = 0 then Real.sin t else Real.cos t

@@ -56,6 +56,23 @@ theorem exists_solution {n : Nat} (L : Point n →L[ℝ] Point n)
     rw [cancelled]
     rfl
 
+/-- A forcing continuous on the forward half-line has a solution there from any
+initial value: the forcing is frozen at its start value for earlier times, which
+makes it continuous on the whole line without changing it on the domain. -/
+theorem exists_solution_on {n : Nat} (L : Point n →L[ℝ] Point n)
+    (forcing : Signal n) (start : ℝ) (continuous : ContinuousOn forcing (Set.Ici start))
+    (initial : Point n) :
+    ∃ state : Signal n, state start = initial ∧
+      ∀ t ∈ Set.Ici start, ∀ i, HasDerivWithinAt (fun t => state t i)
+        ((L (state t) + forcing t) i) (Set.Ici start) t := by
+  have frozen : Continuous fun t => forcing (max t start) :=
+    continuous.comp_continuous (continuous_id.max continuous_const)
+      (fun t => le_max_right t start)
+  obtain ⟨state, hstart, hderiv⟩ := exists_solution L _ frozen start initial
+  refine ⟨state, hstart, fun t ht i => ?_⟩
+  have h := ((hasDerivAt_pi.mp (hderiv t)) i).hasDerivWithinAt (s := Set.Ici start)
+  rwa [max_eq_left (Set.mem_Ici.1 ht)] at h
+
 /-- The same input and initial value give the same state on the forward domain. -/
 theorem unique_on {n : Nat} (L : Point n →L[ℝ] Point n)
     (forcing : Signal n) (start : ℝ) (x y : Signal n)
@@ -75,6 +92,7 @@ theorem unique_on {n : Nat} (L : Point n →L[ℝ] Point n)
   exact sub_eq_zero.mp (equal ht)
 
 #print axioms exists_solution
+#print axioms exists_solution_on
 #print axioms unique_on
 
 end Gimle.Forseti.ForcedLinear

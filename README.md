@@ -51,6 +51,7 @@ states what it proves and what it does not.
 | [Three-state model](Gimle/Forseti/Examples/ThreeState.lean) | Forward existence, uniqueness, and the energy bound `0 ≤ V ≤ 6` |
 | [Damped oscillator](Gimle/Forseti/Examples/DampedOscillatorContract.lean) | `0 ≤ 2x² + v² ≤ 2` for `x'' + 3x' + 2x = 0`, from an exact energy certificate |
 | [Forced decay](Gimle/Forseti/Examples/ForcedDecayContract.lean) | `\|x\| ≤ 2` for the driven `x' + x = u' + u` under `\|u\| ≤ 1` |
+| [Hedged spread](Gimle/Forseti/Examples/HedgedSpreadContract.lean) | `\|s\| ≤ B` for the driven `s' = -s - h + d`, `h' = s - h` from `s(0) = h(0) = 0` under every continuous `\|d\| ≤ B`, from the invariant `s² + h² ≤ B²` |
 | [Harmonic oscillator](Gimle/Forseti/Examples/HarmonicOscillator.lean) | A conserved energy, through the generic [`LinearEnergyContract`](Gimle/Forseti/LinearEnergyContract.lean) |
 | [Lorenz](Gimle/Forseti/Examples/Lorenz.lean) | A trapping region for all forward time, by the general nonlinear theorem in [`Nonlinear.lean`](Gimle/Forseti/Nonlinear.lean) |
 | [Galerkin Navier–Stokes](Gimle/Forseti/GalerkinNS/Family.lean) | Energy and enstrophy trapping for every cosine Galerkin truncation of 2D Navier–Stokes, and laminar attraction under small forcing; [members](Gimle/Forseti/Examples/GalerkinNS/) |
