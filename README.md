@@ -13,6 +13,8 @@ proves it.
   - exact and quantitative Hoare triples for circuits;
   - total contracts over continuous trajectories and formal coefficient streams;
   - invariants for discrete iteration.
+- **Stepped probability:** breach, fixed-date and expectation bounds for iterations
+  under independent random inputs ([`Stepped`](Gimle/Forseti/Stepped.lean)).
 - **Certificates:** exact evidence that Lean checks, whether a solver, a search
   or a person found it. The kinds are:
   - sum-of-squares and Positivstellensatz entailment certificates;
@@ -53,6 +55,7 @@ states what it proves and what it does not.
 | [Damped oscillator](Gimle/Forseti/Examples/DampedOscillatorContract.lean) | `0 ≤ 2x² + v² ≤ 2` for `x'' + 3x' + 2x = 0`, from an exact energy certificate |
 | [Forced decay](Gimle/Forseti/Examples/ForcedDecayContract.lean) | `\|x\| ≤ 2` for the driven `x' + x = u' + u` under `\|u\| ≤ 1` |
 | [Hedged spread](Gimle/Forseti/Examples/HedgedSpreadContract.lean) | `\|s\| ≤ B` for the driven `s' = -s - h + d`, `h' = s - h` from `s(0) = h(0) = 0` under every continuous `\|d\| ≤ B`, from the invariant `s² + h² ≤ B²` |
+| [Hedged spread, stepped](Gimle/Forseti/Examples/HedgedSpreadStepped.lean) | The same system as an Euler chain of 256 steps a year under i.i.d. shocks: a breach of `\|s\| ≤ 1` within the year has probability `≤ 1/4` under every centred shock law of variance 64 and above `1/5` under one such law with rare large jumps; on each fixed date of the year `P(\|s\| > 1) ≤ 1/100` under every law sub-Gaussian with proxy 64; `E[s² + h²] ≤ 32/255` at every mark; through the generic [`Stepped`](Gimle/Forseti/Stepped.lean) semantics |
 | [Harmonic oscillator](Gimle/Forseti/Examples/HarmonicOscillator.lean) | A conserved energy, through the generic [`LinearEnergyContract`](Gimle/Forseti/LinearEnergyContract.lean) |
 | [Lorenz](Gimle/Forseti/Examples/Lorenz.lean) | A trapping region for all forward time, by the general nonlinear theorem in [`Nonlinear.lean`](Gimle/Forseti/Nonlinear.lean) |
 | [Galerkin Navier–Stokes](Gimle/Forseti/GalerkinNS/Family.lean) | Energy and enstrophy trapping for every cosine Galerkin truncation of 2D Navier–Stokes, and laminar attraction under small forcing; [members](Gimle/Forseti/Examples/GalerkinNS/) |
