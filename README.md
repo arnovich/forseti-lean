@@ -59,6 +59,9 @@ states what it proves and what it does not.
 | [Disturbed feedback](Gimle/Forseti/Examples/DisturbedFeedback.lean) | Component storage identities composed through a trace give `\|x(t)\| ≤ 1` under bounded disturbances |
 | [Active suspension](Gimle/Forseti/Examples/ActiveSuspension.lean) | Travel, force and acceleration bounds through nested traces, shared by two actuators |
 | [AIF drift box](Gimle/Forseti/Examples/AIFDriftPilot.lean) | Bernstein matrix certificates for one box of an antithetic integral feedback drift bound |
+| [AIF global solution](Gimle/Forseti/Examples/AIFGlobalSolution.lean) | Existence, forward uniqueness and nonnegativity for `x₁' = z₁ − x₁`, `x₂' = x₁ − x₂`, `z₁' = 2 − η z₁ z₂`, `z₂' = x₂ − η z₁ z₂` from zero, for every fixed `η ≥ 0` |
+| [AIF tube composition](Gimle/Forseti/Examples/AIFMeshComposition.lean) | A moving-tube energy bound carried across a time mesh with exact joins, given a drift bound on every cell (cell certificates not included) |
+| [AIF local stability](Gimle/Forseti/Examples/AIFLocalStability.lean) | A certified local Lyapunov region giving `x₂ ≤ 5/2` for `η ∈ [8, 12]` once a trajectory [enters](Gimle/Forseti/Examples/AIFLocalEntry.lean) it |
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
 | [Mild vorticity contracts](Gimle/Forseti/MildVorticity.lean) | Total Hoare contracts for Asgard's mild vorticity circuit |
