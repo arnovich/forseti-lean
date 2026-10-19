@@ -13,18 +13,7 @@ definite inside the cell, so the other coordinates are not enclosed. This is one
 cell only; no later time and no output bound are claimed. -/
 namespace Gimle.Forseti.Examples.AIFCertifiedCell
 open Gimle.Forseti.BernsteinMatrix AIFSlabModel
-open AIFCertifiedCellData (slab)
-
-def certificates : AIFSlabDrift.CellCertificates slab where
-  symmetric := AIFCertifiedCellData.symmetric
-  error := AIFCertifiedCellData.Containment.certificates
-  errorValid := AIFCertifiedCellData.Containment.valid
-  negative := .ofCheck slab (-3/200) AIFCertifiedCellData.Negative.coefficients
-    AIFCertifiedCellData.Negative.certificates AIFCertifiedCellData.Negative.valid
-    AIFCertifiedCellData.Negative.checked
-  positive := .ofCheck slab (3/200) AIFCertifiedCellData.Positive.coefficients
-    AIFCertifiedCellData.Positive.certificates AIFCertifiedCellData.Positive.valid
-    AIFCertifiedCellData.Positive.checked
+open AIFCertifiedCellData (slab certificates)
 
 /-- The cell's drift inequality throughout its tube, with no drift premise. -/
 theorem drift_in_tube :
