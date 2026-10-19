@@ -1,7 +1,9 @@
+import Gimle.Forseti.BernsteinConversion
 import Gimle.Forseti.Examples.AIFMeshComposition
 import Gimle.Forseti.Examples.AIFPolynomialBinding
 import Gimle.Forseti.Examples.AIFSlabContainment
 import Gimle.Forseti.Examples.AIFSlabData
+import Gimle.Forseti.RationalLDL
 
 /-! The in-tube drift inequality on one AIF slab, derived from checked rational
 certificates: symmetric endpoint data, four containment matrices bounding the error
@@ -23,7 +25,8 @@ structure BlockCertificate (d : Slab) (ec : ℚ) where
   valid : ∀ i j, (squares i j).Represents (coefficients i j)
   binding : ∀ s u, block d s u ec = tensorMatrix coefficients s u
 
-/-- The binding is supplied by the exact rational polynomial test. -/
+/-- The binding is supplied by the exact rational polynomial test, for a table that
+is written out rather than computed. -/
 def BlockCertificate.ofCheck {td pd : Nat} (d : Slab) (ec : ℚ)
     (c : Fin (td + 1) → Fin (pd + 1) → QMatrix 5)
     (squares : Fin (td + 1) → Fin (pd + 1) → WeightedSquares 5)
@@ -37,6 +40,28 @@ def BlockCertificate.ofCheck {td pd : Nat} (d : Slab) (ec : ℚ)
   squares := squares
   valid := valid
   binding := AIFPolynomialBinding.binding d ec c checked
+
+/-- The table is computed from the slab's block polynomial and each square
+certificate is recomputed from its matrix, so no table or square data is written
+out; the binding needs only the degree check. -/
+def BlockCertificate.ofComputed {td pd : Nat} (d : Slab) (ec : ℚ)
+    (degree : ∀ i j, BernsteinConversion.withinDegree td pd
+      (AIFPolynomialBinding.block d ec i j) = true)
+    (valid : ∀ a b, (RationalLDL.propose
+      (BernsteinConversion.table td pd (AIFPolynomialBinding.block d ec) a b)).Represents
+        (BernsteinConversion.table td pd (AIFPolynomialBinding.block d ec) a b)) :
+    BlockCertificate d ec where
+  timeDegree := td
+  parameterDegree := pd
+  coefficients := BernsteinConversion.table td pd (AIFPolynomialBinding.block d ec)
+  squares := fun a b => RationalLDL.propose
+    (BernsteinConversion.table td pd (AIFPolynomialBinding.block d ec) a b)
+  valid := valid
+  binding := by
+    intro s u
+    rw [← BernsteinConversion.table_binding td pd _ degree s u]
+    ext i j
+    exact (AIFPolynomialBinding.eval_block d ec s u i j).symm
 
 theorem BlockCertificate.nonnegative {d : Slab} {ec : ℚ} (c : BlockCertificate d ec)
     {s u : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) (hu : u ∈ Set.Icc (0 : ℝ) 1)

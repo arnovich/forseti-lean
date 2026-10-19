@@ -18,7 +18,8 @@ proves it.
   - sum-of-squares and Positivstellensatz entailment certificates;
   - rational and algebraic counterexamples;
   - energy and trapping certificates for safety over all forward time;
-  - Bernstein matrix certificates.
+  - Bernstein matrix certificates, with tables [converted](Gimle/Forseti/BernsteinConversion.lean)
+    exactly from polynomials.
 - **Checker:** a standalone executable that checks a compiled candidate proof
   against an expected statement under a fixed import and axiom policy.
 
