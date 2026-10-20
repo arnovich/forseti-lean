@@ -109,7 +109,7 @@ example : ¬ admittedOnly (withInitial fun t _ => if t ≤ 0 then 0 else 1) := b
       (nhdsWithin 0 (Set.Ioi 0)) (nhds 1) := by
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [self_mem_nhdsWithin] with t ht
-    rw [if_neg (not_le.2 (Set.mem_Ioi.1 ht))]
+    rw [ite_eq_right (not_le.2 (Set.mem_Ioi.1 ht))]
   exact zero_ne_one (tendsto_nhds_unique lim one)
 
 /-- Inside the band, `1/2` is not a bound; without the band, `1` is not either. -/

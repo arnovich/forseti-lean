@@ -121,7 +121,7 @@ theorem coeff_zero_of_absent (table : Torus.Table) (k : Wave)
   induction table with
   | nil => rfl
   | cons e tail ih =>
-    rw [Torus.Table.coeff, if_neg (h e List.mem_cons_self), zero_add]
+    rw [Torus.Table.coeff, ite_eq_right (h e List.mem_cons_self), zero_add]
     exact ih (fun f hf => h f (List.mem_cons_of_mem _ hf))
 
 /-- The finite zero-mean certificate implies semantic zero mean. -/

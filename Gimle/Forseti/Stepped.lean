@@ -324,12 +324,12 @@ noncomputable def stopped (f : S → D → S) (V : S → ℝ≥0∞) (c : ℝ≥
 /-- A state at level `c` or above is frozen. -/
 theorem stopped_of_le {f : S → D → S} {V : S → ℝ≥0∞} {c : ℝ≥0∞} {x : S} (h : c ≤ V x)
     (d : D) : stopped f V c x d = x :=
-  if_pos h
+  ite_eq_left h
 
 /-- A state below level `c` moves by `f`. -/
 theorem stopped_of_not_le {f : S → D → S} {V : S → ℝ≥0∞} {c : ℝ≥0∞} {x : S}
     (h : ¬ c ≤ V x) (d : D) : stopped f V c x d = f x d :=
-  if_neg h
+  ite_eq_right h
 
 /-- Once the stopped chain has reached level `c`, it stays there. -/
 theorem le_run_stopped_of_le {f : S → D → S} {V : S → ℝ≥0∞} {c : ℝ≥0∞} {x₀ : S}

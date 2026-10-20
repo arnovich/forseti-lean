@@ -134,7 +134,7 @@ theorem position?_name (context : Context) (coordinate : Fin context.dimension) 
   have bound : context.names.idxOf (context.name coordinate) < context.dimension :=
     List.idxOf_lt_length_of_mem (List.get_mem _ _)
   unfold position?
-  rw [dif_pos bound]
+  rw [dite_eq_left bound]
   congr 1
   exact context.name_injective (List.idxOf_get _)
 

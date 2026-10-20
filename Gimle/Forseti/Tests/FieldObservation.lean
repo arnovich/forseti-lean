@@ -87,7 +87,7 @@ theorem same_window :
   simp only [Streams.truncate]
   split_ifs with inside
   · have far : (MvPolynomial.X (1 : Fin 2) ^ 5 : Streams.Poly 2).coeff n = 0 := by
-      rw [MvPolynomial.coeff_X_pow, if_neg]
+      rw [MvPolynomial.coeff_X_pow, ite_eq_right]
       intro same
       have bound := inside 1
       rw [← same] at bound
