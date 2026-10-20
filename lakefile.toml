@@ -1,5 +1,7 @@
 name = "forseti"
 version = "0.1.0"
+# Spike stopgap, as in asgard-lean-435: Lean 4.33 flipped this default to true.
+moreLeanArgs = ["-Dbackward.isDefEq.respectTransparency.types=false"]
 defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Tests", "Checker"]
 
 [[require]]
