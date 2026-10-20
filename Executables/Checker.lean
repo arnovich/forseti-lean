@@ -63,7 +63,7 @@ unsafe def main (args : List String) : IO UInt32 := do
       owned := owned.insert name info
     let root := rootName.toName
     require (owned.contains root) "root is not owned by the candidate"
-    let checked ← expected.replay owned
+    let checked := Environment.ofKernelEnv (← expected.toKernelEnv.replay owned)
     let some (.thmInfo proofInfo) := checked.toKernelEnv.find? root
       | throw (IO.userError "root must be a theorem")
     require proofInfo.levelParams.isEmpty "polymorphic root is unsupported"

@@ -123,7 +123,8 @@ theorem observes_iff {port : Fin m} {θ : Fin k → ℚ}
       ∀ x, domain.holds (spec.fieldPoint x θ q) → post.holds (spec.fieldPoint x θ q) := by
   constructor
   · rintro ⟨q', realized', bound⟩
-    rwa [realizes_unique realized realized'] at *
+    rw [realizes_unique realized realized'] at *
+    assumption
   · exact fun bound => ⟨q, realized, bound⟩
 
 /-- The predicate requires finite support of the **whole** observed stream. -/

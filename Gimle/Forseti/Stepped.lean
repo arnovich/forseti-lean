@@ -515,7 +515,7 @@ theorem two_sided_tail {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} {X : 
   have h2 : μ.real {ω | ε ≤ (-X) ω} ≤ Real.exp (-ε ^ 2 / (2 * c)) := h.neg.measure_ge_le hε
   have hsub : {ω | ε < |X ω|} ⊆ {ω | ε ≤ X ω} ∪ {ω | ε ≤ (-X) ω} := by
     intro ω hω
-    simp only [Set.mem_setOf_eq, Set.mem_union, Pi.neg_apply] at hω ⊢
+    simp only [Set.mem_ofPred_eq, Set.mem_union, Pi.neg_apply] at hω ⊢
     rcases le_or_gt 0 (X ω) with hx | hx
     · left
       rw [abs_of_nonneg hx] at hω
@@ -588,7 +588,7 @@ theorem exceedsAt_of_weighted (h : SubGaussianLaw law v) {f : S → ℝ → S} {
   calc pathMeasure law {ω | ¬ safe (run f x₀ ω n)}
       ≤ pathMeasure law {ω | B < |∑ k ∈ Finset.range n, w k * ω k|} :=
         measure_mono fun ω hω => by
-          simp only [Set.mem_setOf_eq] at hω ⊢
+          simp only [Set.mem_ofPred_eq] at hω ⊢
           rw [← hrun ω]
           exact hsafe _ hω
     _ = ENNReal.ofReal ((pathMeasure law).real
