@@ -73,7 +73,7 @@ theorem scalarStep_drift {law : Measure ℝ} {Δ v : ℝ} (h : TwoMomentLaw law 
     (hΔ0 : 0 ≤ Δ) (hΔ1 : Δ ≤ 1) (x : ℝ) :
     ∫⁻ d, ENNReal.ofReal ((scalarStep Δ x d) ^ 2) ∂law
       ≤ ENNReal.ofReal (x ^ 2) + ENNReal.ofReal (Δ ^ 2 * v) := by
-  haveI := h.prob
+  have := h.prob
   have hexp : (fun d => (scalarStep Δ x d) ^ 2)
       = fun d => (((1 - Δ) * x) ^ 2 + (2 * (1 - Δ) * x * Δ) * d) + Δ ^ 2 * d ^ 2 := by
     funext d
@@ -100,7 +100,7 @@ theorem scalarStep_drift {law : Measure ℝ} {Δ v : ℝ} (h : TwoMomentLaw law 
 
 example (law : Measure ℝ) {Δ v : ℝ} (h : TwoMomentLaw law v) (hΔ0 : 0 ≤ Δ) (hΔ1 : Δ ≤ 1)
     (N : ℕ) : BreachWithin (scalarStep Δ) 0 law N (fun x => |x| ≤ 1) (N * (Δ ^ 2 * v)) := by
-  haveI := h.prob
+  have := h.prob
   have hv := h.nonneg
   refine breachWithin_of_drift (V := fun x : ℝ => ENNReal.ofReal (x ^ 2)) (c := 1)
     (β := ENNReal.ofReal (Δ ^ 2 * v)) law (measurable_scalarStep Δ) measurable_ofReal_sq

@@ -25,7 +25,7 @@ theorem observation_zero_of_prefix
     ∀ n : ℕ, ell ((T ^ n) z) = 0 := by
   classical
   by_cases hd : Module.finrank K V = 0
-  · letI : Subsingleton V := Module.finrank_zero_iff.mp hd
+  · let : Subsingleton V := Module.finrank_zero_iff.mp hd
     intro n
     rw [Subsingleton.elim ((T ^ n) z) 0, map_zero]
   · have hp : T.charpoly ≠ 1 := by

@@ -231,7 +231,7 @@ theorem lintegral_run_succ (law : Measure D) [IsProbabilityMeasure law]
     ∫⁻ ω, V (run f x₀ ω (n + 1)) ∂pathMeasure law
       = ∫⁻ ω, (∫⁻ d, V (f (run f x₀ ω n) d) ∂law) ∂pathMeasure law := by
   classical
-  haveI : Nonempty D := nonempty_of_isProbabilityMeasure law
+  have : Nonempty D := nonempty_of_isProbabilityMeasure law
   obtain ⟨x⟩ : Nonempty (ℕ → D) := inferInstance
   have hF : Measurable (fun ω : ℕ → D => V (run f x₀ ω (n + 1))) :=
     hV.comp (measurable_run hf x₀ (n + 1))
@@ -546,7 +546,7 @@ variable {law : Measure ℝ} {v : ℝ≥0}
 proxy of the law. -/
 theorem coord_hasSubgaussianMGF (h : SubGaussianLaw law v) (i : ℕ) :
     HasSubgaussianMGF (fun ω : ℕ → ℝ => ω i) v (pathMeasure law) := by
-  haveI := h.prob
+  have := h.prob
   have hmeas : Measurable (fun ω : ℕ → ℝ => ω i) := measurable_pi_apply i
   have hlaw := h.subgaussian
   unfold pathMeasure
@@ -561,7 +561,7 @@ by `wₖ²`. -/
 theorem weighted_sum_hasSubgaussianMGF (h : SubGaussianLaw law v) (w : ℕ → ℝ) (n : ℕ) :
     HasSubgaussianMGF (fun ω : ℕ → ℝ => ∑ k ∈ Finset.range n, w k * ω k)
       (∑ k ∈ Finset.range n, sqNN (w k) * v) (pathMeasure law) := by
-  haveI := h.prob
+  have := h.prob
   have hind : iIndepFun (fun k (ω : ℕ → ℝ) => w k * ω k) (pathMeasure law) :=
     iIndepFun_infinitePi (P := fun _ : ℕ => law) (X := fun k (x : ℝ) => w k * x)
       (fun k => by fun_prop)
@@ -578,7 +578,7 @@ theorem exceedsAt_of_weighted (h : SubGaussianLaw law v) {f : S → ℝ → S} {
     (hsafe : ∀ x, ¬ safe x → B < |obs x|)
     (hq : 2 * Real.exp (-B ^ 2 / (2 * ∑ k ∈ Finset.range n, (w k) ^ 2 * (v : ℝ))) ≤ q) :
     ExceedsAt f x₀ law n safe q := by
-  haveI := h.prob
+  have := h.prob
   have htail := two_sided_tail (weighted_sum_hasSubgaussianMGF h w n) hB
   have hcoe : ((∑ k ∈ Finset.range n, sqNN (w k) * v : ℝ≥0) : ℝ)
       = ∑ k ∈ Finset.range n, (w k) ^ 2 * (v : ℝ) := by
@@ -704,7 +704,7 @@ theorem breach_ge_threePoint {ε L : ℝ} (hε : 0 ≤ ε) (hε' : ε ≤ 1 / 2)
     ENNReal.ofReal (1 - (1 - 2 * ε) ^ N)
       ≤ pathMeasure (threePoint ε L) {ω | ∃ n ≤ N, ¬ safe (run f x₀ ω n)} := by
   classical
-  haveI := isProbabilityMeasure_threePoint (L := L) hε hε'
+  have := isProbabilityMeasure_threePoint (L := L) hε hε'
   have h2ε : 0 ≤ 1 - 2 * ε := by linarith
   by_cases hx₀ : safe x₀
   swap
