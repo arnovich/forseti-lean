@@ -277,22 +277,22 @@ info: 'Gimle.Forseti.Stream.StreamHoare.seriesCompose'
 #guard_msgs (whitespace := lax) in #print axioms StreamHoare.seriesCompose
 /--
 info: 'Gimle.Forseti.Stream.Equals.boundary'
-  depends on axioms: [propext, Quot.sound]
+  depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms Equals.boundary
 /--
 info: 'Gimle.Forseti.Stream.Equals.window'
-  depends on axioms: [propext, Quot.sound]
+  depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms Equals.window
 /--
 info: 'Gimle.Forseti.Stream.both_equals'
-  depends on axioms: [propext, Quot.sound]
+  depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms both_equals
 /--
 info: 'Gimle.Forseti.Stream.NamedBoundary.iff_boundary'
-  depends on axioms: [propext, Quot.sound]
+  depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms NamedBoundary.iff_boundary
 /--
