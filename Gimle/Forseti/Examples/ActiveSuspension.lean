@@ -129,7 +129,7 @@ theorem supply_identity (rate : ℚ) (s : Point 5) (road : ℝ) :
   simp [remainder, extendedMatrix, embed, quadratic, realMatrix,
     quadraticRate, Linear.Matrix.eval, storageValue, storage, stateMatrix, roadVector,
     rhs, alpha, beta, pointAppend, dotProduct, Matrix.mulVec, Fin.sum_univ_succ,
-    Fin.addCases]
+    Fin.addCases, Fin.castPred, Fin.castLT, Matrix.cons_val]
   ring
 
 /-- Exact replay of the same dissipation certificate for both actuator rates. -/
