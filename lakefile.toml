@@ -4,8 +4,8 @@ defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Test
 
 [[require]]
 name = "asgard"
-git = "https://github.com/arnovich/asgard-lean.git"
-rev = "1496c7d71adbf94ff91d530251a9c5e740e23a65"
+# Spike only: the local asgard-lean spike worktree (branch spike/lean_4_35).
+path = "../asgard-lean-435"
 
 [[lean_lib]]
 name = "Gimle.Forseti"
