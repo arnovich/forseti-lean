@@ -448,9 +448,9 @@ theorem contDiff_field (ν f : ℝ) (k : Fin n → Wave) (forced : Fin n) :
     ContDiff ℝ 1 (field ν f k forced) := by
   refine contDiff_pi.mpr fun i => ?_
   simp only [field]
-  refine ((contDiff_const.mul (contDiff_apply ℝ ℝ i)).add contDiff_const).add ?_
+  refine ((contDiff_const.mul (contDiff_apply ℝ (fun _ => ℝ) i)).add contDiff_const).add ?_
   refine ContDiff.sum fun j _ => ContDiff.sum fun l _ => ?_
-  exact (contDiff_const.mul (contDiff_apply ℝ ℝ j)).mul (contDiff_apply ℝ ℝ l)
+  exact (contDiff_const.mul (contDiff_apply ℝ (fun _ => ℝ) j)).mul (contDiff_apply ℝ (fun _ => ℝ) l)
 
 /-! ## The trapping, from `Nonlinear.lean` -/
 

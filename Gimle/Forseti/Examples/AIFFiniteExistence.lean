@@ -51,12 +51,12 @@ theorem physical_smooth (eta : ℝ) : ContDiff ℝ 1 (physicalField eta) := by
   apply contDiff_pi.mpr
   intro i
   fin_cases i <;> simp only [physicalField]
-  · exact (contDiff_apply ℝ ℝ 2).sub (contDiff_apply ℝ ℝ 0)
-  · exact (contDiff_apply ℝ ℝ 0).sub (contDiff_apply ℝ ℝ 1)
-  · exact contDiff_const.sub ((contDiff_const.mul (contDiff_apply ℝ ℝ 2)).mul
-      (contDiff_apply ℝ ℝ 3))
-  · exact (contDiff_apply ℝ ℝ 1).sub ((contDiff_const.mul (contDiff_apply ℝ ℝ 2)).mul
-      (contDiff_apply ℝ ℝ 3))
+  · exact (contDiff_apply ℝ (fun _ => ℝ) 2).sub (contDiff_apply ℝ (fun _ => ℝ) 0)
+  · exact (contDiff_apply ℝ (fun _ => ℝ) 0).sub (contDiff_apply ℝ (fun _ => ℝ) 1)
+  · exact contDiff_const.sub ((contDiff_const.mul (contDiff_apply ℝ (fun _ => ℝ) 2)).mul
+      (contDiff_apply ℝ (fun _ => ℝ) 3))
+  · exact (contDiff_apply ℝ (fun _ => ℝ) 1).sub ((contDiff_const.mul (contDiff_apply ℝ (fun _ => ℝ) 2)).mul
+      (contDiff_apply ℝ (fun _ => ℝ) 3))
 
 /-- The clamped field points inward whenever an actual state coordinate is nonpositive. -/
 theorem clamped_nonnegative (eta : ℝ) (B : ℝ) (hB : 0 ≤ B) (T : ℝ)
