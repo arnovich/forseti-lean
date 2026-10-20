@@ -16,6 +16,8 @@ import Gimle.Forseti.Tests.ThreeState
 import Gimle.Forseti.Tests.DampedOscillator
 import Gimle.Forseti.Tests.ForcedDecay
 import Gimle.Forseti.Tests.HedgedSpread
+import Gimle.Forseti.Tests.Stepped
+import Gimle.Forseti.Tests.HedgedSpreadStepped
 import Gimle.Forseti.Tests.LinearEnergyContract
 import Gimle.Forseti.Tests.Stream
 import Gimle.Forseti.Tests.SequentialHoare
