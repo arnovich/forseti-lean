@@ -185,7 +185,7 @@ has mean zero. -/
 theorem energy_step_eq (h : TwoMomentLaw law v) (x : Point states) :
     ∫⁻ d, ENNReal.ofReal (energy (step x d)) ∂law
       = ENNReal.ofReal ρ * ENNReal.ofReal (energy x) + ENNReal.ofReal (Δ ^ 2 * v) := by
-  haveI := h.prob
+  have := h.prob
   have hv := h.nonneg
   have hfun : (fun d => energy (step x d)) = fun d =>
       ((ρ : ℝ) * energy x + 2 * Δ * ((1 - Δ) * x (0 : Fin 2) - Δ * x (1 : Fin 2)) * d)
@@ -218,7 +218,7 @@ theorem expected_energy_eq (h : TwoMomentLaw law v) (n : ℕ) :
     ∫⁻ ω, ENNReal.ofReal (energy (run step compiled.initial ω n : Point states))
         ∂pathMeasure law
       = ENNReal.ofReal (Δ ^ 2 * v * ∑ k ∈ Finset.range n, (ρ : ℝ) ^ k) := by
-  haveI := h.prob
+  have := h.prob
   have hv := h.nonneg
   refine (lintegral_run_eq_geom (V := fun x : Point states => ENNReal.ofReal (energy x)) law
     measurable_step measurable_ofReal_energy (energy_step_eq h) compiled.initial n).trans ?_
@@ -277,7 +277,7 @@ probability that the exposure leaves `|s| ≤ B` at some mark `n ≤ N` is at mo
 `N Δ²v / B²`, for every centred shock law of second moment `v`. -/
 theorem breach_within (h : TwoMomentLaw law v) {B : ℝ} (hB : 0 < B) (N : ℕ) :
     BreachWithin step compiled.initial law N (exposureWithin B) (N * (Δ ^ 2 * v) / B ^ 2) := by
-  haveI := h.prob
+  have := h.prob
   have hv := h.nonneg
   have hB2 : 0 < B ^ 2 := by positivity
   have hρ : ENNReal.ofReal ρ ≤ 1 := ENNReal.ofReal_le_one.2 ρ_lt_one.le

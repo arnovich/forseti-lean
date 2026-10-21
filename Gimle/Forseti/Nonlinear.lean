@@ -45,7 +45,7 @@ open Gimle.Asgard.Polynomial
 /-- A polynomial expression evaluates to a `C¹` function of the point. -/
 theorem contDiff_eval {n : Nat} (e : Expr n) : ContDiff ℝ 1 (fun x : Point n => e.eval x) := by
   induction e with
-  | var i => exact contDiff_apply ℝ ℝ i
+  | var i => exact contDiff_apply ℝ (fun _ => ℝ) i
   | constant q => exact contDiff_const
   | add a b iha ihb => simp only [Expr.eval]; exact iha.add ihb
   | mul a b iha ihb => simp only [Expr.eval]; exact iha.mul ihb

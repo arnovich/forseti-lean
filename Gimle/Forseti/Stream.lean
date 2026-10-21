@@ -346,13 +346,13 @@ theorem eq_integral_of_boundary (axis : Fin d) (a profile y : Stream d)
     | ogf =>
         simp only [Gimle.Asgard.Streams.derivative] at at_below
         rw [back, below_axis, cast] at at_below
-        simp only [Gimle.Asgard.Streams.integral, zero, if_false]
+        simp only [Gimle.Asgard.Streams.integral, zero, ite_false]
         rw [← at_below]
         field_simp
     | egf =>
         simp only [Gimle.Asgard.Streams.derivative] at at_below
         rw [back] at at_below
-        simp only [Gimle.Asgard.Streams.integral, zero, if_false]
+        simp only [Gimle.Asgard.Streams.integral, zero, ite_false]
         exact at_below
 
 /-- Series substitution is total exactly on inner streams with zero constant. -/

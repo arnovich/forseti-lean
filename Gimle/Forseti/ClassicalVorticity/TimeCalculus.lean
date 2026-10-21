@@ -33,7 +33,7 @@ theorem continuous_squareAverage {X : Type*} [TopologicalSpace X]
 theorem continuousOn_squareAverage {f : Field} {T : ℝ}
     (hf : ContinuousOn (fun z : ℝ × (ℝ × ℝ) => f z.1 z.2) {z | z.1 ∈ Icc 0 T})
     (L : ℝ) : ContinuousOn (fun t => squareAverage L (f t)) (Icc 0 T) := by
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   have hc : Continuous (fun z : (Icc 0 T) × (ℝ × ℝ) => f z.1 z.2) :=
     hf.comp_continuous ((continuous_subtype_val.comp continuous_fst).prodMk continuous_snd)
       (fun z => z.1.property)

@@ -231,7 +231,7 @@ theorem lintegral_run_succ (law : Measure D) [IsProbabilityMeasure law]
     ∫⁻ ω, V (run f x₀ ω (n + 1)) ∂pathMeasure law
       = ∫⁻ ω, (∫⁻ d, V (f (run f x₀ ω n) d) ∂law) ∂pathMeasure law := by
   classical
-  haveI : Nonempty D := nonempty_of_isProbabilityMeasure law
+  have : Nonempty D := nonempty_of_isProbabilityMeasure law
   obtain ⟨x⟩ : Nonempty (ℕ → D) := inferInstance
   have hF : Measurable (fun ω : ℕ → D => V (run f x₀ ω (n + 1))) :=
     hV.comp (measurable_run hf x₀ (n + 1))
@@ -324,12 +324,12 @@ noncomputable def stopped (f : S → D → S) (V : S → ℝ≥0∞) (c : ℝ≥
 /-- A state at level `c` or above is frozen. -/
 theorem stopped_of_le {f : S → D → S} {V : S → ℝ≥0∞} {c : ℝ≥0∞} {x : S} (h : c ≤ V x)
     (d : D) : stopped f V c x d = x :=
-  if_pos h
+  ite_eq_left h
 
 /-- A state below level `c` moves by `f`. -/
 theorem stopped_of_not_le {f : S → D → S} {V : S → ℝ≥0∞} {c : ℝ≥0∞} {x : S}
     (h : ¬ c ≤ V x) (d : D) : stopped f V c x d = f x d :=
-  if_neg h
+  ite_eq_right h
 
 /-- Once the stopped chain has reached level `c`, it stays there. -/
 theorem le_run_stopped_of_le {f : S → D → S} {V : S → ℝ≥0∞} {c : ℝ≥0∞} {x₀ : S}
@@ -515,7 +515,7 @@ theorem two_sided_tail {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} {X : 
   have h2 : μ.real {ω | ε ≤ (-X) ω} ≤ Real.exp (-ε ^ 2 / (2 * c)) := h.neg.measure_ge_le hε
   have hsub : {ω | ε < |X ω|} ⊆ {ω | ε ≤ X ω} ∪ {ω | ε ≤ (-X) ω} := by
     intro ω hω
-    simp only [Set.mem_setOf_eq, Set.mem_union, Pi.neg_apply] at hω ⊢
+    simp only [Set.mem_ofPred_eq, Set.mem_union, Pi.neg_apply] at hω ⊢
     rcases le_or_gt 0 (X ω) with hx | hx
     · left
       rw [abs_of_nonneg hx] at hω
@@ -546,7 +546,7 @@ variable {law : Measure ℝ} {v : ℝ≥0}
 proxy of the law. -/
 theorem coord_hasSubgaussianMGF (h : SubGaussianLaw law v) (i : ℕ) :
     HasSubgaussianMGF (fun ω : ℕ → ℝ => ω i) v (pathMeasure law) := by
-  haveI := h.prob
+  have := h.prob
   have hmeas : Measurable (fun ω : ℕ → ℝ => ω i) := measurable_pi_apply i
   have hlaw := h.subgaussian
   unfold pathMeasure
@@ -561,7 +561,7 @@ by `wₖ²`. -/
 theorem weighted_sum_hasSubgaussianMGF (h : SubGaussianLaw law v) (w : ℕ → ℝ) (n : ℕ) :
     HasSubgaussianMGF (fun ω : ℕ → ℝ => ∑ k ∈ Finset.range n, w k * ω k)
       (∑ k ∈ Finset.range n, sqNN (w k) * v) (pathMeasure law) := by
-  haveI := h.prob
+  have := h.prob
   have hind : iIndepFun (fun k (ω : ℕ → ℝ) => w k * ω k) (pathMeasure law) :=
     iIndepFun_infinitePi (P := fun _ : ℕ => law) (X := fun k (x : ℝ) => w k * x)
       (fun k => by fun_prop)
@@ -578,7 +578,7 @@ theorem exceedsAt_of_weighted (h : SubGaussianLaw law v) {f : S → ℝ → S} {
     (hsafe : ∀ x, ¬ safe x → B < |obs x|)
     (hq : 2 * Real.exp (-B ^ 2 / (2 * ∑ k ∈ Finset.range n, (w k) ^ 2 * (v : ℝ))) ≤ q) :
     ExceedsAt f x₀ law n safe q := by
-  haveI := h.prob
+  have := h.prob
   have htail := two_sided_tail (weighted_sum_hasSubgaussianMGF h w n) hB
   have hcoe : ((∑ k ∈ Finset.range n, sqNN (w k) * v : ℝ≥0) : ℝ)
       = ∑ k ∈ Finset.range n, (w k) ^ 2 * (v : ℝ) := by
@@ -588,7 +588,7 @@ theorem exceedsAt_of_weighted (h : SubGaussianLaw law v) {f : S → ℝ → S} {
   calc pathMeasure law {ω | ¬ safe (run f x₀ ω n)}
       ≤ pathMeasure law {ω | B < |∑ k ∈ Finset.range n, w k * ω k|} :=
         measure_mono fun ω hω => by
-          simp only [Set.mem_setOf_eq] at hω ⊢
+          simp only [Set.mem_ofPred_eq] at hω ⊢
           rw [← hrun ω]
           exact hsafe _ hω
     _ = ENNReal.ofReal ((pathMeasure law).real
@@ -704,7 +704,7 @@ theorem breach_ge_threePoint {ε L : ℝ} (hε : 0 ≤ ε) (hε' : ε ≤ 1 / 2)
     ENNReal.ofReal (1 - (1 - 2 * ε) ^ N)
       ≤ pathMeasure (threePoint ε L) {ω | ∃ n ≤ N, ¬ safe (run f x₀ ω n)} := by
   classical
-  haveI := isProbabilityMeasure_threePoint (L := L) hε hε'
+  have := isProbabilityMeasure_threePoint (L := L) hε hε'
   have h2ε : 0 ≤ 1 - 2 * ε := by linarith
   by_cases hx₀ : safe x₀
   swap

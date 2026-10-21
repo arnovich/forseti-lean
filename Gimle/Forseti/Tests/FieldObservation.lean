@@ -86,8 +86,8 @@ theorem same_window :
   funext n
   simp only [Streams.truncate]
   split_ifs with inside
-  · have far : MvPolynomial.coeff n (MvPolynomial.X (1 : Fin 2) ^ 5 : Streams.Poly 2) = 0 := by
-      rw [MvPolynomial.coeff_X_pow, if_neg]
+  · have far : (MvPolynomial.X (1 : Fin 2) ^ 5 : Streams.Poly 2).coeff n = 0 := by
+      rw [MvPolynomial.coeff_X_pow, ite_eq_right]
       intro same
       have bound := inside 1
       rw [← same] at bound
@@ -137,7 +137,7 @@ theorem line_coefficients (basis : Streams.Basis) :
   refine ⟨trivial, fun index => ?_⟩
   show 0 ≤ Streams.axisVariable basis 1 index
   have coefficient :
-      0 ≤ MvPolynomial.coeff index (MvPolynomial.X (1 : Fin 2) : Streams.Poly 2) := by
+      0 ≤ (MvPolynomial.X (1 : Fin 2) : Streams.Poly 2).coeff index := by
     rw [MvPolynomial.coeff_X]
     split_ifs <;> norm_num
   rw [Streams.axisVariable_eq_ofPoly]

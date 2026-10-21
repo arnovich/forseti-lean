@@ -122,7 +122,7 @@ theorem halo_changes_output :
     · have outside : k ≠ Degrees.toIndex ![0, 2] := by
         rintro rfl
         simpa using below 1
-      simp only [below, Matrix.cons_val_fin_one, bump, outside, if_false]
+      simp only [below, Matrix.cons_val_fin_one, bump, outside, ite_false]
       rfl
     · simp [below]
   · rw [lowerRaw_correct _ rfl, term]

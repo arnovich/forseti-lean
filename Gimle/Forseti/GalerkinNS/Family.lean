@@ -348,7 +348,7 @@ theorem energy_identity (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i ≠ 0
     · field_simp
       ring
   rw [Finset.sum_congr rfl fun i _ => each i, Finset.sum_add_distrib, Finset.sum_ite_eq',
-    if_pos (Finset.mem_univ _), enstrophy, Finset.mul_sum]
+    ite_eq_left (Finset.mem_univ _), enstrophy, Finset.mul_sum]
 
 /-- **The certificate**, for every member: `2ν(f²/(8ν²) − E) − E'` is the sum of
 squares `ν(a_forced − f/(2ν))² + 2ν Σ_{i ≠ forced} (1 − 1/λ(k i)) a_i²`, with
@@ -406,7 +406,7 @@ theorem enstrophy_identity (ν f : ℝ) (k : Fin n → Wave) (hk : ∀ i, k i �
     intro i
     split_ifs <;> ring
   rw [Finset.sum_congr rfl fun i _ => each i, Finset.sum_add_distrib, Finset.sum_ite_eq',
-    if_pos (Finset.mem_univ _), palinstrophy, Finset.mul_sum]
+    ite_eq_left (Finset.mem_univ _), palinstrophy, Finset.mul_sum]
 
 /-- **The enstrophy certificate**, for every member: `2ν(f²/(4ν²) − Z) − Z'` is the
 sum of squares `2ν Σ_{i ≠ forced} (λ(k i) − 1) a_i² + 2ν (a_forced − f/(2ν))²`, with
@@ -448,9 +448,10 @@ theorem contDiff_field (ν f : ℝ) (k : Fin n → Wave) (forced : Fin n) :
     ContDiff ℝ 1 (field ν f k forced) := by
   refine contDiff_pi.mpr fun i => ?_
   simp only [field]
-  refine ((contDiff_const.mul (contDiff_apply ℝ ℝ i)).add contDiff_const).add ?_
+  refine ((contDiff_const.mul (contDiff_apply ℝ (fun _ => ℝ) i)).add contDiff_const).add ?_
   refine ContDiff.sum fun j _ => ContDiff.sum fun l _ => ?_
-  exact (contDiff_const.mul (contDiff_apply ℝ ℝ j)).mul (contDiff_apply ℝ ℝ l)
+  exact (contDiff_const.mul (contDiff_apply ℝ (fun _ => ℝ) j)).mul
+    (contDiff_apply ℝ (fun _ => ℝ) l)
 
 /-! ## The trapping, from `Nonlinear.lean` -/
 

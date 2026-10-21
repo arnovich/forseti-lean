@@ -17,7 +17,7 @@ theorem exists_solution {n : Nat} (L : Point n →L[ℝ] Point n)
     (start : ℝ) (initial : Point n) :
     ∃ state : Signal n, state start = initial ∧
       ∀ t, HasDerivAt state (L (state t) + forcing t) t := by
-  letI : NormedAlgebra ℚ (Point n →L[ℝ] Point n) :=
+  let : NormedAlgebra ℚ (Point n →L[ℝ] Point n) :=
     NormedAlgebra.restrictScalars ℚ ℝ (Point n →L[ℝ] Point n)
   let E : ℝ → (Point n →L[ℝ] Point n) := fun t => NormedSpace.exp (t • L)
   have dE (t : ℝ) : HasDerivAt E (L * E t) t :=
