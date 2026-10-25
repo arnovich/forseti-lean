@@ -69,6 +69,8 @@ states what it proves and what it does not.
 | [AIF certified cell](Gimle/Forseti/Examples/AIFCertifiedCell.lean) | For every fixed `η ∈ [8, 17/2]`, the zero-start solution keeps its moving-tube energy `≤ 1/40000` on `t ∈ [0, 1/200]`, with the drift bound discharged by [checked certificates](Gimle/Forseti/Examples/AIFSlabDrift.lean); this encloses only the error coordinate `e₂` (one cell only; no later time or output bound) |
 | [AIF local stability](Gimle/Forseti/Examples/AIFLocalStability.lean) | A certified local Lyapunov region giving `x₂ ≤ 5/2` for `η ∈ [8, 12]` once a trajectory [enters](Gimle/Forseti/Examples/AIFLocalEntry.lean) it |
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
+| [Residual error envelopes](Gimle/Forseti/ErrorEnvelope.lean) | Signed-growth error bounds on closed intervals and composition across adjoining segments; [regressions](Gimle/Forseti/Tests/ErrorEnvelope.lean) |
+| [Periodic Burgers residual bounds](Gimle/Forseti/ResidualPDE.lean) | Squared spatial L2 error derived from independent exact and approximate PDE fields; [concrete fields](Gimle/Forseti/Tests/ResidualPDE.lean) |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
 | [Mild vorticity contracts](Gimle/Forseti/MildVorticity.lean) | Total Hoare contracts for Asgard's mild vorticity circuit |
 | [Classical vorticity uniqueness](Gimle/Forseti/ClassicalVorticity/Uniqueness.lean) | Uniqueness among independent periodic classical solutions, [applied](Gimle/Forseti/Examples/ClassicalNavierStokes.lean) to a three-mode start |
