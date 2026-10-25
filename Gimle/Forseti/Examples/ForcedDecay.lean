@@ -27,7 +27,7 @@ def body : SourceBody := {
 }
 
 /-- One state `x`, starting at `t = 0` from `x(0) = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-x", "dx", "initial-x"⟩]
   initialPorts := [⟨"initial-x", "x0", .initial⟩]
   initialValues := [⟨"initial-x", 0⟩]
@@ -50,6 +50,10 @@ abbrev compiled : DrivenModel model.lowered.body evolution drivers := model.mode
 /-- The compiled field over `[u, du, x]`: `dx := (du + u) - x`. -/
 theorem rates_expressions : compiled.rates.expressions =
     (![.add (.add (.var 1) (.var 0)) (.neg (.var 2))] : Fin 1 → Expr 3) := by
+  -- Decided at the compiled coordinate count, which instance search cannot
+  -- reduce to `3`: the driver width is a `flatMap` length.
+  show compiled.rates.expressions =
+    ![.add (.add (.var ⟨1, by decide⟩) (.var ⟨0, by decide⟩)) (.neg (.var ⟨2, by decide⟩))]
   decide +kernel
 
 /-- The declared initial state is `x(0) = 0`. -/
@@ -65,21 +69,24 @@ def xIndex : Fin body.observations.length := ⟨0, by decide⟩
 /-- The observation circuit, as compiled: `x` is the state coordinate. -/
 theorem outputs_expressions : compiled.outputs.expressions =
     (![.var 2] : Fin 1 → Expr 3) := by
+  show compiled.outputs.expressions = ![.var ⟨2, by decide⟩]
   decide +kernel
 
 /-- `obs-x` reads the state `x` of `[u, du, x]`. -/
 theorem x_at (point : Point 3) : compiled.outputs.circuit.run point xIndex = point 2 := by
-  simp [Selected.circuit, outputs_expressions, xIndex, Expr.eval]
+  simp only [Selected.circuit, compileOutputs_correct compiled.outputs.expressions point,
+    outputs_expressions]
+  rfl
 
 /-- The declared start is `0` from the declared initial state, where `x = 0`. -/
 theorem x_at_initial (d : Point (DriverBinding.width drivers)) :
     compiled.outputs.circuit.run (pointAppend d compiled.initial) xIndex = 0 := by
-  rw [x_at, initial_eq]
+  rw [x_at (pointAppend d compiled.initial), initial_eq]
   rfl
 
 /-- The time domain is `t ≥ 0`. -/
 theorem domain_eq : evolution.time.domain = Set.Ici 0 := by
-  simp [Evolution.time, evolution, Dynamics.TimeDomain.domain]
+  simp [Evolution.time, Dynamics.TimeDomain.domain]
 
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
   rw [domain_eq, Set.mem_Ici]
