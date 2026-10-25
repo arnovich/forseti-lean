@@ -17,7 +17,7 @@ open Gimle.Forseti.Examples.HarmonicOscillator
 example : (body.observations.get energyIndex).port.id = "obs-e" := by decide
 example : evolution.states.map (·.initialId) = ["initial-x", "initial-v"] := by decide
 example : evolution.axis.id = "time" := by decide
-example : evolution.time.start = 0 := by simp [Gimle.Asgard.Model.Evolution.time, evolution]
+example : evolution.time.start = 0 := by simp [Gimle.Asgard.Model.Evolution.time]
 
 example (input : Signal (0 + evolution.states.length))
     (admit : admitted input) (state : Signal evolution.states.length) :
