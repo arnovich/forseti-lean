@@ -159,7 +159,7 @@ def exposureWithin (B : ℝ) (x : Point states) : Prop := |x (0 : Fin 2)| ≤ B
 the `obs-s` output at `[d, s, h]` is, whatever the driver value `d`. -/
 theorem exposureWithin_iff_obs (B : ℝ) (d : Point width) (x : Point states) :
     exposureWithin B x ↔ |compiled.outputs.circuit.run (pointAppend d x) sIndex| ≤ B := by
-  rw [s_at, append_s]
+  rw [s_at (pointAppend d x), append_s]
   rfl
 
 /-! ### The one-step identity and the expected energy -/
