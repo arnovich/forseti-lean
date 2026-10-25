@@ -53,7 +53,8 @@ theorem rates_expressions : compiled.rates.expressions =
   -- Decided at the compiled coordinate count, which instance search cannot
   -- reduce to `3`: the driver width is a `flatMap` length.
   show compiled.rates.expressions =
-    ![.add (.add (.var ⟨1, by decide⟩) (.var ⟨0, by decide⟩)) (.neg (.var ⟨2, by decide⟩))]
+    ![.add (.add (.var ⟨1, by decide⟩) (.var ⟨0, by decide⟩))
+      (.neg (.var ⟨2, by decide⟩))]
   decide +kernel
 
 /-- The declared initial state is `x(0) = 0`. -/
@@ -69,12 +70,20 @@ def xIndex : Fin body.observations.length := ⟨0, by decide⟩
 /-- The observation circuit, as compiled: `x` is the state coordinate. -/
 theorem outputs_expressions : compiled.outputs.expressions =
     (![.var 2] : Fin 1 → Expr 3) := by
-  show compiled.outputs.expressions = ![.var ⟨2, by decide⟩]
+  -- Pointwise at `xIndex`: the compiled observation count is not reducible to
+  -- `1`, so neither side's vector type can be stated at it.
+  funext j
+  obtain rfl : j = xIndex := Fin.ext (by
+    have := j.isLt
+    change j.val < 1 at this
+    show j.val = 0
+    omega)
+  show compiled.outputs.expressions xIndex = .var ⟨2, by decide⟩
   decide +kernel
 
 /-- `obs-x` reads the state `x` of `[u, du, x]`. -/
 theorem x_at (point : Point 3) : compiled.outputs.circuit.run point xIndex = point 2 := by
-  simp only [Selected.circuit, compileOutputs_correct compiled.outputs.expressions point,
+  rw [Selected.circuit, compileOutputs_correct compiled.outputs.expressions point,
     outputs_expressions]
   rfl
 
