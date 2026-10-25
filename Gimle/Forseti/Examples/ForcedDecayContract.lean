@@ -212,7 +212,7 @@ theorem output_value (input : Signal (width + states))
     (by simp [hstart, solution]) hderiv (solution_deriv admit)
   intro t ht
   show compiled.outputs.circuit.run (pointAppend (signalLeft input t) (state t)) xIndex = _
-  rw [x_at (pointAppend (signalLeft input t) (state t))]
+  rw [x_at]
   change state t xState = _
   exact same ht
 

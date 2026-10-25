@@ -42,7 +42,7 @@ abbrev evolution : Evolution := {
 }
 
 /-- `d` is a driver without a derivative port: continuity is all that is asked. -/
-def drivers : List DriverBinding := [⟨"driver-d", none⟩]
+abbrev drivers : List DriverBinding := [⟨"driver-d", none⟩]
 
 /-- The source compiled by asgard-lean's verified source compiler. -/
 def model : SourceDrivenModel body evolution drivers :=
@@ -56,12 +56,6 @@ abbrev compiled : DrivenModel model.lowered.body evolution drivers := model.mode
 theorem rates_expressions : compiled.rates.expressions =
     (![.add (.add (.neg (.var 1)) (.neg (.var 2))) (.var 0),
       .add (.var 1) (.neg (.var 2))] : Fin 2 → Expr 3) := by
-  -- Decided at the compiled coordinate count, which instance search cannot
-  -- reduce to `3`: the driver width is a `flatMap` length.
-  show compiled.rates.expressions =
-    ![.add (.add (.neg (.var ⟨1, by decide⟩)) (.neg (.var ⟨2, by decide⟩)))
-        (.var ⟨0, by decide⟩),
-      .add (.var ⟨1, by decide⟩) (.neg (.var ⟨2, by decide⟩))]
   decide +kernel
 
 /-- The declared initial state is `s(0) = h(0) = 0`. -/
@@ -82,29 +76,23 @@ def vIndex : Fin body.observations.length := ⟨1, by decide⟩
 
 /-- The observation circuit, as compiled: `obs-s` is the state coordinate `s`. -/
 theorem outputs_s : compiled.outputs.expressions sIndex = (.var 1 : Expr 3) := by
-  show compiled.outputs.expressions sIndex = .var ⟨1, by decide⟩
   decide +kernel
 
 /-- `obs-v` is `1·s·s + 1·h·h`, as the compiler writes the squares. -/
 theorem outputs_v : compiled.outputs.expressions vIndex =
     (.add (.mul (.mul (.constant 1) (.var 1)) (.var 1))
       (.mul (.mul (.constant 1) (.var 2)) (.var 2)) : Expr 3) := by
-  show compiled.outputs.expressions vIndex =
-    .add (.mul (.mul (.constant 1) (.var ⟨1, by decide⟩)) (.var ⟨1, by decide⟩))
-      (.mul (.mul (.constant 1) (.var ⟨2, by decide⟩)) (.var ⟨2, by decide⟩))
   decide +kernel
 
 /-- `obs-s` reads the state `s` of `[d, s, h]`. -/
 theorem s_at (point : Point 3) : compiled.outputs.circuit.run point sIndex = point 1 := by
-  simp only [Selected.circuit, compileOutputs_correct compiled.outputs.expressions point,
-    outputs_s]
+  simp only [Selected.circuit, compileOutputs_correct, outputs_s]
   rfl
 
 /-- `obs-v` reads `s² + h²` of `[d, s, h]`. -/
 theorem v_at (point : Point 3) :
     compiled.outputs.circuit.run point vIndex = point 1 ^ 2 + point 2 ^ 2 := by
-  simp only [Selected.circuit, compileOutputs_correct compiled.outputs.expressions point,
-    outputs_v]
+  simp only [Selected.circuit, compileOutputs_correct, outputs_v]
   show @Expr.eval 3 point _ = _
   simp only [Expr.eval, Rat.cast_one, one_mul]
   ring
@@ -166,13 +154,13 @@ theorem rates_h (d : Point width) (x : Point states) :
 /-- At the declared initial state the exposure is `0`, whatever the driver. -/
 theorem s_at_initial (d : Point width) :
     compiled.outputs.circuit.run (pointAppend d compiled.initial) sIndex = 0 := by
-  rw [s_at (pointAppend d compiled.initial), append_s, initial_eq]
+  rw [s_at, append_s, initial_eq]
   simp
 
 /-- At the declared initial state `V = 0`, whatever the driver. -/
 theorem v_at_initial (d : Point width) :
     compiled.outputs.circuit.run (pointAppend d compiled.initial) vIndex = 0 := by
-  rw [v_at (pointAppend d compiled.initial), append_s, append_h, initial_eq]
+  rw [v_at, append_s, append_h, initial_eq]
   simp
 
 #print axioms rates_expressions

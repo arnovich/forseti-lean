@@ -273,9 +273,9 @@ theorem output_value (input : Signal (width + states)) (output)
   obtain ⟨state, hstate, rfl⟩ := (observed_rel input output).1 related
   refine ⟨state, hstate, fun t => ⟨?_, ?_⟩⟩
   · dsimp only
-    rw [s_at (pointAppend (signalLeft input t) (state t)), append_s]
+    rw [s_at, append_s]
   · dsimp only
-    rw [v_at (pointAppend (signalLeft input t) (state t)), append_s, append_h, energy]
+    rw [v_at, append_s, append_h, energy]
 
 /-- The exposure starts at the declared `s(0) = 0`: no admission is needed for
 the start value. -/
