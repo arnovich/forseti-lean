@@ -18,7 +18,7 @@ namespace Gimle.Forseti.Examples.ForcedDecay
 open Gimle.Asgard Gimle.Asgard.Model Polynomial
 
 /-- The equations of `DrivenForcing`, plus the observation `obs-x` of `x`. -/
-def body : SourceBody := {
+abbrev body : SourceBody := {
   inputs := [⟨"state-x", "x", .state⟩, ⟨"driver-u", "u", .driver⟩,
     ⟨"driver-du", "du", .driver⟩]
   assignments := []
