@@ -34,7 +34,7 @@ def body : SourceBody := {
 }
 
 /-- State order [x, v], from `x(0) = 1`, `v(0) = 0` at `t = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-x", "dx", "initial-x"⟩, ⟨"state-v", "dv", "initial-v"⟩]
   initialPorts := [⟨"initial-x", "x0", .initial⟩, ⟨"initial-v", "v0", .initial⟩]
   initialValues := [⟨"initial-x", 1⟩, ⟨"initial-v", 0⟩]

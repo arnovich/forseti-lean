@@ -55,7 +55,7 @@ def body : Body := {
 }
 
 /-- From `(1, …, 1)` at `t = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-a01", "da01", "initial-a01"⟩, ⟨"state-a02", "da02", "initial-a02"⟩, ⟨"state-a1m2", "da1m2", "initial-a1m2"⟩, ⟨"state-a1m1", "da1m1", "initial-a1m1"⟩, ⟨"state-a10", "da10", "initial-a10"⟩, ⟨"state-a11", "da11", "initial-a11"⟩, ⟨"state-a12", "da12", "initial-a12"⟩, ⟨"state-a2m2", "da2m2", "initial-a2m2"⟩, ⟨"state-a2m1", "da2m1", "initial-a2m1"⟩, ⟨"state-a20", "da20", "initial-a20"⟩, ⟨"state-a21", "da21", "initial-a21"⟩, ⟨"state-a22", "da22", "initial-a22"⟩]
   initialPorts := [⟨"initial-a01", "a01_0", .initial⟩, ⟨"initial-a02", "a02_0", .initial⟩, ⟨"initial-a1m2", "a1m2_0", .initial⟩, ⟨"initial-a1m1", "a1m1_0", .initial⟩, ⟨"initial-a10", "a10_0", .initial⟩, ⟨"initial-a11", "a11_0", .initial⟩, ⟨"initial-a12", "a12_0", .initial⟩, ⟨"initial-a2m2", "a2m2_0", .initial⟩, ⟨"initial-a2m1", "a2m1_0", .initial⟩, ⟨"initial-a20", "a20_0", .initial⟩, ⟨"initial-a21", "a21_0", .initial⟩, ⟨"initial-a22", "a22_0", .initial⟩]
   initialValues := [⟨"initial-a01", 1⟩, ⟨"initial-a02", 1⟩, ⟨"initial-a1m2", 1⟩, ⟨"initial-a1m1", 1⟩, ⟨"initial-a10", 1⟩, ⟨"initial-a11", 1⟩, ⟨"initial-a12", 1⟩, ⟨"initial-a2m2", 1⟩, ⟨"initial-a2m1", 1⟩, ⟨"initial-a20", 1⟩, ⟨"initial-a21", 1⟩, ⟨"initial-a22", 1⟩]
@@ -257,7 +257,7 @@ theorem energy_at_initial :
   simp [energy, Matrix.cons_val] <;> norm_num
 
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
-  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+  simp [Dynamics.TimeDomain.domain, Evolution.time]
 
 /-- `Z = Σ a_k²`. -/
 noncomputable def enstrophy (x : Point 12) : ℝ := x 0 * x 0 + x 1 * x 1 + x 2 * x 2 + x 3 * x 3 + x 4 * x 4 + x 5 * x 5 + x 6 * x 6 + x 7 * x 7 + x 8 * x 8 + x 9 * x 9 + x 10 * x 10 + x 11 * x 11

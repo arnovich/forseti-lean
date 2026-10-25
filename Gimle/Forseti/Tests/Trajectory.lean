@@ -65,8 +65,6 @@ example : ¬ Examples.ThreeStateContract.admitted
   have := congrFun h ⟨0, by decide⟩
   have start : Examples.ThreeState.evolution.time.start = 2 := rfl
   simp [start, Examples.ThreeState.initial_eq] at this
-  change (0 : ℝ) = 1 at this
-  norm_num at this
 
 /-! ### Uniqueness is on the forward domain only
 

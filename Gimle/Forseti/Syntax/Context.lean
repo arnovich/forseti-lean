@@ -80,7 +80,7 @@ instance : DecidableEq Context := fun a b =>
   decidable_of_iff (a.names = b.names) ext_iff'.symm
 
 /-- The dimension a context fixes: one coordinate per name. -/
-def dimension (context : Context) : Nat := context.names.length
+abbrev dimension (context : Context) : Nat := context.names.length
 
 /-- The name of a coordinate. -/
 def name (context : Context) (coordinate : Fin context.dimension) : String :=

@@ -45,7 +45,7 @@ def body : Body := {
 }
 
 /-- State order `[x, y, z]`, from `(1, 1, 1)` at `t = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-x", "dx", "initial-x"⟩, ⟨"state-y", "dy", "initial-y"⟩,
     ⟨"state-z", "dz", "initial-z"⟩]
   initialPorts := [⟨"initial-x", "x0", .initial⟩, ⟨"initial-y", "y0", .initial⟩,
@@ -118,7 +118,7 @@ theorem energy_at_initial :
 /-! ## Realizations, as solutions of the closed-form field -/
 
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
-  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+  simp [Dynamics.TimeDomain.domain, Evolution.time]
 
 theorem domain_eq : evolution.time.domain = Set.Ici 0 := by
   ext t
@@ -132,7 +132,7 @@ theorem realizes_iff (state : Dynamics.Signal 3) :
       ∀ t ∈ evolution.time.domain, ∀ i, HasDerivWithinAt (fun t => state t i)
         (field (state t) i) evolution.time.domain t := by
   rw [← compiled.solves_iff_realizes, compiled.solves_iff_field, initial_eq]
-  have start : evolution.time.start = 0 := by simp [Evolution.time, evolution]
+  have start : evolution.time.start = 0 := by simp [Evolution.time]
   rw [start]
   apply and_congr_right
   intro _

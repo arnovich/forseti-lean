@@ -173,7 +173,7 @@ theorem compiled_initial_derivative (state : Dynamics.Signal 3)
   have initial := (compiled_solves state realized).1
   rw [compiled_problem_start, compiled_problem_initial] at initial
   have forward : (2 : ℝ) ∈ evolution.time.domain := by
-    simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+    simp [Dynamics.TimeDomain.domain, Evolution.time]
   have h := compiled_energy_derivative state realized 2 forward
   rw [initial] at h
   convert h using 1
@@ -181,7 +181,7 @@ theorem compiled_initial_derivative (state : Dynamics.Signal 3)
 
 /-- The time domain is `t ≥ 2`. -/
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 2 ≤ t := by
-  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+  simp [Dynamics.TimeDomain.domain, Evolution.time]
 
 /-- The data the generic construction needs: the linear view, the energy
 observation `V`, `P = I` and the certificate at the compiled damping. -/
