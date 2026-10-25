@@ -71,6 +71,9 @@ states what it proves and what it does not.
 | [Approximation](Gimle/Forseti/Examples/CircuitApproximation.lean) | Property transport with an explicit certified error |
 | [Residual error envelopes](Gimle/Forseti/ErrorEnvelope.lean) | Signed-growth error bounds on closed intervals and composition across adjoining segments; [regressions](Gimle/Forseti/Tests/ErrorEnvelope.lean) |
 | [Periodic Burgers residual bounds](Gimle/Forseti/ResidualPDE.lean) | Squared spatial L2 error derived from independent exact and approximate PDE fields; [concrete fields](Gimle/Forseti/Tests/ResidualPDE.lean) |
+| [Positive heat profiles](Gimle/Forseti/ColeHopf.lean) | Actual periodic Burgers fields from positive heat profiles, quotient estimates and classical uniqueness |
+| [Finite heat profiles](Gimle/Forseti/ColeHopfFinite.lean) | Finite cosine/exponential fields with proved positivity, derivative witnesses and coefficient-moment error bounds |
+| [Burgers compression budgets](Gimle/Forseti/ColeHopfCertificate.lean) | Exact data-bound certificates for normalized spatial L2 accuracy throughout a closed interval, including comparison with independent classical solutions |
 | [Certificate checking](Gimle/Forseti/Examples/ProofSearchContract.lean) | Exact validity conditions for proposed linear-energy certificates |
 | [Mild vorticity contracts](Gimle/Forseti/MildVorticity.lean) | Total Hoare contracts for Asgard's mild vorticity circuit |
 | [Classical vorticity uniqueness](Gimle/Forseti/ClassicalVorticity/Uniqueness.lean) | Uniqueness among independent periodic classical solutions, [applied](Gimle/Forseti/Examples/ClassicalNavierStokes.lean) to a three-mode start |
