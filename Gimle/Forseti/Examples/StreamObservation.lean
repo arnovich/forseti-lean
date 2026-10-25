@@ -263,7 +263,7 @@ theorem altered_profile_refuted :
     ⟨rfl, fun _ _ => rfl⟩ ?_
   intro i
   have values : ∀ i, (Syntax.Context.valueOf alteredAnswer (heatInput.context.name i)).getD 0 =
-      ![2, 1] (Fin.cast (by decide +kernel) i) := by decide +kernel
+      if i.val = 0 then 2 else 1 := by decide +kernel
   rw [values]
   fin_cases i
   · rw [heatInput.point_of_slot (by decide +kernel : heatInput.slot _ = ⟨1, ![0, 2]⟩)]
