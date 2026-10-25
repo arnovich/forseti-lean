@@ -59,7 +59,8 @@ theorem rates_expressions : compiled.rates.expressions =
   -- Decided at the compiled coordinate count, which instance search cannot
   -- reduce to `3`: the driver width is a `flatMap` length.
   show compiled.rates.expressions =
-    ![.add (.add (.neg (.var ⟨1, by decide⟩)) (.neg (.var ⟨2, by decide⟩))) (.var ⟨0, by decide⟩),
+    ![.add (.add (.neg (.var ⟨1, by decide⟩)) (.neg (.var ⟨2, by decide⟩)))
+        (.var ⟨0, by decide⟩),
       .add (.var ⟨1, by decide⟩) (.neg (.var ⟨2, by decide⟩))]
   decide +kernel
 
