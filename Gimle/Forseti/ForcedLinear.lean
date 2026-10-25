@@ -10,7 +10,6 @@ namespace Gimle.Forseti.ForcedLinear
 open Gimle.Asgard Gimle.Asgard.Dynamics
 open scoped Interval
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Every continuous forcing has a global solution for every initial state. -/
 theorem exists_solution {n : Nat} (L : Point n →L[ℝ] Point n)
     (forcing : Signal n) (continuous : Continuous forcing)
