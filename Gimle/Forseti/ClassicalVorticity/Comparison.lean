@@ -7,7 +7,6 @@ inequality. These lemmas alone assert no uniqueness of PDE solutions. -/
 namespace Gimle.Forseti.ClassicalVorticity
 open Set Real
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A one-sided differential inequality controls a scalar difference on the
 closed interval. No two-sided derivative at either endpoint is needed. -/
 theorem difference_le_exp {D D' : ℝ → ℝ} {T C : ℝ} (hT : 0 ≤ T)

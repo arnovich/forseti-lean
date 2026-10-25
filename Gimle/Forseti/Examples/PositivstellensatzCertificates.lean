@@ -72,6 +72,6 @@ theorem unitProduct_holds : unitProduct.Entailment :=
 
 theorem disk_holds_again : disk.Entailment :=
   PsatzCertificate.sound disk (PsatzCertificate.ofCertificate diskCertificate)
-    (by rw [PsatzCertificate.check_ofCertificate]; decide +kernel)
+    (by rw [PsatzCertificate.check_ofCertificate disk diskCertificate]; decide +kernel)
 
 end Gimle.Forseti.Examples.PositivstellensatzCertificates

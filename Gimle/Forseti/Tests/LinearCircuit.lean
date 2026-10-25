@@ -45,7 +45,7 @@ def swappedUpdates : Program 2 where
 def scalarProgram (a c : ℚ) : Program 1 where
   updates := ![.mul (.constant a) (.var 0)]
   readout := .mul (.constant c) (.var 0)
-  matrix := ![![a]]
+  matrix := !![a]
   weights := ![c]
   updates_ok := by
     intro i

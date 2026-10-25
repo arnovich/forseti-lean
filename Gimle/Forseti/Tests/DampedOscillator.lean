@@ -22,7 +22,7 @@ example : (body.observations.get energyIndex).port.id = "obs-e" := by decide
 example : body.observations.map (·.port.id) = ["obs-x", "obs-v", "obs-e"] := by decide
 example : evolution.states.map (·.initialId) = ["initial-x", "initial-v"] := by decide
 example : evolution.axis.id = "time" := by decide
-example : evolution.time.start = 0 := by simp [Gimle.Asgard.Model.Evolution.time, evolution]
+example : evolution.time.start = 0 := by simp [Gimle.Asgard.Model.Evolution.time]
 example : compiled.initial = ![1, 0] := initial_eq
 example : compiled.outputs.circuit.run compiled.initial energyIndex = 2 := energy_at_initial
 example : ∃ state, compiled.Realizes state := compiled_exists

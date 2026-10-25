@@ -279,7 +279,7 @@ theorem unit_heat_bound_two_refuted (basis : Streams.Basis) :
     (Streams.Heat.circuit_solution basis _ 0) (q := Streams.Heat.solution _) rfl ![1, 1]
     (fun i => ?_) ?_
   · have values : ∀ i, (Syntax.Context.valueOf unitAnswer (unitSpec.context.name i)).getD 0 =
-        ![1, 1, 3] (Fin.cast (by decide +kernel) i) := by decide +kernel
+        if i.val = 2 then 3 else 1 := by decide +kernel
     rw [values]
     fin_cases i <;> norm_num [FieldSpec.fieldPoint, FieldSpec.point, unit_field]
   · simp only [unitExpr, eval_add, eval_mul, eval_ofNat, ut_eval, ux_eval, unit_field]

@@ -72,7 +72,7 @@ theorem egf_root_refuted :
     (answer := [("u[t^0, x^2]", 1), ("u[t^0, x^3]", 0)]) (by decide +kernel) ![bump] rfl ?_
   intro i
   have values : ∀ i, (Syntax.Context.valueOf [("u[t^0, x^2]", 1), ("u[t^0, x^3]", 0)]
-      (egfInput.context.name i)).getD 0 = ![1, 0] (Fin.cast (by decide +kernel) i) := by
+      (egfInput.context.name i)).getD 0 = if i.val = 0 then 1 else 0 := by
     decide +kernel
   rw [values]
   fin_cases i

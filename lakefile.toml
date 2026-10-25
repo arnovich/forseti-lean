@@ -1,20 +1,11 @@
 name = "forseti"
 version = "0.1.0"
-# Temporary: Lean 4.33 changed the default of
-# backward.isDefEq.respectTransparency.types to true. Under the new default,
-# instances fail to synthesise, rw and simp stop matching and HedgedSpread hits
-# a heartbeat timeout, in the oscillator, decay, spread and three-state
-# examples, Syntax/Context and LinearEnergy. This restores the previous default
-# package-wide, as asgard-lean does; remove it in a follow-up that ports those
-# proofs. It is passed as a raw -D argument because leanOptions treats the
-# dotted name as a single quoted identifier.
-moreLeanArgs = ["-Dbackward.isDefEq.respectTransparency.types=false"]
 defaultTargets = ["Gimle.Forseti", "Gimle.Forseti.Examples", "Gimle.Forseti.Tests", "Checker"]
 
 [[require]]
 name = "asgard"
 git = "https://github.com/arnovich/asgard-lean.git"
-rev = "2b3ec26c2a463bccde31b8d9a369f5f2d5db72ef"
+rev = "692a116da2dc546eb6de26714c2a4fb49115933d"
 
 [[lean_lib]]
 name = "Gimle.Forseti"

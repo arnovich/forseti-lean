@@ -48,7 +48,7 @@ def body : Body := {
 }
 
 /-- From `(1, …, 1)` at `t = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-a10", "da10", "initial-a10"⟩, ⟨"state-a01", "da01", "initial-a01"⟩, ⟨"state-a11", "da11", "initial-a11"⟩, ⟨"state-a21", "da21", "initial-a21"⟩, ⟨"state-a12", "da12", "initial-a12"⟩]
   initialPorts := [⟨"initial-a10", "a10_0", .initial⟩, ⟨"initial-a01", "a01_0", .initial⟩, ⟨"initial-a11", "a11_0", .initial⟩, ⟨"initial-a21", "a21_0", .initial⟩, ⟨"initial-a12", "a12_0", .initial⟩]
   initialValues := [⟨"initial-a10", 1⟩, ⟨"initial-a01", 1⟩, ⟨"initial-a11", 1⟩, ⟨"initial-a21", 1⟩, ⟨"initial-a12", 1⟩]
@@ -187,7 +187,7 @@ theorem energy_at_initial :
   simp [energy, Matrix.cons_val] <;> norm_num
 
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
-  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+  simp [Dynamics.TimeDomain.domain, Evolution.time]
 
 /-- `Z = Σ a_k²`. -/
 noncomputable def enstrophy (x : Point 5) : ℝ := x 0 * x 0 + x 1 * x 1 + x 2 * x 2 + x 3 * x 3 + x 4 * x 4

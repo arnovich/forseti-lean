@@ -32,7 +32,7 @@ def body : SourceBody := {
 }
 
 /-- Two states `[s, h]`, starting at `t = 0` from `s(0) = h(0) = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-s", "ds", "initial-s"⟩, ⟨"state-h", "dh", "initial-h"⟩]
   initialPorts := [⟨"initial-s", "s0", .initial⟩, ⟨"initial-h", "h0", .initial⟩]
   initialValues := [⟨"initial-s", 0⟩, ⟨"initial-h", 0⟩]
@@ -42,7 +42,7 @@ def evolution : Evolution := {
 }
 
 /-- `d` is a driver without a derivative port: continuity is all that is asked. -/
-def drivers : List DriverBinding := [⟨"driver-d", none⟩]
+abbrev drivers : List DriverBinding := [⟨"driver-d", none⟩]
 
 /-- The source compiled by asgard-lean's verified source compiler. -/
 def model : SourceDrivenModel body evolution drivers :=
@@ -99,14 +99,14 @@ theorem v_at (point : Point 3) :
 
 /-- The time domain is `t ≥ 0`. -/
 theorem domain_eq : evolution.time.domain = Set.Ici 0 := by
-  simp [Evolution.time, evolution, Dynamics.TimeDomain.domain]
+  simp [Evolution.time, Dynamics.TimeDomain.domain]
 
 /-- Membership in the domain is `0 ≤ t`. -/
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
   rw [domain_eq, Set.mem_Ici]
 
 /-- The declared start, reducibly `0`. -/
-theorem origin : evolution.time.start = 0 := by simp [Evolution.time, evolution]
+theorem origin : evolution.time.start = 0 := by simp [Evolution.time]
 
 /-! ### Coordinates -/
 

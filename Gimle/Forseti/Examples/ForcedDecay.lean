@@ -18,7 +18,7 @@ namespace Gimle.Forseti.Examples.ForcedDecay
 open Gimle.Asgard Gimle.Asgard.Model Polynomial
 
 /-- The equations of `DrivenForcing`, plus the observation `obs-x` of `x`. -/
-def body : SourceBody := {
+abbrev body : SourceBody := {
   inputs := [⟨"state-x", "x", .state⟩, ⟨"driver-u", "u", .driver⟩,
     ⟨"driver-du", "du", .driver⟩]
   assignments := []
@@ -27,7 +27,7 @@ def body : SourceBody := {
 }
 
 /-- One state `x`, starting at `t = 0` from `x(0) = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-x", "dx", "initial-x"⟩]
   initialPorts := [⟨"initial-x", "x0", .initial⟩]
   initialValues := [⟨"initial-x", 0⟩]
@@ -37,7 +37,7 @@ def evolution : Evolution := {
 }
 
 /-- `u` is a driver, differentiable with derivative port `du`. -/
-def drivers : List DriverBinding := [⟨"driver-u", some "driver-du"⟩]
+abbrev drivers : List DriverBinding := [⟨"driver-u", some "driver-du"⟩]
 
 /-- The source compiled by asgard-lean's verified source compiler. -/
 def model : SourceDrivenModel body evolution drivers :=
@@ -79,7 +79,7 @@ theorem x_at_initial (d : Point (DriverBinding.width drivers)) :
 
 /-- The time domain is `t ≥ 0`. -/
 theorem domain_eq : evolution.time.domain = Set.Ici 0 := by
-  simp [Evolution.time, evolution, Dynamics.TimeDomain.domain]
+  simp [Evolution.time, Dynamics.TimeDomain.domain]
 
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
   rw [domain_eq, Set.mem_Ici]

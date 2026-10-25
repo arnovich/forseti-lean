@@ -36,7 +36,7 @@ def body : SourceBody := {
 }
 
 /-- State order [x, v], starting at `t = 0` from `x(0) = 1`, `v(0) = 0`. -/
-def evolution : Evolution := {
+abbrev evolution : Evolution := {
   states := [⟨"state-x", "dx", "initial-x"⟩, ⟨"state-v", "dv", "initial-v"⟩]
   initialPorts := [⟨"initial-x", "x0", .initial⟩, ⟨"initial-v", "v0", .initial⟩]
   initialValues := [⟨"initial-x", 1⟩, ⟨"initial-v", 0⟩]
@@ -141,7 +141,7 @@ theorem quadratic_energyMatrix (x : Point 2) :
 
 /-- The time domain is `t ≥ 0`. -/
 theorem domain_iff (t : ℝ) : t ∈ evolution.time.domain ↔ 0 ≤ t := by
-  simp [Dynamics.TimeDomain.domain, Evolution.time, evolution]
+  simp [Dynamics.TimeDomain.domain, Evolution.time]
 
 /-- The data the generic construction needs: the linear view, the energy
 observation, `P` and its certificate. -/

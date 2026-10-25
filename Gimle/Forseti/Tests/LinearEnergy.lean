@@ -55,7 +55,7 @@ example : ¬ oscillatorCertificate.Valid changedDamping oscillatorP := by
   decide +kernel
 
 -- Off-diagonal entries contribute TWICE to a symmetric quadratic's cross term.
-def sharedSquare : WeightedSquares 2 where
+abbrev sharedSquare : WeightedSquares 2 where
   count := 1
   weight := ![1]
   vector := ![![1, 1]]
@@ -109,7 +109,7 @@ example (y : ℝ) : quadratic partialP ![0, y] = 0 := by
   simp [quadratic, realMatrix, partialP, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
 
 -- Empty square families certify zero energy, including zero-dimensional systems.
-def noSquares (n : Nat) : WeightedSquares n where
+abbrev noSquares (n : Nat) : WeightedSquares n where
   count := 0
   weight := Fin.elim0
   vector := Fin.elim0

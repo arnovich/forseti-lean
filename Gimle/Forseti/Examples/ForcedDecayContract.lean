@@ -106,7 +106,7 @@ theorem field_rate (d : Point width) (x : Point states) :
   rw [rates_expressions, sub_eq_add_neg]
   rfl
 
-theorem origin : evolution.time.start = 0 := by simp [Evolution.time, evolution]
+theorem origin : evolution.time.start = 0 := by simp [Evolution.time]
 
 /-- For an input whose initial wire starts at `x(0)`, the driven feedback
 relates exactly the solutions of `x(0) = 0`, `x' = (du + u) − x` on `t ≥ 0`,
