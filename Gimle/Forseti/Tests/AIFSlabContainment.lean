@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFSlabContainment
-import Gimle.Forseti.Tests.AIFSlab
+module
+
+public import Gimle.Forseti.Examples.AIFSlabContainment
+public import Gimle.Forseti.Tests.AIFSlab
 
 /-! Sharp closed-boundary and invalid-margin regressions for error containment. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFSlabContainment
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.Examples.AIFSlabModel Gimle.Forseti.Examples.AIFSlabContainment

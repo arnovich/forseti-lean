@@ -1,4 +1,6 @@
-import Gimle.Forseti.FieldBound
+module
+
+public import Gimle.Forseti.FieldBound
 
 /-! A certified strip bound for the heat solution with a quadratic initial
 profile, as a property of the candidate field.
@@ -20,6 +22,8 @@ profile `p` — the unique one in the finite polynomial solution class — is
 asgard-lean's theorem; `HeatFieldBound` binds these bounds to the circuit
 (`heat_strip_bound`, `unit_heat_bound_three`, `unit_heat_bound_two_refuted`).
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.HeatStripBound
 

@@ -1,6 +1,8 @@
-import Gimle.Forseti.Nonlinear
-import Gimle.Forseti.GalerkinNS.Family
-import Gimle.Asgard.Compile.Syntax
+module
+
+public import Gimle.Forseti.Nonlinear
+public import Gimle.Forseti.GalerkinNS.Family
+public import Gimle.Asgard.Compile.Syntax
 
 /-! # T3S: a Galerkin truncation of 2D Navier–Stokes, trapped
 
@@ -16,6 +18,8 @@ Z' ≤ 2ν (f²/(4ν²) − Z) = 1 · (1 − Z), and the trapped level is
 4 > 1. Unforced energy E_rest = Σ_{k ≠ (1,1)} a_k²/|k|²; the forced
 mode's coupling sum is K = 2/5, so with r = 2 the rate
 2ν − K r = 1/5 is positive: the laminar line attracts and E_rest decays. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.GalerkinNS.T3S
 

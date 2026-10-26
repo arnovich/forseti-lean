@@ -1,6 +1,10 @@
-import Gimle.Forseti
+module
+
+public import Gimle.Forseti
 
 /-! Generated untrusted Lean proof candidate. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.EnergyBound
 

@@ -1,10 +1,14 @@
-import Gimle.Forseti.Trajectory
+module
+
+public import Gimle.Forseti.Trajectory
 
 /-! A normalized two-mass active suspension, with road displacement as input.
 Masses are 2 and 1, suspension stiffness/damping are both 2, tire stiffness is
 4, and there is no tire damper. State order is [qb, qw, vb, vw, force].
 This is an exact mathematical benchmark, not a calibrated vehicle model.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.ActiveSuspension
 

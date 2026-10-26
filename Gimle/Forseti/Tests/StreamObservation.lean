@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.StreamObservation
+module
+
+public import Gimle.Forseti.Examples.StreamObservation
 
 /-! Hostile cases for the coefficient observation adapter.
 
@@ -9,6 +11,8 @@ counterexample appears. A finite observation is never a full stream.
 
 The axiom policy is asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.StreamObservation
 

@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.ThreeStateContract
+module
+
+public import Gimle.Forseti.Examples.ThreeStateContract
 
 /-! Coverage for trajectory contracts.
 
@@ -9,6 +11,8 @@ credited with the safe one; a circuit with no behaviour satisfies the partial
 contract vacuously but never the total one; and a trace has no well-posedness
 for free. The axiom policy is asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Trajectory
 

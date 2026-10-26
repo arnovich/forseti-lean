@@ -1,10 +1,15 @@
-import Gimle.Forseti
-import Gimle.Forseti.Examples.LinearOscillator
-import Gimle.Asgard.Examples.EquationModels
+module
+
+public import Gimle.Forseti
+public import Gimle.Forseti.Examples.LinearOscillator
+public import Gimle.Asgard.Examples.EquationModels
 
 /-! Properties of the exact circuits compiled from the shared Lean equations.
 Open PolynomialCompiler.lean for the editable source and EquationModels.lean
 for projection, coefficient extraction and continuous feedback compilation. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.EquationWorkflow
 open Gimle.Asgard
 open Examples.EquationModels

@@ -1,6 +1,8 @@
-import Gimle.Forseti.Trajectory
-import Gimle.Forseti.LinearEnergy
-import Gimle.Asgard.Model.Linear
+module
+
+public import Gimle.Forseti.Trajectory
+public import Gimle.Forseti.LinearEnergy
+public import Gimle.Asgard.Model.Linear
 
 /-! # Trajectory contracts for compiled linear models, from an energy certificate
 
@@ -24,6 +26,8 @@ homogeneous linear, and whose observed energy is a quadratic form `xᵀPx` with 
 Nothing is trusted beyond `LinearEnergy` and asgard-lean's `LinearView`: the
 energy is read off the compiled observation circuit (`Spec.energy_eq`), and the
 certificate is checked against the recognized matrix (`Spec.valid`). -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.LinearEnergyContract
 

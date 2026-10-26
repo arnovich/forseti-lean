@@ -1,6 +1,8 @@
-import Gimle.Forseti.FieldObservation
-import Gimle.Forseti.Examples.HeatStripBound
-import Gimle.Asgard.Examples.PolynomialHeat
+module
+
+public import Gimle.Forseti.FieldObservation
+public import Gimle.Forseti.Examples.HeatStripBound
+public import Gimle.Asgard.Examples.PolynomialHeat
 
 /-! The heat strip bound as a property of Asgard's heat circuit.
 
@@ -29,6 +31,8 @@ asgard-lean, in either basis, through `FieldObservation`:
 refuted at `(t, x) = (1, 1)` through an admitted full input, its related output
 and the failing root postcondition.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.HeatFieldBound
 

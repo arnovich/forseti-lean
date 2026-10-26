@@ -1,6 +1,8 @@
-import Gimle.Forseti.Nonlinear
-import Gimle.Asgard.Model.Linear
-import Gimle.Asgard.Compile.Syntax
+module
+
+public import Gimle.Forseti.Nonlinear
+public import Gimle.Asgard.Model.Linear
+public import Gimle.Asgard.Compile.Syntax
 
 /-! # The Lorenz system stays in a ball: a nonlinear trajectory contract
 
@@ -14,6 +16,8 @@ Along every solution `V' = −2σx² − 2y² − 2βz² + 2β(σ+ρ)z`, so
 trajectory contract here whose field has no linear view; existence for all
 `t ≥ 0`, forward uniqueness and the contract come from `Nonlinear`'s general
 trapping theorem, of which this is the first instance. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.Lorenz
 

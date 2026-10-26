@@ -1,6 +1,8 @@
-import Mathlib.LinearAlgebra.Charpoly.Basic
-import Mathlib.LinearAlgebra.Dimension.Constructions
-import Mathlib.LinearAlgebra.Matrix.ToLin
+module
+
+public import Mathlib.LinearAlgebra.Charpoly.Basic
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.Matrix.ToLin
 
 /-! Exact finite-prefix equivalence for autonomous linear observations.
 The core proof reduces powers modulo the characteristic polynomial. Matrix
@@ -12,6 +14,8 @@ For systems of dimensions `d₁` and `d₂`, agreement of the outputs at indices
 initialization and readout, not state-space conjugacy, and it transfers no
 hidden-state bound. `LinearCircuit` and `LinearCircuitHoare` lift it to compiled
 circuits and an `ExactHoare` invariant. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.FiniteLinearEquivalence
 

@@ -1,9 +1,14 @@
-import Gimle.Forseti.ClassicalVorticity.PeriodicCalculus
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.Tactic.FieldSimp
+module
+
+public import Gimle.Forseti.ClassicalVorticity.PeriodicCalculus
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+public import Mathlib.Tactic.FieldSimp
 
 /-! Elementary square-integral estimates, with explicit constants, for the
 periodic elliptic comparison. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set MeasureTheory
 open scoped Interval

@@ -1,10 +1,15 @@
-import Gimle.Asgard.Dynamics.Linear
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Data.Matrix.Mul
+module
+
+public import Gimle.Asgard.Dynamics.Linear
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Data.Matrix.Mul
 
 /-! Soundness of exact rational weighted-square energy certificates. Circuit
 translations, matrix identities, nonnegative weights and trajectory semantics
 are explicit assumptions. No norm or convergence result follows here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.LinearEnergy
 open Gimle.Asgard Dynamics
 open scoped Matrix
@@ -174,7 +179,7 @@ def authoritativeField {n : Nat} (rhs : Gimle.Asgard.Circuit n n) :
     (authoritativeField rhs).run (pointAppend u x) = rhs.run x := by
   simp [authoritativeField, Gimle.Asgard.Circuit.run, pointAppend]
 
-private def noDrivers : Signal 0 := fun _ i => Fin.elim0 i
+def noDrivers : Signal 0 := fun _ i => Fin.elim0 i
 
 /-- Actual closed feedback over the supplied typed RHS, with explicit initial wires. -/
 def Realizes {n : Nat} (rhs : Gimle.Asgard.Circuit n n) (time : TimeDomain)

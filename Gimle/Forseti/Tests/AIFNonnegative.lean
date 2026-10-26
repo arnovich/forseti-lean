@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFNonnegative
+module
+
+public import Gimle.Forseti.Examples.AIFNonnegative
 
 /-! Regressions for closed-interval nonnegativity, including zero-rate boundaries. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFNonnegative
 open Gimle.Forseti.Examples AIFNonnegative AIFPhysicalCoordinates
 

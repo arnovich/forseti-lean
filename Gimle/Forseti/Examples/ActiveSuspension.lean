@@ -1,5 +1,7 @@
-import Gimle.Forseti.Examples.SuspensionCertificateData
-import Gimle.Forseti.ForcedLinear
+module
+
+public import Gimle.Forseti.Examples.SuspensionCertificateData
+public import Gimle.Forseti.ForcedLinear
 
 /-! Total safety for a nested active suspension, from a searched common storage.
 The outer theorem consumes a component behavior contract; neither concrete
@@ -14,6 +16,8 @@ uniqueness, and `|qb - qw| ≤ 1`, `|f| ≤ 1` and body acceleration
 and its square decompositions come from an exact search; Lean recomputes every
 target from `SuspensionModel` and checks every entry. The two rates are fixed
 alternatives, not a switching actuator. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.ActiveSuspension
 

@@ -1,6 +1,11 @@
-import Gimle.Forseti.Euler
+module
+
+public import Gimle.Forseti.Euler
 
 /-! Generic classical properties belong to the actual Fourier circuit output. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.GenericEuler
 
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Torus

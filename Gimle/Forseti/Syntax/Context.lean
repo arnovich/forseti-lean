@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax
+module
+
+public import Gimle.Forseti.Syntax
 
 /-! Ordered variable contexts for formulas.
 
@@ -31,6 +33,8 @@ coordinate's name. `Context.read_assign` is the round trip.
 **No authority is granted here.** A context names coordinates; it proves
 nothing about any formula.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax
 

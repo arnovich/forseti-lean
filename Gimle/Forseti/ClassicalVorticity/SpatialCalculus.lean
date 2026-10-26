@@ -1,8 +1,13 @@
-import Gimle.Forseti.ClassicalVorticity
-import Gimle.Forseti.ClassicalVorticity.SquareCalculus
-import Mathlib.Algebra.Order.ToIntervalMod
+module
+
+public import Gimle.Forseti.ClassicalVorticity
+public import Gimle.Forseti.ClassicalVorticity.SquareCalculus
+public import Mathlib.Algebra.Order.ToIntervalMod
 
 /-! Spatial calculus for the independent solution class. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set Real
 

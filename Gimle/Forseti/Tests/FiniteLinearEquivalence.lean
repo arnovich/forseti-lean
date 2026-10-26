@@ -1,10 +1,14 @@
-import Gimle.Forseti.FiniteLinearEquivalence
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.IntervalCases
+module
+
+public import Gimle.Forseti.FiniteLinearEquivalence
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.IntervalCases
 
 /-! Boundary regressions for fixed-initial-state rational output equivalence.
 The positive examples use the finite criterion to obtain an infinite theorem;
 the negative examples expose initialization, horizon and readout mistakes. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.FiniteLinearEquivalence
 

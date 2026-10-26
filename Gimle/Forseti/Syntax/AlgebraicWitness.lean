@@ -1,7 +1,9 @@
-import Gimle.Forseti.Syntax.Certificate
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Topology.Order.IntermediateValue
+module
+
+public import Gimle.Forseti.Syntax.Certificate
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Topology.Order.IntermediateValue
 
 /-! Checked real-algebraic counterexamples to formula entailments.
 
@@ -25,6 +27,8 @@ excludes zero (a strict sign), or, for a zero, by a checked polynomial
 producer's claims about roots and signs are never used: `algebraicRefutes`
 recomputes everything, and `algebraicRefutes_sound` proves `¬ goal.Entailment`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax
 

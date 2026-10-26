@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax.Context
+module
+
+public import Gimle.Forseti.Syntax.Context
 
 /-! Coverage for ordered formula contexts.
 
@@ -7,6 +9,8 @@ dimension comes from the names, products keep each coordinate's name, the same
 shape over different names is a different named formula, and an answer read by
 name lands on the right coordinates whatever order it arrives in.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Context
 

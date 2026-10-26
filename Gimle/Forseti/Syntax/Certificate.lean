@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax.Context
+module
+
+public import Gimle.Forseti.Syntax.Context
 
 /-! Checked polynomial entailment certificates and rational counterexamples.
 
@@ -25,6 +27,8 @@ point, named coordinate by coordinate, where `P` holds and `Q` does not,
 evaluated exactly over ℚ (`Formula.holdsQ`) and proved to agree with the real
 semantics.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax
 

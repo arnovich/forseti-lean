@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax.Certificate
+module
+
+public import Gimle.Forseti.Syntax.Certificate
 
 /-! # Degree-2 Positivstellensatz certificates
 
@@ -20,6 +22,8 @@ agree on it (`PsatzCertificate.check_ofCertificate`).
 
 Products of three or more constraints, and strict goals, are outside the format.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax
 

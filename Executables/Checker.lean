@@ -1,5 +1,9 @@
-import Lean.Replay
-import Lean.Data.Json.Printer
+module
+
+public import Lean.Replay
+public import Lean.Data.Json.Printer
+
+@[expose] public section
 
 open Lean
 

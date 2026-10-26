@@ -1,11 +1,15 @@
-import Gimle.Forseti.Examples.LinearCircuitModels
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.IntervalCases
-import Mathlib.Tactic.NormNum
+module
+
+public import Gimle.Forseti.Examples.LinearCircuitModels
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.IntervalCases
+public import Mathlib.Tactic.NormNum
 
 /-! Regression checks for compiled linear programs: initialization, port order,
 empty states, exact casts, and unsupported syntax. Worked proofs are imported
 from Examples; the reusable property modules remain independent of both. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.LinearCircuit
 

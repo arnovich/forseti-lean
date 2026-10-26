@@ -1,5 +1,7 @@
-import Gimle.Asgard.Streams.MildSolution
-import Gimle.Forseti.ClassicalVorticity.Comparison
+module
+
+public import Gimle.Asgard.Streams.MildSolution
+public import Gimle.Forseti.ClassicalVorticity.Comparison
 
 /-!
 # Independent classical vorticity fields
@@ -10,6 +12,9 @@ even symmetry, energy estimates, or an intended solution. The mild realization
 inhabits this class. The imported scalar comparison lemmas are conditional on a
 proved differential inequality; they are not PDE uniqueness theorems.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 
 open Set Real

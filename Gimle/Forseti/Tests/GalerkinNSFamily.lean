@@ -1,9 +1,11 @@
-import Gimle.Forseti.GalerkinNS.Family
-import Gimle.Forseti.GalerkinNS.Coupling
-import Gimle.Forseti.Examples.GalerkinNS.T3
-import Gimle.Forseti.Examples.GalerkinNS.K5
-import Gimle.Forseti.Examples.GalerkinNS.B2
-import Gimle.Forseti.Examples.GalerkinNS.T3S
+module
+
+public import Gimle.Forseti.GalerkinNS.Family
+public import Gimle.Forseti.GalerkinNS.Coupling
+public import Gimle.Forseti.Examples.GalerkinNS.T3
+public import Gimle.Forseti.Examples.GalerkinNS.K5
+public import Gimle.Forseti.Examples.GalerkinNS.B2
+public import Gimle.Forseti.Examples.GalerkinNS.T3S
 
 /-! Coverage for the Galerkin Navier–Stokes family theorems.
 
@@ -16,6 +18,8 @@ forcing on `(1, 0)` its right-hand side is wrong at a concrete point. Each
 generated member's `field_eq_family` and `decrease_family` are restated. The
 axiom policy is asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.GalerkinNSFamily
 

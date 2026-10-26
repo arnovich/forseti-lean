@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFPolynomialBinding
+module
+
+public import Gimle.Forseti.Examples.AIFPolynomialBinding
 
 /-! Exact polynomial equivalence on Hermite rates and tensor tables, including
 altered sign, coefficient, axis and degree. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFPolynomialBinding
 open Gimle.Forseti.RationalPolynomial
 open Gimle.Forseti.Examples

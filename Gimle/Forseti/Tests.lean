@@ -1,37 +1,41 @@
-import Gimle.Forseti.Tests.ClassicalElliptic
-import Gimle.Forseti.Tests.ClassicalUniqueness
-import Gimle.Forseti.Tests.ClassicalVorticity
-import Gimle.Forseti.Tests.MildVorticity
-import Gimle.Forseti.Tests.MildStream
-import Gimle.Forseti
-import Gimle.Forseti.Tests.LinearEnergy
-import Gimle.Forseti.Tests.Discrete
-import Gimle.Forseti.Tests.Approximation
-import Gimle.Forseti.Tests.EquationWorkflow
-import Gimle.Forseti.Tests.Syntax
-import Gimle.Forseti.Tests.Context
-import Gimle.Forseti.Tests.Certificate
-import Gimle.Forseti.Tests.Trajectory
-import Gimle.Forseti.Tests.ThreeState
-import Gimle.Forseti.Tests.DampedOscillator
-import Gimle.Forseti.Tests.ForcedDecay
-import Gimle.Forseti.Tests.HedgedSpread
-import Gimle.Forseti.Tests.Stepped
-import Gimle.Forseti.Tests.HedgedSpreadStepped
-import Gimle.Forseti.Tests.LinearEnergyContract
-import Gimle.Forseti.Tests.Stream
-import Gimle.Forseti.Tests.SequentialHoare
-import Gimle.Forseti.Tests.StreamObservation
-import Gimle.Forseti.Tests.FieldBound
-import Gimle.Forseti.Tests.FieldObservation
-import Gimle.Forseti.Tests.AlgebraicWitness
-import Gimle.Forseti.Tests.Positivstellensatz
-import Gimle.Forseti.Tests.Lorenz
-import Gimle.Forseti.Tests.Nonlinear
-import Gimle.Forseti.Tests.GalerkinNS
-import Gimle.Forseti.Tests.GalerkinNSFamily
-import Gimle.Forseti.Tests.LocalTrapping
-import Gimle.Forseti.Tests.PolynomialTrapping
+module
+
+public import Gimle.Forseti.Tests.ClassicalElliptic
+public import Gimle.Forseti.Tests.ClassicalUniqueness
+public import Gimle.Forseti.Tests.ClassicalVorticity
+public import Gimle.Forseti.Tests.MildVorticity
+public import Gimle.Forseti.Tests.MildStream
+public import Gimle.Forseti
+public import Gimle.Forseti.Tests.LinearEnergy
+public import Gimle.Forseti.Tests.Discrete
+public import Gimle.Forseti.Tests.Approximation
+public import Gimle.Forseti.Tests.EquationWorkflow
+public import Gimle.Forseti.Tests.Syntax
+public import Gimle.Forseti.Tests.Context
+public import Gimle.Forseti.Tests.Certificate
+public import Gimle.Forseti.Tests.Trajectory
+public import Gimle.Forseti.Tests.ThreeState
+public import Gimle.Forseti.Tests.DampedOscillator
+public import Gimle.Forseti.Tests.ForcedDecay
+public import Gimle.Forseti.Tests.HedgedSpread
+public import Gimle.Forseti.Tests.Stepped
+public import Gimle.Forseti.Tests.HedgedSpreadStepped
+public import Gimle.Forseti.Tests.LinearEnergyContract
+public import Gimle.Forseti.Tests.Stream
+public import Gimle.Forseti.Tests.SequentialHoare
+public import Gimle.Forseti.Tests.StreamObservation
+public import Gimle.Forseti.Tests.FieldBound
+public import Gimle.Forseti.Tests.FieldObservation
+public import Gimle.Forseti.Tests.AlgebraicWitness
+public import Gimle.Forseti.Tests.Positivstellensatz
+public import Gimle.Forseti.Tests.Lorenz
+public import Gimle.Forseti.Tests.Nonlinear
+public import Gimle.Forseti.Tests.GalerkinNS
+public import Gimle.Forseti.Tests.GalerkinNSFamily
+public import Gimle.Forseti.Tests.LocalTrapping
+public import Gimle.Forseti.Tests.PolynomialTrapping
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests
 

@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.AIFSlabModel
+module
+
+public import Gimle.Forseti.Examples.AIFSlabModel
 
 /-! The error-coordinate bound `|e₂| ≤ 3/200` used by the drift margin, derived from
 an AIF slab's metric tube. The four rational Bernstein matrices it rests on need
 checked certificates, which are hypotheses here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFSlabContainment
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix AIFSlabModel
 

@@ -1,8 +1,13 @@
-import Gimle.Forseti.LinearEnergy
+module
+
+public import Gimle.Forseti.LinearEnergy
 
 /-! Positivity of exact rational matrix polynomials in tensor Bernstein form.
 The caller must separately establish that its target polynomial equals this
 representation. No coefficient conversion, dynamics, or coverage is assumed. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.LinearEnergy
 

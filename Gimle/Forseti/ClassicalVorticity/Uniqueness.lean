@@ -1,8 +1,13 @@
-import Gimle.Forseti.ClassicalVorticity.EnergyCalculus
+module
+
+public import Gimle.Forseti.ClassicalVorticity.EnergyCalculus
 
 /-! Uniqueness among independent periodic classical vorticity solutions.
 The differential estimate is derived from the PDE and spatial calculus;
 it is not a premise of the comparison solution class. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set Real
 

@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFGlobalSolution
+module
+
+public import Gimle.Forseti.Examples.AIFGlobalSolution
 
 /-! Regressions for the full forward domain and agreement at piece boundaries. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFGlobalSolution
 open Gimle.Forseti.Examples AIFGlobalSolution AIFPhysicalCoordinates
 

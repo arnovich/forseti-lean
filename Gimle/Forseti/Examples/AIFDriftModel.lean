@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.AIFDriftData
+module
+
+public import Gimle.Forseti.Examples.AIFDriftData
 
 /-! Independent drift target for the saved AIF slab. Derivatives below are
 physical-time polynomial formulas (ds/dt = 10). No trajectory or circuit
 contract is assumed or concluded in this module. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFDriftModel
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open AIFDriftData

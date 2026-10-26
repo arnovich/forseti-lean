@@ -1,5 +1,7 @@
-import Gimle.Forseti.ClassicalVorticity.EnergyCalculus
-import Gimle.Forseti.ErrorEnvelope
+module
+
+public import Gimle.Forseti.ClassicalVorticity.EnergyCalculus
+public import Gimle.Forseti.ErrorEnvelope
 
 /-!
 # Residual error bounds for a nonlinear periodic PDE
@@ -16,6 +18,9 @@ bounds are explicit. This module asserts neither existence for arbitrary data
 nor an automatic production-checker admission rule. Each application supplies
 the actual fields and their classical derivative witnesses.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ResidualPDE
 open Set Real
 open Gimle.Forseti.ClassicalVorticity

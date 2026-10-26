@@ -1,8 +1,12 @@
-import Gimle.Forseti.LinearEnergy
+module
+
+public import Gimle.Forseti.LinearEnergy
 
 /-! Derivative-to-trajectory rules for exact storage certificates. These rules
 prove properties of supplied trajectories; existence and uniqueness remain
 separate obligations of any total circuit contract. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Dissipative
 

@@ -1,6 +1,8 @@
-import Gimle.Forseti.LinearEnergyContract
-import Gimle.Asgard.Model.Linear
-import Gimle.Asgard.Model.SourceSyntax
+module
+
+public import Gimle.Forseti.LinearEnergyContract
+public import Gimle.Asgard.Model.Linear
+public import Gimle.Asgard.Model.SourceSyntax
 
 /-! The undamped oscillator `4x'' + x = 0`, given its contract only through
 `LinearEnergyContract`.
@@ -14,6 +16,8 @@ decrease is the empty sum, and `E` stays in `[0, 1]`.
 Everything model-specific is data: the source, the matrix `P = diag(1, 4)`, and
 its certificate. The contract is `LinearEnergyContract` applied to `spec`,
 which is the task-029 measure of how much a new model costs. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.HarmonicOscillator
 

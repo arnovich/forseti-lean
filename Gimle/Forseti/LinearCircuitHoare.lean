@@ -1,10 +1,14 @@
-import Gimle.Forseti.LinearCircuit
-import Gimle.Forseti.Syntax
-import Gimle.Asgard.Compile.Normalization
+module
+
+public import Gimle.Forseti.LinearCircuit
+public import Gimle.Forseti.Syntax
+public import Gimle.Asgard.Compile.Normalization
 
 /-! Finite compiled observations as existing Forseti formulas and Hoare invariants.
 The initialized observation endpoint consumes the existing discrete safety rule.
 No checker admission or automated certificate search is claimed. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.LinearCircuit
 
@@ -38,7 +42,7 @@ def equalityFormula {d₁ d₂ : Nat} (P : Program d₁) (Q : Program d₂)
 def outputFormula {d₁ d₂ : Nat} (P : Program d₁) (Q : Program d₂) :
     Formula (d₁ + d₂) := equalityFormula P Q 0
 
-private def prefixThrough {d₁ d₂ : Nat} (P : Program d₁) (Q : Program d₂) :
+def prefixThrough {d₁ d₂ : Nat} (P : Program d₁) (Q : Program d₂) :
     Nat → Formula (d₁ + d₂)
   | 0 => .tru
   | n + 1 => .and (prefixThrough P Q n) (equalityFormula P Q n)

@@ -1,6 +1,11 @@
-import Gimle.Forseti.RationalLDL
+module
+
+public import Gimle.Forseti.RationalLDL
 
 /-! The proposal is untrusted: acceptance still checks every weight and entry. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.RationalLDL
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.RationalLDL
 

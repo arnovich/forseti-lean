@@ -1,5 +1,7 @@
-import Gimle.Forseti.LocalTrapping
-import Gimle.Forseti.Examples.GalerkinNS.T3
+module
+
+public import Gimle.Forseti.LocalTrapping
+public import Gimle.Forseti.Examples.GalerkinNS.T3
 
 /-! # The 3-mode member below its laminar level: `E ≤ 12`
 
@@ -18,6 +20,8 @@ below the family bound `13` of `trapping`.
 All numbers are rational with denominator `10⁶` or derived exactly; every
 identity is `ring`. The laminar point has `V ≈ 2.54 > 1`; the start has
 `V = 0.98`. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.GalerkinNS.T3
 

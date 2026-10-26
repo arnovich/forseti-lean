@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.EnergyDemoData
-import Gimle.Asgard.Examples.EnergyDemo
+module
+
+public import Gimle.Forseti.Examples.EnergyDemoData
+public import Gimle.Asgard.Examples.EnergyDemo
 
 /-! Property bounds for the Asgard energy circuit E(x,y) = (x+y)² + (x-y)². -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.EnergyDemo
 
 open EnergyDemoData

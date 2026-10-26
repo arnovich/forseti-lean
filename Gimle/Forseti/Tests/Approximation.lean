@@ -1,4 +1,8 @@
-import Gimle.Forseti.Examples.CircuitApproximation
+module
+
+public import Gimle.Forseti.Examples.CircuitApproximation
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Approximation
 open Gimle.Forseti.Approximation

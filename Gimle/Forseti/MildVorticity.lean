@@ -1,10 +1,15 @@
-import Gimle.Forseti.Euler
-import Gimle.Forseti.Mild
-import Gimle.Asgard.Streams.MildDissipation
+module
+
+public import Gimle.Forseti.Euler
+public import Gimle.Forseti.Mild
+public import Gimle.Asgard.Streams.MildDissipation
 
 /-! Classical, dissipative total contracts of Asgard's typed mild circuit.
 Admission fixes only the embedded initial slice. Convergence constants and
 numerical certificate choices are theorem premises, not admission tests. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.MildVorticity
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Torus
 open Gimle.Asgard.Streams.Mild

@@ -1,8 +1,13 @@
-import Gimle.Forseti.ClassicalVorticity.Uniqueness
-import Gimle.Forseti.Tests.ClassicalVorticity
+module
+
+public import Gimle.Forseti.ClassicalVorticity.Uniqueness
+public import Gimle.Forseti.Tests.ClassicalVorticity
 
 /-! Regression proofs for classical PDE uniqueness, including the certified
 example field, odd data and stream-function gauge freedom. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.ClassicalUniqueness
 open Gimle.Forseti.ClassicalVorticity Set Real
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Mild

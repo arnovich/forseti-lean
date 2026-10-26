@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.EnergyDemo
-import Gimle.Forseti.Examples.EnergyOptimizationData
-import Gimle.Asgard.Examples.EnergyOptimization
+module
+
+public import Gimle.Forseti.Examples.EnergyDemo
+public import Gimle.Forseti.Examples.EnergyOptimizationData
+public import Gimle.Asgard.Examples.EnergyOptimization
 
 /-! Transfer the original energy property through Asgard's exact circuit rewrite. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.EnergyOptimization
 
 export Gimle.Asgard.EnergyOptimization (optimized optimizedIdentity equivalence

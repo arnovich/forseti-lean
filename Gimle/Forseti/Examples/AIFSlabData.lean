@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFSlabModel
+module
+
+public import Gimle.Forseti.Examples.AIFSlabModel
 
 /-! Symmetric rational endpoint metrics and slopes give symmetric interpolated AIF
 slab metrics and metric rates at every time. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFSlabData
 open AIFSlabModel (Slab)
 

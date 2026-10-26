@@ -1,7 +1,11 @@
-import Gimle.Forseti.Examples.DisturbedFeedback
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+module
+
+public import Gimle.Forseti.Examples.DisturbedFeedback
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
 /-! Regression contract for the bottom-up disturbed-feedback proof. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.DisturbedFeedback
 

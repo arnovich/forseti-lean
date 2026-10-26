@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFLocalStability
+module
+
+public import Gimle.Forseti.Examples.AIFLocalStability
 
 /-! Regressions for local continuation, parameter endpoints and entry assumptions. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFLocalStability
 open Gimle.Forseti.Examples AIFLocalStability AIFPhysicalCoordinates
 

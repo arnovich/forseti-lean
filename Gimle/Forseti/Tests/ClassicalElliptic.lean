@@ -1,7 +1,12 @@
-import Gimle.Forseti.ClassicalVorticity.SquareCalculus
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+module
+
+public import Gimle.Forseti.ClassicalVorticity.SquareCalculus
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
 /-! Regression statements for the physical-space comparison estimates. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.ClassicalElliptic
 open Gimle.Forseti.ClassicalVorticity Set
 

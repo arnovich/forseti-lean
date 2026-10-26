@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFMetricPilot
+module
+
+public import Gimle.Forseti.Examples.AIFMetricPilot
 
 /-! Exact center inputs of the candidate tube. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFDriftData
 
 def loStart : Fin 4 → ℚ := ![(-229544163297 / 1000000000000), (203669555061 / 500000000000), (-908783473427 / 1000000000000), (235295249957 / 200000000000)]

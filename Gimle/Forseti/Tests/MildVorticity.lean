@@ -1,8 +1,13 @@
-import Gimle.Forseti.MildVorticity
-import Gimle.Asgard.Examples.MildBand
+module
+
+public import Gimle.Forseti.MildVorticity
+public import Gimle.Asgard.Examples.MildBand
 
 /-! Total mild circuit contracts bind every guarantee to the admitted initial
 slice and actual whole output, including both numerical certificate routes. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.MildVorticity
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Torus
 open Gimle.Asgard.Streams.Mild Gimle.Forseti

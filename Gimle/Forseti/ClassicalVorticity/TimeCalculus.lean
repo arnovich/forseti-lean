@@ -1,7 +1,12 @@
-import Gimle.Forseti.ClassicalVorticity.SpatialCalculus
-import Mathlib.Analysis.Calculus.ParametricIntegral
+module
+
+public import Gimle.Forseti.ClassicalVorticity.SpatialCalculus
+public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-! Continuity and time differentiation of the spatial square average. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set MeasureTheory Filter
 open scoped Topology Interval

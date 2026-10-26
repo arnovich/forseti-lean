@@ -1,9 +1,13 @@
-import Gimle.Asgard.Dynamics.LinearAnalysis
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+module
+
+public import Gimle.Asgard.Dynamics.LinearAnalysis
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-! Well-posedness of continuously forced linear trajectories, for use in
 trajectory contracts. Variation of constants proves existence; subtraction
 reduces uniqueness to Asgard's homogeneous linear theorem. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.ForcedLinear
 

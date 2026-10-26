@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFTrajectory
-import Gimle.Forseti.Tests.AIFSlab
+module
+
+public import Gimle.Forseti.Examples.AIFTrajectory
+public import Gimle.Forseti.Tests.AIFSlab
 
 /-! Moving-energy regressions: physical widths, fixed eta, and retained product terms. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFTrajectory
 open Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.Examples AIFSlabModel AIFMesh AIFTrajectory AIFSlab

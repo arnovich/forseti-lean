@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.EulerContract
+module
+
+public import Gimle.Forseti.Examples.EulerContract
 
 /-! Euler is now a total contract over the actual Fourier feedback circuit. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.EulerContract
 
 open Gimle.Asgard.Streams Gimle.Forseti.Fourier

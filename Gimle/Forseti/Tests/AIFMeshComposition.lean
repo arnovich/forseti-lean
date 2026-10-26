@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFMeshComposition
-import Gimle.Forseti.Tests.AIFMesh
+module
+
+public import Gimle.Forseti.Examples.AIFMeshComposition
+public import Gimle.Forseti.Tests.AIFMesh
 
 /-! Finite propagation tests: endpoint joins and complete local coverage matter. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFMeshComposition
 open Gimle.Forseti.Examples AIFMesh AIFMeshComposition
 

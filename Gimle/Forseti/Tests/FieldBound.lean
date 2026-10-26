@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.HeatStripBound
+module
+
+public import Gimle.Forseti.Examples.HeatStripBound
 
 /-! Hostile cases for field bounds over named coordinates and parameters.
 
@@ -8,6 +10,8 @@ counterexample appears. Nonnegative coefficients are not a nonnegative field.
 
 The axiom policy is asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.FieldBound
 

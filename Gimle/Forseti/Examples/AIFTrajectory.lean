@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.AIFMesh
+module
+
+public import Gimle.Forseti.Examples.AIFMesh
 
 /-! Physical-time moving-energy derivatives along supplied AIF trajectories.
 These rules require the component ODE derivatives; they do not supply existence
 or tube invariance, and no circuit binding is claimed. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFTrajectory
 open Gimle.Forseti.BernsteinMatrix AIFSlabModel AIFMesh
 

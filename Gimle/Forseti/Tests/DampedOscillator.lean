@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.DampedOscillatorContract
+module
+
+public import Gimle.Forseti.Examples.DampedOscillatorContract
 
 /-! Coverage for the damped oscillator's trajectory contract.
 
@@ -7,6 +9,8 @@ observation's port, the initial-wire IDs, the axis, and a reducible start time);
 that the declared start is the only constraint on the initial wires; and the
 axiom policy, asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.DampedOscillator
 

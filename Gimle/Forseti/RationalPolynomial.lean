@@ -1,8 +1,13 @@
-import Gimle.Forseti.BernsteinMatrix
+module
+
+public import Gimle.Forseti.BernsteinMatrix
 
 /-! A small executable rational polynomial checker. The list representation needs
 no canonical-form invariant: acceptance is sufficient for equality of evaluations.
 All arithmetic and the acceptance test can be reduced by the ordinary kernel. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.RationalPolynomial
 
 structure Term where

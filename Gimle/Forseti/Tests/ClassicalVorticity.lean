@@ -1,9 +1,14 @@
-import Gimle.Forseti.ClassicalVorticity
-import Gimle.Forseti.ClassicalVorticity.PeriodicCalculus
-import Gimle.Forseti.MildVorticity
-import Gimle.Asgard.Examples.MildBand
+module
+
+public import Gimle.Forseti.ClassicalVorticity
+public import Gimle.Forseti.ClassicalVorticity.PeriodicCalculus
+public import Gimle.Forseti.MildVorticity
+public import Gimle.Asgard.Examples.MildBand
 
 /-! Regression proofs for the independent classical comparison interface. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.ClassicalVorticity
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Mild
 open Gimle.Forseti.ClassicalVorticity

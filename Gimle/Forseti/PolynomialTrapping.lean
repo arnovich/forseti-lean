@@ -1,4 +1,6 @@
-import Gimle.Forseti.LocalTrapping
+module
+
+public import Gimle.Forseti.LocalTrapping
 
 /-! # Trapping for a polynomial `V` with a bounded sublevel set
 
@@ -18,6 +20,8 @@ differentiable signal (`Expr.eval_hasDerivWithinAt`), and asks for:
 Invariance is the barrier lemma; existence and uniqueness reuse the clamped field
 of `Nonlinear.lean` through a `Trapping` of radius `R` about the centre whose only
 job is the box (`box`). The instance is `Examples/GalerkinNS/K5Below6.lean`. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Nonlinear
 

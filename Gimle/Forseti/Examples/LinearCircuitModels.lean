@@ -1,7 +1,11 @@
-import Gimle.Forseti.LinearCircuitHoare
-import Mathlib.Tactic.FinCases
+module
+
+public import Gimle.Forseti.LinearCircuitHoare
+public import Mathlib.Tactic.FinCases
 
 /-! Compiled program definitions shared by the Fibonacci regression tests. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.LinearCircuitModels
 

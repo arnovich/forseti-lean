@@ -1,8 +1,13 @@
-import Gimle.Forseti
-import Gimle.Asgard.AlgebraicCompiler
+module
+
+public import Gimle.Forseti
+public import Gimle.Asgard.AlgebraicCompiler
 
 /-! Total algebraic Hoare semantics are separate from stateless feedforward
 Hoare triples: existence and a unique admissible loop solution are included. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Algebraic
 open Gimle.Asgard.Algebraic
 

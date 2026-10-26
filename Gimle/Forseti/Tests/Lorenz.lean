@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.Lorenz
+module
+
+public import Gimle.Forseti.Examples.Lorenz
 
 /-! Coverage for the Lorenz model's trajectory contract.
 
@@ -8,6 +10,8 @@ rather than in a downstream replay. The axiom policy is asserted with
 `#guard_msgs`. This is the first contract whose existence and uniqueness are
 not read off a linear view, so those are pinned as well.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Lorenz
 

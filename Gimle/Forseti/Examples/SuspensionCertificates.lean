@@ -1,8 +1,12 @@
-import Gimle.Forseti.Examples.SuspensionModel
-import Gimle.Forseti.Dissipative
+module
+
+public import Gimle.Forseti.Examples.SuspensionModel
+public import Gimle.Forseti.Dissipative
 
 /-! Certificate targets recomputed from the independent suspension model.
 The optional search tool emits data for these targets; it does not define them. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.ActiveSuspension
 

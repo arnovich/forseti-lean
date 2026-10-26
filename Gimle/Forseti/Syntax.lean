@@ -1,5 +1,7 @@
-import Gimle.Forseti
-import Gimle.Asgard.Compile.Polynomial
+module
+
+public import Gimle.Forseti
+public import Gimle.Asgard.Compile.Polynomial
 
 /-! Semi-algebraic syntax for Forseti predicates.
 
@@ -27,6 +29,8 @@ that the synonym is faithful and asserts nothing about any particular formula.
 There is no certificate type, no validity check and no transfer mechanism. Those are in
 `Syntax/Certificate.lean` and its siblings.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax
 

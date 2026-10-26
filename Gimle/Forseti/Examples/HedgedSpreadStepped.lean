@@ -1,5 +1,7 @@
-import Gimle.Forseti.Stepped
-import Gimle.Forseti.Examples.HedgedSpreadContract
+module
+
+public import Gimle.Forseti.Stepped
+public import Gimle.Forseti.Examples.HedgedSpreadContract
 
 /-! The hedged exposure of `Examples/HedgedSpread.lean`, stepped by Euler under
 independent random shocks.
@@ -109,6 +111,9 @@ Nor does it compute probabilities under Gaussian shocks: the bounds hold for the
 because it belongs to the law classes, but they are bounds over each whole class, and
 the Gaussian's own breach probability, within the year or at a single mark, is not
 computed here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.HedgedSpreadStepped
 
 open MeasureTheory

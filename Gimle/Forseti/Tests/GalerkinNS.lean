@@ -1,7 +1,9 @@
-import Gimle.Forseti.Examples.GalerkinNS.T3
-import Gimle.Forseti.Examples.GalerkinNS.K5
-import Gimle.Forseti.Examples.GalerkinNS.B2
-import Gimle.Forseti.Examples.GalerkinNS.T3S
+module
+
+public import Gimle.Forseti.Examples.GalerkinNS.T3
+public import Gimle.Forseti.Examples.GalerkinNS.K5
+public import Gimle.Forseti.Examples.GalerkinNS.B2
+public import Gimle.Forseti.Examples.GalerkinNS.T3S
 
 /-! Coverage for the Galerkin members' trajectory contracts.
 
@@ -11,6 +13,8 @@ than downstream. The axiom policy is asserted with `#guard_msgs`.
 The members are generated, so the names are the
 same in every member; T3 is pinned in full and the others by their contracts.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.GalerkinNS
 

@@ -1,7 +1,11 @@
-import Gimle.Forseti.Examples.PositivstellensatzCertificates
+module
+
+public import Gimle.Forseti.Examples.PositivstellensatzCertificates
 
 /-! Hostile Positivstellensatz certificates, each rejected by the checker, and
 the axiom policy of the new theorems. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Positivstellensatz
 

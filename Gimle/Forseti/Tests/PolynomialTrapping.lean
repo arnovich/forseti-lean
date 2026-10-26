@@ -1,6 +1,8 @@
-import Gimle.Forseti.PolynomialTrapping
-import Gimle.Forseti.Examples.GalerkinNS.K5Below6
-import Gimle.Forseti.Examples.GalerkinNS.T3Below9
+module
+
+public import Gimle.Forseti.PolynomialTrapping
+public import Gimle.Forseti.Examples.GalerkinNS.K5Below6
+public import Gimle.Forseti.Examples.GalerkinNS.T3Below9
 
 /-! Coverage for trapping with a polynomial `V` and a bounded sublevel set.
 
@@ -8,6 +10,8 @@ Each `example` restates one of `PolynomialTrapping`'s exported theorems with its
 exact statement, the symbolic derivative is checked on small expressions, the
 5-mode instance below `E ≤ 6` is pinned by its data, and the axiom policy is
 asserted with `#guard_msgs`. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.PolynomialTrapping
 

@@ -1,6 +1,8 @@
-import Gimle.Forseti.StreamObservation
-import Gimle.Forseti.FieldBound
-import Gimle.Forseti.Examples.FormalHeatContract
+module
+
+public import Gimle.Forseti.StreamObservation
+public import Gimle.Forseti.FieldBound
+public import Gimle.Forseti.Examples.FormalHeatContract
 
 /-! Coefficient observations of two stream circuits, proved by checked
 certificates.
@@ -30,6 +32,8 @@ by the altered precondition, whose observed `u[t^0, x^2]` is `2`, not `1`.
 Everything here is about exact formal coefficients. The real field these
 streams represent is `HeatFieldBound`'s, through asgard-lean.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.StreamObservation
 

@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFFiniteExistence
+module
+
+public import Gimle.Forseti.Examples.AIFFiniteExistence
 
 /-! Global existence, forward uniqueness and nonnegativity for the antithetic
 integral feedback (AIF) ODE `x₁' = z₁ − x₁`, `x₂' = x₁ − x₂`, `z₁' = 2 − η z₁ z₂`,
 `z₂' = x₂ − η z₁ z₂` started at zero, for every fixed `η ≥ 0`. The solution is
 built by agreeing finite-horizon solutions. No safety bound is claimed here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFGlobalSolution
 open AIFPhysicalCoordinates AIFNonnegative AIFFiniteExistence
 open Gimle.Forseti.Nonlinear

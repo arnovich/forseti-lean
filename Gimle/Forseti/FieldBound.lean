@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax.Certificate
+module
+
+public import Gimle.Forseti.Syntax.Certificate
 
 /-! Reading certified polynomial formulas as bounds on real fields.
 
@@ -22,6 +24,8 @@ in the formula. That this function is the field some stream circuit represents
 themselves make a field nonnegative: `Tests/FieldBound.lean` refutes it with
 `u = x` at `x = -1`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax.ExprNotation
 

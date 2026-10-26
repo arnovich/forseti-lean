@@ -1,5 +1,7 @@
-import Gimle.Forseti.LinearEnergyContract
-import Gimle.Forseti.Examples.DampedOscillator
+module
+
+public import Gimle.Forseti.LinearEnergyContract
+public import Gimle.Forseti.Examples.DampedOscillator
 
 /-! The damped oscillator as one well-posed trajectory contract.
 
@@ -18,6 +20,8 @@ and statements are a stable interface, in the shape of `ThreeStateContract`.
 The damping `c = 3` and stiffness `k = 2` are compiled into `compiled`; the
 input predicate binds only the (absent) drivers and the initial wires.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.DampedOscillatorContract
 

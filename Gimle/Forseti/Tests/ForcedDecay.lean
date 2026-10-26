@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.ForcedDecayContract
+module
+
+public import Gimle.Forseti.Examples.ForcedDecayContract
 
 /-! Coverage for the forced decay's driven trajectory contract.
 
@@ -8,6 +10,8 @@ time, the driver coordinates); the precondition's shape, which binds the drivers
 and is not `True`; that an input whose drivers are not admitted is rejected; and
 the axiom policy, asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.ForcedDecay
 

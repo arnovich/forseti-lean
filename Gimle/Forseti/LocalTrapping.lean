@@ -1,4 +1,6 @@
-import Gimle.Forseti.Nonlinear
+module
+
+public import Gimle.Forseti.Nonlinear
 
 /-! # Trapping with a decrease local to the sublevel set
 
@@ -23,6 +25,8 @@ S-procedure multiplier states: `α (C' − V) − V' + σ (V − C) ≥ 0` every
 `σ ≥ 0`. An exact search found such a certificate for the 3-mode
 member at `ν = 1/10` inside `E ≤ 12`, below its laminar level; the example
 `Examples/GalerkinNS/T3Below12.lean` is that instance. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Nonlinear
 

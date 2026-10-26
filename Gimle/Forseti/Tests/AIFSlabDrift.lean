@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.AIFCertifiedCell
+module
+
+public import Gimle.Forseti.Examples.AIFCertifiedCell
 
 /-! The checks behind a certified AIF cell reject a degree bound that is too small,
 an altered table coefficient, a square certificate for the other error extreme and
 corrupted slab data;
 the mesh corollary composes the certified cell; and the assembled theorems use only
 the standard axioms. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFSlabDrift
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.RationalPolynomial
 open Gimle.Forseti.Examples Gimle.Forseti.Examples.AIFCertifiedCellData

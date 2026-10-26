@@ -1,5 +1,7 @@
-import Gimle.Forseti.Syntax.Positivstellensatz
-import Gimle.Forseti.Examples.PredicateCertificates
+module
+
+public import Gimle.Forseti.Syntax.Positivstellensatz
+public import Gimle.Forseti.Examples.PredicateCertificates
 
 /-! Goals beyond quadratic-module `EntailmentCertificate`s, checked by
 `PsatzCertificate`.
@@ -13,6 +15,8 @@ import Gimle.Forseti.Examples.PredicateCertificates
 The evidence is written by hand as fixtures, as in `PredicateCertificates`.
 Finding it is an external producer's job.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.PositivstellensatzCertificates
 

@@ -1,9 +1,14 @@
-import Gimle.Forseti.Approximation
-import Gimle.Asgard.Examples.Approximation
+module
+
+public import Gimle.Forseti.Approximation
+public import Gimle.Asgard.Examples.Approximation
 
 /-! Consume Asgard's certified secant approximation without re-proving its
 circuit error or relabeling its supplied binding. This is standalone Lean
 property transport, not a native/foreign artifact-admission command. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.CircuitApproximation
 open Gimle.Forseti.Approximation
 open Gimle.Asgard.Examples.Approximation

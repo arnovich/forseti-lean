@@ -1,6 +1,8 @@
-import Gimle.Asgard.Examples.AIF
-import Gimle.Forseti.Examples.AIFGlobalSolution
-import Gimle.Forseti.Examples.AIFPhysicalCoordinates
+module
+
+public import Gimle.Asgard.Examples.AIF
+public import Gimle.Forseti.Examples.AIFGlobalSolution
+public import Gimle.Forseti.Examples.AIFPhysicalCoordinates
 
 /-! The compiled Asgard antithetic integral feedback (AIF) circuit bound to the
 physical-coordinate model used by the AIF tube results. The source-compiled field
@@ -13,6 +15,9 @@ agree for `t ≥ 0`, and every species and the observation stay nonnegative. The
 shifted start and moving-tube energy derivative are restated for realizations so
 local tube results can take one directly. No tube, drift or upper output bound is
 claimed here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFCircuitBinding
 open Gimle.Asgard AIFPhysicalCoordinates
 

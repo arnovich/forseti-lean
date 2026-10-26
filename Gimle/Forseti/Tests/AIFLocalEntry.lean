@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFLocalEntry
+module
+
+public import Gimle.Forseti.Examples.AIFLocalEntry
 
 /-! Exact regressions for the endpoint coercivity margin and local-entry bridge. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFLocalEntry
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.Examples AIFLocalEntry AIFSlabModel

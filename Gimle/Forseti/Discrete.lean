@@ -1,7 +1,11 @@
-import Gimle.Asgard.Semantics.Real
+module
+
+public import Gimle.Asgard.Semantics.Real
 
 /-! Explicit synchronous unit-delay iteration of total feedforward circuits.
 This does not interpret Asgard's continuous trace or raw register syntax. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Discrete
 open Gimle.Asgard

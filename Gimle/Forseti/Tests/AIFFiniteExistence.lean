@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFFiniteExistence
+module
+
+public import Gimle.Forseti.Examples.AIFFiniteExistence
 
 /-! Finite-horizon existence and coordinate-clamp regressions. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFFiniteExistence
 open Gimle.Forseti.Examples AIFFiniteExistence AIFPhysicalCoordinates
 

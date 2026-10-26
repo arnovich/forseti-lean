@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.HedgedSpreadStepped
+module
+
+public import Gimle.Forseti.Examples.HedgedSpreadStepped
 
 /-! Coverage for the hedged exposure stepped by Euler under random shocks.
 
@@ -15,6 +17,8 @@ the bound at each mark of the year; the refutation by rare large jumps, with its
 facts, at `1/10` and at `1/5`, and the three-point law not sub-Gaussian with proxy `64`;
 the Gaussian in both law classes; and the axiom policy, asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.HedgedSpreadStepped
 

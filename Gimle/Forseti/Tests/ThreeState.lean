@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.ThreeStateContract
+module
+
+public import Gimle.Forseti.Examples.ThreeStateContract
 
 /-! Coverage for the three-state model's trajectory contract.
 
@@ -7,6 +9,8 @@ fully qualified, so a change to a name or a statement fails the build here
 rather than in a downstream replay. The axiom policy is asserted with
 `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.ThreeState
 
