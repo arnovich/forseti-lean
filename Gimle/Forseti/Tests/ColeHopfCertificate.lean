@@ -1,6 +1,11 @@
-import Gimle.Forseti.ColeHopfCertificate
+module
+
+public import Gimle.Forseti.ColeHopfCertificate
 
 /-! Regression controls for data-bound Burgers compression budgets. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.ColeHopfCertificate
 open Gimle.Forseti.ColeHopfCertificate
 

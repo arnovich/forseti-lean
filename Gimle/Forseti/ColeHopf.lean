@@ -1,4 +1,6 @@
-import Gimle.Forseti.ResidualPDE
+module
+
+public import Gimle.Forseti.ResidualPDE
 
 /-!
 # Positive heat profiles and periodic Burgers fields
@@ -12,6 +14,9 @@ compares it with arbitrary admitted classical Burgers fields. This is a theorem
 about real fields and derivatives; formal power-series constructions require
 their own correspondence to these fields.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ColeHopf
 open Set Real
 open Gimle.Forseti.ClassicalVorticity Gimle.Forseti.ResidualPDE

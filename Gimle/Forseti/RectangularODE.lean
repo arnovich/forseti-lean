@@ -1,11 +1,16 @@
-import Gimle.Forseti.Examples.AIFNonnegative
-import Gimle.Forseti.Nonlinear
+module
+
+public import Gimle.Forseti.Examples.AIFNonnegative
+public import Gimle.Forseti.Nonlinear
 
 /-! Finite-interval existence inside a closed coordinate rectangle.
 Only Lipschitz continuity on the rectangle is required. Coordinate projection
 provides a bounded globally Lipschitz auxiliary field; inward faces keep its
 solution in the rectangle, where projection is the identity. Degenerate
 coordinate intervals are permitted. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.RectangularODE
 
 structure Rectangle (n : ℕ) where

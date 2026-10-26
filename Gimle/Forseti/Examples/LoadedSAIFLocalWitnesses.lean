@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.LoadedSAIFStationary
-import Gimle.Forseti.Examples.LoadedSAIFLocalMatrices
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFStationary
+public import Gimle.Forseti.Examples.LoadedSAIFLocalMatrices
 
 /-! Fixed rational local-region certificates, bound to the original field. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFLocalWitnesses
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open LoadedSAIFCertificates LoadedSAIFLocalMatrices
@@ -175,7 +180,6 @@ theorem region0Bounds (x : LoadedSAIFModel.State)
 
 #print axioms region0Bounds
 
-
 def region1 : StationaryData where
   load := 2
   center := ![(214521517/100000000), (190005131/100000000), (170068633/50000000), (3487487/50000000), (122581927/100000000)]
@@ -344,6 +348,5 @@ theorem region1Bounds (x : LoadedSAIFModel.State)
   constructor <;> linarith
 
 #print axioms region1Bounds
-
 
 end Gimle.Forseti.Examples.LoadedSAIFLocalWitnesses

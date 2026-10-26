@@ -1,4 +1,6 @@
-import Gimle.Forseti.ColeHopf
+module
+
+public import Gimle.Forseti.ColeHopf
 
 /-!
 # Finite periodic heat profiles
@@ -9,6 +11,9 @@ or perturbing modes. Positive profiles give actual classical Burgers fields via
 the Cole–Hopf construction. The bounds below quantify squared normalized L2
 error against an independent classical solution with the stated initial data.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ColeHopfFinite
 
 open Set Real

@@ -1,9 +1,14 @@
-import Gimle.Forseti.Nonlinear
+module
+
+public import Gimle.Forseti.Nonlinear
 
 /-! A fixed five-species rational feedback model with finite binding capacity.
 Coordinates are plant precursor, plant output, controller species one and two,
 and occupied binding sites. The rational feedback retains physical time and its
 denominator guard. A load switch changes the field, not the state. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFModel
 
 abbrev State := Fin 5 → ℝ

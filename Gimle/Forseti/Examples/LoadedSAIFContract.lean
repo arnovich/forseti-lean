@@ -1,11 +1,16 @@
-import Gimle.Forseti.Examples.LoadedSAIFExistence
-import Gimle.Forseti.Examples.LoadedSAIFResources
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFExistence
+public import Gimle.Forseti.Examples.LoadedSAIFResources
 
 /-! The fixed physical-time response and resource contract. The five continuous
 response bounds are explicit proof obligations. Existence, physical bounds,
 uniqueness and the integral budgets then follow without sampled trajectories or
 numerical quadrature. A concrete certificate must discharge ContinuousBounds;
 this composition theorem alone does not assert those response bounds. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFContract
 open Set LoadedSAIFModel LoadedSAIFExistence LoadedSAIFResources
 

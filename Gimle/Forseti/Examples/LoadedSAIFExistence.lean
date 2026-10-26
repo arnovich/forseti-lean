@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.LoadedSAIFModel
-import Gimle.Forseti.RectangularODE
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFModel
+public import Gimle.Forseti.RectangularODE
 
 /-! Physical-domain existence for the loaded rational feedback field. The coarse
 rectangle supplies positivity and finite-time existence, not sharp tracking.
 Each load phase is solved in physical time without multiplying the vector field
 by its feedback denominator. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFExistence
 open LoadedSAIFModel RectangularODE
 

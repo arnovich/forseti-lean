@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.LoadedSAIFModel
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFModel
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-! Finite resource budgets from continuous response bounds and exact balances.
 The output and capacity bounds are explicit premises. This module integrates
 the original physical-time equations across both load phases; it does not
 infer intermediate bounds or integrals from sampled trajectories. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFResources
 open Set MeasureTheory LoadedSAIFModel
 

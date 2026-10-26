@@ -1,6 +1,11 @@
-import Gimle.Forseti.RationalCongruence
+module
+
+public import Gimle.Forseti.RationalCongruence
 
 /-! Regression checks for weak diagonal dominance and guarded congruence. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.RationalCongruence
 open Gimle.Forseti LinearEnergy RationalCongruence
 open scoped Matrix

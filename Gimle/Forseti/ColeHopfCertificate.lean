@@ -1,4 +1,6 @@
-import Gimle.Forseti.ColeHopfFinite
+module
+
+public import Gimle.Forseti.ColeHopfFinite
 
 /-!
 # Exact budgets for finite Burgers compression
@@ -13,6 +15,9 @@ The rational exponential cap is deliberately sufficient, not optimal. Its
 domain is checked explicitly. Candidate selection and production-checker
 enrollment are outside this module.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ColeHopfCertificate
 open Set Real
 open Gimle.Forseti.ClassicalVorticity Gimle.Forseti.ResidualPDE

@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.LoadedSAIFResources
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFResources
 
 /-! Integral-budget regressions, including the necessity of response-band coverage. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.LoadedSAIFResources
 open Set Gimle.Forseti.Examples.LoadedSAIFResources
 

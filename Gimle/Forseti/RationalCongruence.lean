@@ -1,12 +1,17 @@
-import Mathlib.LinearAlgebra.Matrix.Block
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Gimle.Forseti.LinearEnergy
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Gimle.Forseti.LinearEnergy
 
 /-! Exact rational congruence certificates for nonnegative quadratic forms.
 A symmetric matrix with nonnegative diagonal slack is positive semidefinite.
 An invertible change of coordinates preserves this conclusion. Upper triangular
 bases need only checked zero entries and nonzero diagonals; no numerical inverse
 or floating-point eigenvalue computation is trusted. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.RationalCongruence
 open LinearEnergy
 open scoped Matrix

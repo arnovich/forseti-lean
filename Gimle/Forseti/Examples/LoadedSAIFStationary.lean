@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.LoadedSAIFCertificates
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFCertificates
 
 /-! Exact rational local regions for the loaded feedback field. Concrete matrices
 and their weighted-square representations are data, not authority; every
 representation and its binding to the original rational field must be proved. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFCertificates
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open LoadedSAIFModel

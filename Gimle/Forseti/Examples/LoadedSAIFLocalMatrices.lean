@@ -1,7 +1,12 @@
-import Gimle.Forseti.RationalLDL
+module
+
+public import Gimle.Forseti.RationalLDL
 
 /-! Rational matrix witnesses for a fixed five-species feedback system.
 These representation lemmas alone do not assert trajectory bounds. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFLocalMatrices
 open Gimle.Forseti.LinearEnergy
 set_option maxRecDepth 100000

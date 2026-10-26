@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.LoadedSAIFStationary
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFStationary
 
 /-! Rational cubic-Hermite moving regions for the fixed feedback field. Endpoint
 slopes are physical-time slopes. The normalized time and feedback-error axes are
 used only to bind polynomial positivity certificates. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFCertificates
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open LoadedSAIFModel

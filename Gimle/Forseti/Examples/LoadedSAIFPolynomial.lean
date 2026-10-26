@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFPolynomialBinding
-import Gimle.Forseti.Examples.LoadedSAIFMoving
+module
+
+public import Gimle.Forseti.Examples.AIFPolynomialBinding
+public import Gimle.Forseti.Examples.LoadedSAIFMoving
 
 /-! A checked rational-polynomial encoding of the moving five-species drift block.
 Its evaluation theorem binds generated Bernstein tables to the original
 physical-time field. Polynomial and table producers are not trusted. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFPolynomial
 open Gimle.Forseti.RationalPolynomial
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix

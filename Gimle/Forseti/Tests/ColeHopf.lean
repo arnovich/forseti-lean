@@ -1,6 +1,11 @@
-import Gimle.Forseti.ColeHopf
+module
+
+public import Gimle.Forseti.ColeHopf
 
 /-! Positive heat profiles yield genuine periodic Burgers solutions. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.ColeHopf
 open Set Real
 open Gimle.Forseti.ColeHopf Gimle.Forseti.ResidualPDE
