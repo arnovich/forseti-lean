@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFTrajectory
+module
+
+public import Gimle.Forseti.Examples.AIFTrajectory
 
 /-! Local moving-tube invariance from a supplied solution and a supplied drift
 inequality on one slab. The argument uses strict boundary drift, never assumed
 trajectory membership. Existence and composition across slabs are not part of
 this module, and no circuit binding is claimed. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFInvariance
 open Gimle.Forseti.BernsteinMatrix AIFSlabModel AIFMesh AIFTrajectory
 

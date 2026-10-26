@@ -1,9 +1,13 @@
-import Gimle.Asgard.Examples.BurgersSquare
-import Gimle.Asgard.Examples.PolynomialHeat
+module
+
+public import Gimle.Asgard.Examples.BurgersSquare
+public import Gimle.Asgard.Examples.PolynomialHeat
 
 /-! The asgard-lean Burgers example is part of this release's build, so a
 downstream file that imports it finds it compiled. Nothing here is a Forseti
 statement: the formal Burgers stream is asgard-lean's (v1.8.0). -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Burgers
 

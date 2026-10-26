@@ -1,10 +1,12 @@
-import Gimle.Forseti.Dissipative
-import Gimle.Forseti.Driven
-import Gimle.Forseti.ForcedLinear
-import Gimle.Forseti.Trajectory
-import Gimle.Forseti.Examples.HedgedSpread
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+module
+
+public import Gimle.Forseti.Dissipative
+public import Gimle.Forseti.Driven
+public import Gimle.Forseti.ForcedLinear
+public import Gimle.Forseti.Trajectory
+public import Gimle.Forseti.Examples.HedgedSpread
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
 /-! The hedged exposure of `Examples/HedgedSpread.lean` as one well-posed contract
 for every disturbance in a band.
@@ -44,6 +46,9 @@ that `1/2` is not a bound inside the band (under `d = 1` the exposure is
 `1/2 + e^(−π/2)/2` at `t = π/2`, its first peak); and `bound_needed` that the
 band cannot be dropped: the admitted `d = 3` gives `3/2 + 3e^(−π/2)/2 > 1`
 there. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.HedgedSpreadContract
 
 open Gimle.Forseti

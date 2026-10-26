@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.LoadedSAIFCertificates
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFCertificates
 
 /-! Exact transfer of a whole five-dimensional quadratic region to another.
 The certificate includes the center displacement, not merely the nominal point. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFCertificates
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open LoadedSAIFModel

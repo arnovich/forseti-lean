@@ -1,4 +1,6 @@
-import Gimle.Forseti.LinearEnergy
+module
+
+public import Gimle.Forseti.LinearEnergy
 
 /-! Compact rational LDL proposals for the existing weighted-square checker.
 
@@ -7,6 +9,9 @@ negative pivots are allowed in proposals; `WeightedSquares.Represents` must
 still check every weight and every matrix entry in the ordinary kernel.
 No soundness claim relies on the algorithm finding a valid decomposition.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.RationalLDL
 open Gimle.Forseti.LinearEnergy
 

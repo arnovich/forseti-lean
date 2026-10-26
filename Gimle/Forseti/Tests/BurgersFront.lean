@@ -1,4 +1,6 @@
-import Gimle.Asgard.Examples.BurgersFront
+module
+
+public import Gimle.Asgard.Examples.BurgersFront
 
 /-! The asgard-lean Cole–Hopf front is part of this release's build, so a
 downstream file that restates its certified truncation, the identification of its
@@ -7,6 +9,8 @@ and the refuted `u ≤ 27/50` finds them compiled. Nothing here is a Forseti
 statement: the theorems are asgard-lean's (v1.11.0);
 the window roots `front_band_of_window`, `front_above_of_window` and
 `front_below_of_window` are the entry points a consumer applies. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.BurgersFront
 

@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFInvariance
-import Gimle.Forseti.Tests.AIFSlab
+module
+
+public import Gimle.Forseti.Examples.AIFInvariance
+public import Gimle.Forseti.Tests.AIFSlab
 
 /-! Boundary-only invariance regressions, including the strictness requirement. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFInvariance
 open Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.Examples AIFInvariance AIFSlabModel AIFMesh AIFSlab

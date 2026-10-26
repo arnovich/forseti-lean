@@ -1,32 +1,35 @@
-import Gimle.Forseti.Examples.EnergyDemoData
-import Gimle.Forseti.Examples.EnergyDemo
-import Gimle.Forseti.Examples.EnergyOptimizationData
-import Gimle.Forseti.Examples.EnergyOptimization
-import Gimle.Forseti.Examples.OscillatorData
-import Gimle.Forseti.Examples.Oscillator
-import Gimle.Forseti.Examples.LinearOscillator
-import Gimle.Forseti.Examples.EquationWorkflow
-import Gimle.Forseti.Examples.AlgebraicFeedback
-import Gimle.Forseti.Examples.CircuitApproximation
-import Gimle.Forseti.Examples.EnergyBound
-import Gimle.Forseti.Examples.ExactSquare
-import Gimle.Forseti.Examples.ThreeState
-import Gimle.Forseti.Examples.ProofSearchContract
-import Gimle.Forseti.Examples.PredicateCertificates
-import Gimle.Forseti.Examples.ThreeStateContract
-import Gimle.Forseti.Examples.DampedOscillator
-import Gimle.Forseti.Examples.DampedOscillatorContract
-import Gimle.Forseti.Examples.ForcedDecay
-import Gimle.Forseti.Examples.ForcedDecayContract
-import Gimle.Forseti.Examples.HedgedSpread
-import Gimle.Forseti.Examples.HedgedSpreadContract
-import Gimle.Forseti.Examples.HedgedSpreadStepped
-import Gimle.Forseti.Examples.HarmonicOscillator
-import Gimle.Forseti.Examples.FormalHeatContract
-import Gimle.Forseti.Examples.StreamObservation
-import Gimle.Forseti.Examples.HeatStripBound
-import Gimle.Forseti.Examples.HeatFieldBound
-import Gimle.Forseti.Examples.AlgebraicCounterexamples
-import Gimle.Forseti.Examples.PositivstellensatzCertificates
-import Gimle.Forseti.Examples.LinearCircuitModels
-import Gimle.Forseti.Examples.Lorenz
+module
+
+public import Gimle.Forseti.Examples.EnergyDemoData
+public import Gimle.Forseti.Examples.EnergyDemo
+public import Gimle.Forseti.Examples.EnergyOptimizationData
+public import Gimle.Forseti.Examples.EnergyOptimization
+public import Gimle.Forseti.Examples.OscillatorData
+public import Gimle.Forseti.Examples.Oscillator
+public import Gimle.Forseti.Examples.LinearOscillator
+public import Gimle.Forseti.Examples.EquationWorkflow
+public import Gimle.Forseti.Examples.AlgebraicFeedback
+public import Gimle.Forseti.Examples.CircuitApproximation
+public import Gimle.Forseti.Examples.EnergyBound
+public import Gimle.Forseti.Examples.ExactSquare
+public import Gimle.Forseti.Examples.ThreeState
+public import Gimle.Forseti.Examples.ProofSearchContract
+public import Gimle.Forseti.Examples.PredicateCertificates
+public import Gimle.Forseti.Examples.ThreeStateContract
+public import Gimle.Forseti.Examples.DampedOscillator
+public import Gimle.Forseti.Examples.DampedOscillatorContract
+public import Gimle.Forseti.Examples.ForcedDecay
+public import Gimle.Forseti.Examples.ForcedDecayContract
+public import Gimle.Forseti.Examples.HedgedSpread
+public import Gimle.Forseti.Examples.HedgedSpreadContract
+public import Gimle.Forseti.Examples.HedgedSpreadStepped
+public import Gimle.Forseti.Examples.HarmonicOscillator
+public import Gimle.Forseti.Examples.FormalHeatContract
+public import Gimle.Forseti.Examples.StreamObservation
+public import Gimle.Forseti.Examples.HeatStripBound
+public import Gimle.Forseti.Examples.HeatFieldBound
+public import Gimle.Forseti.Examples.AlgebraicCounterexamples
+public import Gimle.Forseti.Examples.PositivstellensatzCertificates
+public import Gimle.Forseti.Examples.LinearCircuitModels
+public import Gimle.Forseti.Examples.Lorenz
+

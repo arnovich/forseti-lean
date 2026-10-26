@@ -1,6 +1,8 @@
-import Gimle.Forseti.StreamObservation
-import Gimle.Forseti.FieldBound
-import Gimle.Asgard.Streams.Realization
+module
+
+public import Gimle.Forseti.StreamObservation
+public import Gimle.Forseti.FieldBound
+public import Gimle.Asgard.Streams.Realization
 
 /-! Evaluated real fields of stream circuit outputs, checked by polynomial
 certificates.
@@ -40,6 +42,8 @@ admitted full input, its related output, a realization of the observed port,
 and a point of the domain where the postcondition fails on the realized field.
 `refutes_root_answer` lifts a 017 leaf counterexample the same way.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.FieldObservation
 

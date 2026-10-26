@@ -1,11 +1,16 @@
-import Gimle.Forseti.Examples.EnergyOptimization
-import Gimle.Forseti.Examples.OscillatorData
-import Gimle.Asgard.Examples.Oscillator
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
+module
+
+public import Gimle.Forseti.Examples.EnergyOptimization
+public import Gimle.Forseti.Examples.OscillatorData
+public import Gimle.Asgard.Examples.Oscillator
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 /-! Energy safety for x′ = y, y′ = -x - 2y.
 The circuit vector field, trajectory relation and explicit solutions come from
 Asgard. Here we prove E′ = -8y² ≤ 0 and the resulting forward energy bound. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Oscillator
 
 export Gimle.Asgard.Oscillator (vectorField vectorFieldEquations Solves solvesEquations

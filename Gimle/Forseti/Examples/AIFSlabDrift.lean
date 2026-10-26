@@ -1,9 +1,11 @@
-import Gimle.Forseti.BernsteinConversion
-import Gimle.Forseti.Examples.AIFMeshComposition
-import Gimle.Forseti.Examples.AIFPolynomialBinding
-import Gimle.Forseti.Examples.AIFSlabContainment
-import Gimle.Forseti.Examples.AIFSlabData
-import Gimle.Forseti.RationalLDL
+module
+
+public import Gimle.Forseti.BernsteinConversion
+public import Gimle.Forseti.Examples.AIFMeshComposition
+public import Gimle.Forseti.Examples.AIFPolynomialBinding
+public import Gimle.Forseti.Examples.AIFSlabContainment
+public import Gimle.Forseti.Examples.AIFSlabData
+public import Gimle.Forseti.RationalLDL
 
 /-! The in-tube drift inequality on one AIF slab, derived from checked rational
 certificates: symmetric endpoint data, four containment matrices bounding the error
@@ -11,6 +13,9 @@ coordinate `e₂`, and two drift-block Bernstein tables at the error extremes
 `±3/200`. With one such bundle per cell, the moving-tube bound of
 `AIFMeshComposition` holds with no supplied drift inequality. Solutions and their
 derivatives are still hypotheses here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFSlabDrift
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open AIFSlabModel AIFMesh

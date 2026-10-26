@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.AIFTrajectory
+module
+
+public import Gimle.Forseti.Examples.AIFTrajectory
 
 /-! Exact physical/shifted coordinate identities for the antithetic integral
 feedback (AIF) model `x₁' = z₁ − x₁`, `x₂' = x₁ − x₂`, `z₁' = 2 − η z₁ z₂`,
 `z₂' = x₂ − η z₁ z₂`. This is an algebraic specification of the field; no Asgard
 circuit is bound to it here. Trajectory results transform supplied derivatives;
 they do not assert existence. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFPhysicalCoordinates
 
 /-- Physical species order: x1, x2, z1, z2; fixed plant gain one and reference two. -/

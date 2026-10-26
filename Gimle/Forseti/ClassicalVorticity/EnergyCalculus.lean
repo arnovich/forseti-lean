@@ -1,6 +1,11 @@
-import Gimle.Forseti.ClassicalVorticity.TimeCalculus
+module
+
+public import Gimle.Forseti.ClassicalVorticity.TimeCalculus
 
 /-! Physical-space energy identities for the independent classical fields. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set Real
 

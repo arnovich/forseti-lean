@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFLocalStability
+module
+
+public import Gimle.Forseti.Examples.AIFLocalStability
 
 /-! Entry from the final slab of a moving tube into the fixed local Lyapunov region
 of `AIFLocalStability`. A checked coercivity certificate for the endpoint metric and
 bounds on the centers at both parameter edges give `energy ≤ 1/100` at the slab's
 end; those certificates and the tube bound itself are hypotheses here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFLocalEntry
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open AIFLocalStability AIFSlabModel

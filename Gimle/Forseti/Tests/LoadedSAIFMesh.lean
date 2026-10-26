@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.LoadedSAIFMesh
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFMesh
 
 /-! Mesh regression proofs: time coverage and exact joins are structural obligations. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.LoadedSAIFMesh
 open Gimle.Forseti.Examples.LoadedSAIFCertificates
 open Gimle.Forseti.Examples.LoadedSAIFMesh

@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFPhysicalCoordinates
+module
+
+public import Gimle.Forseti.Examples.AIFPhysicalCoordinates
 
 /-! Regressions for the physical state order and parameter-dependent scale. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFPhysicalCoordinates
 open Gimle.Forseti.Examples AIFPhysicalCoordinates
 

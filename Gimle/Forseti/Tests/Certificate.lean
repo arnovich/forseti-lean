@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.PredicateCertificates
+module
+
+public import Gimle.Forseti.Examples.PredicateCertificates
 
 /-! Hostile and edge-case evidence for the predicate certificate checker.
 
@@ -10,6 +12,8 @@ The axiom policy is asserted with `#guard_msgs`, so a proof that picked up any
 axiom beyond `propext`, `Classical.choice` and `Quot.sound` fails the build
 rather than printing a report no one reads.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Certificate
 

@@ -1,8 +1,12 @@
-import Gimle.Forseti.Examples.ActiveSuspension
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+module
+
+public import Gimle.Forseti.Examples.ActiveSuspension
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
 /-! Root regression: independently specified initial and output regions,
 with two interchangeable actuator dynamics. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.ActiveSuspension
 

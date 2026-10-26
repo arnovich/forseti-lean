@@ -1,6 +1,11 @@
-import Gimle.Forseti.RectangularODE
+module
+
+public import Gimle.Forseti.RectangularODE
 
 /-! Degenerate coordinates and outward faces are explicit rectangle regressions. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.RectangularODE
 open Gimle.Forseti.RectangularODE
 

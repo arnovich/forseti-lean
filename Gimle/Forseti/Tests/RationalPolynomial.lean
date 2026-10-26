@@ -1,6 +1,11 @@
-import Gimle.Forseti.RationalPolynomial
+module
+
+public import Gimle.Forseti.RationalPolynomial
 
 /-! Soundness and pinned incompleteness of the rational polynomial equivalence test. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.RationalPolynomial
 open Gimle.Forseti.RationalPolynomial
 

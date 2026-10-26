@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.AIFInvariance
+module
+
+public import Gimle.Forseti.Examples.AIFInvariance
 
 /-! Propagation of a moving-tube energy bound across a time mesh for the antithetic
 integral feedback (AIF) drift model, at one fixed parameter in a mesh column.
@@ -8,6 +10,9 @@ endpoint data, so the bound passes from one slab to the next. Every cell needs a
 supplied drift inequality: inside the tube the energy rate is at most
 `(1/100)(1/40000 − energy) − 1/16000000`. Those inequalities and the solution's
 derivatives are hypotheses here; no certificate for them is included. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFMeshComposition
 open Gimle.Forseti.BernsteinMatrix AIFSlabModel AIFMesh
 

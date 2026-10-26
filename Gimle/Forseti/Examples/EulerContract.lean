@@ -1,5 +1,7 @@
-import Gimle.Forseti.Euler
-import Gimle.Asgard.Examples.EulerBand
+module
+
+public import Gimle.Forseti.Euler
+public import Gimle.Asgard.Examples.EulerBand
 
 /-! Three-mode Euler, certified as a property of a typed Asgard feedback circuit.
 The precondition fixes only initial vorticity. The postcondition concerns every
@@ -7,6 +9,9 @@ output, and the contract includes formal existence and uniqueness. Classical
 uniqueness among arbitrary real fields, a global-in-time solution, and convergence
 of the viscous time series are not conclusions of this contract.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.EulerContract
 
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.TrigStream

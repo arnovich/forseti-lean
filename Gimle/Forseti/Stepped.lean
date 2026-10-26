@@ -1,9 +1,11 @@
-import Gimle.Forseti.Discrete
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
-import Mathlib.Probability.Distributions.Gaussian.Real
-import Mathlib.Probability.Independence.InfinitePi
-import Mathlib.Probability.Moments.SubGaussian
+module
+
+public import Gimle.Forseti.Discrete
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
+public import Mathlib.Probability.Distributions.Gaussian.Real
+public import Mathlib.Probability.Independence.InfinitePi
+public import Mathlib.Probability.Moments.SubGaussian
 
 /-! A discrete-time probability semantics: a law on the inputs of a deterministic
 iteration.
@@ -69,6 +71,8 @@ explicitly. The law is a hypothesis of each claim, never fitted to data. No hori
 bound is proved under the sub-Gaussian hypothesis, and no probability is computed for a
 particular law beyond the three-point lower bound.
 -/
+
+@[expose] public section
 
 open MeasureTheory ProbabilityTheory ENNReal Finset Function
 open scoped NNReal

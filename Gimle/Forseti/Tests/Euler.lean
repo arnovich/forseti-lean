@@ -1,4 +1,6 @@
-import Gimle.Asgard.Examples.EulerBand
+module
+
+public import Gimle.Asgard.Examples.EulerBand
 
 /-! The asgard-lean Euler stream from three modes is part of this release's
 build, so a downstream file that restates its uniqueness, its kernel-computed
@@ -8,6 +10,8 @@ classical-solution theorem (`EulerSolution`, v1.15.0): the field is
 an `IsClassicalSolution` on `|t| < 1/648`. This module retains the analytical regression checks from asgard-lean. `Tests.EulerContract` additionally checks the
 Forseti contract over Asgard's actual Fourier feedback circuit. The one-axis `TruncationBound` with its rational `tailBound` is what
 a consumer checking trigonometric streams would apply. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Euler
 

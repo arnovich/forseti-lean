@@ -1,6 +1,10 @@
-import Gimle.Forseti.Examples.AlgebraicCounterexamples
+module
+
+public import Gimle.Forseti.Examples.AlgebraicCounterexamples
 
 /-! Hostile algebraic witnesses, each rejected by the checker itself. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.AlgebraicWitness
 

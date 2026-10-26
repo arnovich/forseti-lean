@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.AIFSlabModel
-import Gimle.Forseti.RationalPolynomial
+module
+
+public import Gimle.Forseti.Examples.AIFSlabModel
+public import Gimle.Forseti.RationalPolynomial
 
 /-! Rational polynomial encoding of the AIF slab model, with proofs that each
 polynomial evaluates to the corresponding real slab expression. The shared
 evaluation proofs separate algebra from per-slab coefficient checking: a slab's
 drift blocks are bound by an exact equivalence test on rational coefficients. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFPolynomialBinding
 open Gimle.Forseti.RationalPolynomial
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix

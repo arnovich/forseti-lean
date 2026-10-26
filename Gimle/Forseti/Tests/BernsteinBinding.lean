@@ -1,4 +1,8 @@
-import Gimle.Forseti.Tests.BernsteinMatrix
+module
+
+public import Gimle.Forseti.Tests.BernsteinMatrix
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.BernsteinBinding
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix

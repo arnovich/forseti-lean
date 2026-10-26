@@ -1,4 +1,6 @@
-import Gimle.Forseti
+module
+
+public import Gimle.Forseti
 
 /-! Coverage for sequential Hoare composition.
 
@@ -14,6 +16,8 @@ Four things are pinned, in order of importance.
 * **The coverage hypotheses do work.** The worked example runs on a bounded
   region so both are discharged by real proofs rather than `trivial`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.SequentialHoare
 
@@ -246,7 +250,6 @@ theorem threeStages :
       (modulusCompose (tenfoldModulus 1) (tenfoldModulus (10 * 1))
         (fun _ _ => trivial))
       (le_refl 1) (by norm_num)) (fun _ _ => trivial)
-
 
 /-! ### Coverage composition pays no amplification
 

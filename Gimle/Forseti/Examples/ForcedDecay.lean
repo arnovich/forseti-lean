@@ -1,6 +1,8 @@
-import Gimle.Asgard.Model.DrivenSource
-import Gimle.Asgard.Model.SourceSyntax
-import Gimle.Asgard.Examples.DrivenForcing
+module
+
+public import Gimle.Asgard.Model.DrivenSource
+public import Gimle.Asgard.Model.SourceSyntax
+public import Gimle.Asgard.Examples.DrivenForcing
 
 /-! A driven model compiled from its source equations, with an observation.
 
@@ -14,6 +16,9 @@ same equations with one observation, `obs-x`, and compiles it with
 
 The runtime coordinates are `[u, du, x]`: the driver ports in binding order,
 then the state. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.ForcedDecay
 open Gimle.Asgard Gimle.Asgard.Model Polynomial
 

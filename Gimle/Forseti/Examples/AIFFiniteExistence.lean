@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFNonnegative
-import Gimle.Forseti.Nonlinear
+module
+
+public import Gimle.Forseti.Examples.AIFNonnegative
+public import Gimle.Forseti.Nonlinear
 
 /-! Finite-horizon construction of zero-start physical AIF solutions.
 A bounded coordinate clamp provides an auxiliary solution; explicit positivity
 and growth estimates remove the clamp on the given interval. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFFiniteExistence
 open AIFPhysicalCoordinates AIFNonnegative
 open Gimle.Forseti.Nonlinear

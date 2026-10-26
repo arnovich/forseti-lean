@@ -1,5 +1,7 @@
-import Gimle.Forseti.Nonlinear
-import Gimle.Forseti.Examples.Lorenz
+module
+
+public import Gimle.Forseti.Nonlinear
+public import Gimle.Forseti.Examples.Lorenz
 
 /-! Coverage for the general trapping theorem.
 
@@ -9,6 +11,8 @@ than in an instance. The axiom policy is asserted with `#guard_msgs`, and the
 Lorenz instance is shown to be exactly an application: its data, its `decrease`
 and its `initial_le` are the only model-specific inputs.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Nonlinear
 

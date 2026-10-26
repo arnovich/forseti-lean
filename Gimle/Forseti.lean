@@ -1,7 +1,11 @@
-import Gimle.Asgard
+module
+
+public import Gimle.Asgard
 
 /-! Forseti property support over the single Asgard circuit implementation.
 Compatibility names below are aliases, not a second syntax or interpreter. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti
 

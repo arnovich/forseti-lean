@@ -1,8 +1,12 @@
-import Gimle.Forseti.Examples.HarmonicOscillator
-import Gimle.Forseti.Examples.DampedOscillatorContract
+module
+
+public import Gimle.Forseti.Examples.HarmonicOscillator
+public import Gimle.Forseti.Examples.DampedOscillatorContract
 
 /-! Coverage for the generic linear-energy contract construction: a second model
 has the same interface shapes a renderer cites, and the axiom policy holds. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.LinearEnergyContract
 

@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.AIFSlabData
+module
+
+public import Gimle.Forseti.Examples.AIFSlabData
 
 /-! Symmetry checks for stored slab data, and the premises degenerate slabs violate. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFSlabData
 open Gimle.Forseti.Examples
 
-private def slab : AIFSlabModel.Slab where
+def slab : AIFSlabModel.Slab where
   tStart := 0
   step := 1
   etaLo := 8
@@ -22,8 +27,7 @@ private def slab : AIFSlabModel.Slab where
   startMetricSlope := 0
   endMetricSlope := 0
 
-
-private def asymmetric : Fin 4 → Fin 4 → ℚ :=
+def asymmetric : Fin 4 → Fin 4 → ℚ :=
   fun i j => if i = 0 ∧ j = 1 then 1 else 0
 
 theorem symmetric_data_accepted : AIFSlabData.SymmetricData slab := by

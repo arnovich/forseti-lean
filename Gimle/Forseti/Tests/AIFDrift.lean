@@ -1,4 +1,8 @@
-import Gimle.Forseti.Examples.AIFDriftPilot
+module
+
+public import Gimle.Forseti.Examples.AIFDriftPilot
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.AIFDrift
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix

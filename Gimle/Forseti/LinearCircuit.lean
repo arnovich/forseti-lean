@@ -1,9 +1,14 @@
-import Gimle.Asgard.Dynamics.LinearSyntax
-import Gimle.Forseti.Discrete
-import Gimle.Forseti.FiniteLinearEquivalence
+module
+
+public import Gimle.Asgard.Dynamics.LinearSyntax
+public import Gimle.Forseti.Discrete
+public import Gimle.Forseti.FiniteLinearEquivalence
 
 /-! Accepted homogeneous-linear source expressions, their original compilation,
 and initialized autonomous execution. All circuit states have exact real semantics. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.LinearCircuit
 
 open Gimle.Asgard

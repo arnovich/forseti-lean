@@ -1,11 +1,16 @@
-import Gimle.Forseti.MildVorticity
-import Gimle.Asgard.Examples.MildBand
-import Gimle.Asgard.Streams.MildTable
-import Gimle.Asgard.Tests.MildTable
+module
+
+public import Gimle.Forseti.MildVorticity
+public import Gimle.Asgard.Examples.MildBand
+public import Gimle.Asgard.Streams.MildTable
+public import Gimle.Asgard.Tests.MildTable
 
 /-! Build and replay roots for the viscous stream's exact carrier examples.
 These coefficient facts are kernel-checked in Asgard; numerical evidence
 never supplies their authority. Classical guarantees use the circuit contract. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.MildStream
 open Gimle.Asgard.Streams
 open Gimle.Asgard.Examples

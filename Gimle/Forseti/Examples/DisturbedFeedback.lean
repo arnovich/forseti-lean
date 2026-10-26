@@ -1,5 +1,7 @@
-import Gimle.Forseti.ForcedLinear
-import Gimle.Forseti.Trajectory
+module
+
+public import Gimle.Forseti.ForcedLinear
+public import Gimle.Forseti.Trajectory
 
 /-! Bottom-up safety through an actual continuous trace.
 
@@ -9,6 +11,8 @@ The resulting invariant x² + 2z² ≤ 1 proves |x| ≤ 1 for every continuous
 disturbance bounded by one on the forward domain. Existence and uniqueness
 are proved independently of the invariant; the root is a total Contract.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.DisturbedFeedback
 

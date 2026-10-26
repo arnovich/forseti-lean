@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.HeatFieldBound
+module
+
+public import Gimle.Forseti.Examples.HeatFieldBound
 
 /-! Hostile cases for field contracts over stream circuits.
 
@@ -15,6 +17,8 @@ field:
 
 The axiom policy is asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.FieldObservation
 

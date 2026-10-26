@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.LoadedSAIFContract
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFContract
 
 /-! The frozen contract uses continuous intervals and the original physical clock. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.LoadedSAIFContract
 open Set Gimle.Forseti.Examples.LoadedSAIFContract
 

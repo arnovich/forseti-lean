@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.FormalHeatContract
+module
+
+public import Gimle.Forseti.Examples.FormalHeatContract
 
 /-! Coverage for total stream contracts.
 
@@ -10,6 +12,8 @@ substitution outside its domain that stays undefined — so no total contract
 holds — even when its result is discarded or multiplied by zero. The axiom
 policy is asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Stream
 

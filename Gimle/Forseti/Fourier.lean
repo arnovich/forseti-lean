@@ -1,4 +1,6 @@
-import Gimle.Asgard.Streams.VorticityCircuit
+module
+
+public import Gimle.Asgard.Streams.VorticityCircuit
 
 /-! Hoare contracts for Asgard's Fourier-stream interpretation.
 Every admitted boundary has an output, all outputs agree, and every output
@@ -6,6 +8,9 @@ satisfies the postcondition. In particular a nonexistent feedback solution
 cannot make a system contract vacuously true. Predicates concern whole formal
 streams; analytic properties need explicit convergence and realization proofs.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Fourier
 
 open Gimle.Asgard.Streams

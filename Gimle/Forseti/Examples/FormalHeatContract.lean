@@ -1,5 +1,7 @@
-import Gimle.Forseti.Stream
-import Gimle.Asgard.Examples.FormalHeat
+module
+
+public import Gimle.Forseti.Stream
+public import Gimle.Asgard.Examples.FormalHeat
 
 /-! The formal two-axis heat circuit as a total stream contract.
 
@@ -15,6 +17,8 @@ expressions, `StreamHoare.expr`, `route`, `compose` and `integralFrom` — and
 Asgard's own identities `heat_space`, `reconstructed` and `heat_boundary`, not
 by re-evaluating the circuit by hand.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.FormalHeatContract
 

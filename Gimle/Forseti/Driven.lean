@@ -1,4 +1,6 @@
-import Gimle.Forseti.Trajectory
+module
+
+public import Gimle.Forseti.Trajectory
 
 /-! The observed circuit of a driven model.
 
@@ -14,6 +16,8 @@ applies `obs` to the result.
 output is `obs` of the input's drivers and of a state `F` relates to the same
 input. Nothing here is specific to a model.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Driven
 

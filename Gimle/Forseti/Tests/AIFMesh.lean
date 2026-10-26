@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFMesh
+module
+
+public import Gimle.Forseti.Examples.AIFMesh
 
 /-! Mesh boundaries and hostile join regressions. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFMesh
 open Gimle.Forseti.Examples.AIFSlabModel Gimle.Forseti.Examples.AIFMesh
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix

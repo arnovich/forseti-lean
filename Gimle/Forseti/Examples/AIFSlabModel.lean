@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFDriftModel
+module
+
+public import Gimle.Forseti.Examples.AIFDriftModel
 
 /-! One slab of the AIF moving tube: exact rational time and parameter bounds, and
 cubic Hermite interpolation of the tube center and metric between endpoint values
 and physical-time slopes. The drift identities and the pointwise dissipative margin
 are stated over this data; no certificate or trajectory is assumed by it. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFSlabModel
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open AIFDriftModel (field cubic_derivative)
@@ -211,7 +216,6 @@ theorem drift_bound (d : Slab) (s u : ℝ) (e : Fin 4 → ℝ)
   have h := block_nonnegative d s u (e 2) hn hp he (Fin.cons 1 e)
   rw [block_energy_identity d s u e hsym] at h
   linarith
-
 
 #print axioms center_derivative_physical
 #print axioms metric_derivative_physical

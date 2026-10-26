@@ -1,10 +1,15 @@
-import Gimle.Forseti.RationalPolynomial
+module
+
+public import Gimle.Forseti.RationalPolynomial
 
 /-! Exact conversion of a rational polynomial in `(s, u)` to its tensor Bernstein
 coefficients. A polynomial whose degrees are within `(td, pd)` equals the tensor
 Bernstein form of its converted coefficients, so a concrete table can be bound to
 a polynomial by comparing rational coefficients, without rebuilding and comparing
 polynomials. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.BernsteinConversion
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix Gimle.Forseti.RationalPolynomial
 open Finset

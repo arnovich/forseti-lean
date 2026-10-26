@@ -1,7 +1,12 @@
-import Gimle.Forseti.ClassicalVorticity.SquareEstimates
+module
+
+public import Gimle.Forseti.ClassicalVorticity.SquareEstimates
 
 /-! Periodic integration by parts on a square and the elliptic estimate that
 controls stream-function velocity by vorticity. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set MeasureTheory
 open scoped Interval

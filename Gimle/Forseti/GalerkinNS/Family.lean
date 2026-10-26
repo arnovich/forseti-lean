@@ -1,4 +1,6 @@
-import Gimle.Forseti.Nonlinear
+module
+
+public import Gimle.Forseti.Nonlinear
 
 /-! # The Galerkin Navier–Stokes family: energy identity, certificate, trapping
 
@@ -46,6 +48,8 @@ not change the field. This is not a hypothesis of any theorem here: a duplicated
 mode, or a mode and its negative, gives a field the theorems still cover — but
 one whose triad terms are doubled relative to the PDE's projection. Nothing is
 claimed about the PDE. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.GalerkinNS.Family
 

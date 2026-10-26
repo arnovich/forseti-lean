@@ -1,9 +1,14 @@
-import Gimle.Forseti
-import Gimle.Asgard.Approximation
+module
+
+public import Gimle.Forseti
+public import Gimle.Asgard.Approximation
 
 /-! Optional property adapter for the same Asgard approximation relation.
 The original binding is supplied independently. Opaque identifiers are retained
 metadata, not authenticated hashes or native/foreign validation receipts. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Approximation
 
 structure OriginalBinding (n m : Nat) where
@@ -42,7 +47,6 @@ theorem BoundFact.transportQuantitative {n m : Nat} {original : OriginalBinding 
     (coverage : PredicateEntailment pre ⟨original.claim.region⟩) :
     QuantitativeHoare pre original.claim.target post (sourceError+original.claim.error.value) :=
   approximateCircuitTransportQuantitative sourceProof fact.toCircuitFact coverage
-
 
 /-! ### Bridge to Asgard's sensitivity notion
 

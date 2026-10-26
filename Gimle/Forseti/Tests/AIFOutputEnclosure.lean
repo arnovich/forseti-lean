@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFOutputEnclosure
-import Gimle.Forseti.Tests.AIFSlab
+module
+
+public import Gimle.Forseti.Examples.AIFOutputEnclosure
+public import Gimle.Forseti.Tests.AIFSlab
 
 /-! Sharp output-margin, hostile zero-metric, and Hermite overshoot regressions. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFOutputEnclosure
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.Examples.AIFSlabModel Gimle.Forseti.Examples.AIFOutputEnclosure

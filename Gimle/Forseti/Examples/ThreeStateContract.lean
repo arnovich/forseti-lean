@@ -1,5 +1,7 @@
-import Gimle.Forseti.LinearEnergyContract
-import Gimle.Forseti.Examples.ThreeState
+module
+
+public import Gimle.Forseti.LinearEnergyContract
+public import Gimle.Forseti.Examples.ThreeState
 
 /-! The three-state model as one well-posed trajectory contract.
 
@@ -19,6 +21,8 @@ interface; `Tests/ThreeState.lean` pins them.
 The damping parameters `(1/3, 1/2, 2)` are compiled into `model`; the input
 predicate binds only the (absent) drivers and the initial wires.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.ThreeStateContract
 

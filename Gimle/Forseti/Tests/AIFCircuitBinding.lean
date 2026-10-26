@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.AIFCircuitBinding
+module
+
+public import Gimle.Forseti.Examples.AIFCircuitBinding
 
 /-! The circuit binding's realization relation needs both the zero start and the
 ODE, the observation reads `x₂`, and the binding uses only the standard axioms. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFCircuitBinding
 open Gimle.Asgard Gimle.Forseti.Examples
 

@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.ThreeState
+module
+
+public import Gimle.Forseti.Examples.ThreeState
 
 /-! The checked interface for bounded proof-search certificates.
 
@@ -11,6 +13,9 @@ stands in for what a searcher would emit.
 The separation that matters: `certificate` is searched evidence, while
 `energy_bound` in `Examples/ThreeState.lean` is the baseline result. A searcher
 must not be handed the baseline theorem as its answer. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.ProofSearchContract
 open Gimle.Asgard Gimle.Asgard.Model
 open Gimle.Forseti.LinearEnergy

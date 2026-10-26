@@ -1,6 +1,10 @@
-import Gimle.Forseti.LinearEnergy
-import Gimle.Asgard.Examples.LinearOscillator
-import Gimle.Asgard.Examples.EnergyDemo
+module
+
+public import Gimle.Forseti.LinearEnergy
+public import Gimle.Asgard.Examples.LinearOscillator
+public import Gimle.Asgard.Examples.EnergyDemo
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.LinearEnergy
 open Gimle.Asgard Dynamics Gimle.Forseti.LinearEnergy

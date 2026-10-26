@@ -1,6 +1,11 @@
-import Gimle.Forseti.ResidualPDE
+module
+
+public import Gimle.Forseti.ResidualPDE
 
 /-! Regression contracts for residual-certified scalar Burgers fields. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.ResidualPDE
 open Set Real
 open Gimle.Forseti.ClassicalVorticity Gimle.Forseti.ResidualPDE

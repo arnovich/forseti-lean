@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFInvariance
-import Gimle.Forseti.Examples.AIFPhysicalCoordinates
+module
+
+public import Gimle.Forseti.Examples.AIFInvariance
+public import Gimle.Forseti.Examples.AIFPhysicalCoordinates
 
 /-! Nonnegativity of supplied physical AIF solutions on closed finite intervals.
 The scalar comparison permits zero boundary rates and requires inward rates
 throughout the nonpositive region. No trajectory existence is assumed implicitly. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFNonnegative
 open AIFPhysicalCoordinates
 

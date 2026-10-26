@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.LoadedSAIFModel
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFModel
 
 /-! Exact regression checks for the loaded rational feedback model. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.LoadedSAIFModel
 open Gimle.Forseti.Examples.LoadedSAIFModel
 

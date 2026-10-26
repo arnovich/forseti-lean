@@ -1,9 +1,14 @@
-import Gimle.Forseti.BernsteinMatrix
+module
+
+public import Gimle.Forseti.BernsteinMatrix
 
 /-! Generated exact proposals for an antithetic integral feedback (AIF) tube metric.
 Untrusted proposals checked by the kernel.
 Bin eta ∈ [8,17/2], physical t ∈ [33/5,67/10], s = 10*(t-33/5).
 This proves only metric coercivity, not drift, coverage or any trajectory. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFMetricPilot
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 

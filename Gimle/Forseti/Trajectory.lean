@@ -1,5 +1,7 @@
-import Gimle.Forseti
-import Gimle.Forseti.LinearEnergy
+module
+
+public import Gimle.Forseti
+public import Gimle.Forseti.LinearEnergy
 
 /-! Well-posed contracts over continuous trajectories.
 
@@ -26,6 +28,8 @@ No rule here gives a trace an unconditional contract: feedback can have no
 solution or many, and only a proof about the particular loop, such as the
 linear rules below, supplies one.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Trajectory
 

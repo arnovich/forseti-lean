@@ -1,5 +1,7 @@
-import Gimle.Forseti.Examples.AIFDriftNegative
-import Gimle.Forseti.Examples.AIFDriftPositive
+module
+
+public import Gimle.Forseti.Examples.AIFDriftNegative
+public import Gimle.Forseti.Examples.AIFDriftPositive
 
 /-! One complete drift box for antithetic integral feedback (AIF).
 
@@ -10,6 +12,9 @@ energy `E = eᵀPe`, from 80 kernel-checked Bernstein square certificates bound
 to the independently defined drift block in `AIFDriftModel`. This is one box,
 not a whole-trajectory theorem: other boxes, coverage, joins, existence and the
 original circuit binding are not claimed. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFDriftPilot
 open Gimle.Forseti.BernsteinMatrix AIFDriftModel
 

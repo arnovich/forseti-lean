@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax.AlgebraicWitness
+module
+
+public import Gimle.Forseti.Syntax.AlgebraicWitness
 
 /-! Entailments refuted only at irrational points.
 
@@ -8,6 +10,8 @@ rational intervals, a polynomial per coordinate with one root in its interval,
 and evidence for each atom — through `algebraicRefutes_sound`. The witnesses
 are written by hand, as fixtures; finding them is an external producer's job.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.AlgebraicCounterexamples
 

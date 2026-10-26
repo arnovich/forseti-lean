@@ -1,7 +1,9 @@
-import Gimle.Forseti
-import Gimle.Asgard.Streams.Laws
-import Gimle.Asgard.Streams.Named
-import Gimle.Asgard.Streams.Reindex
+module
+
+public import Gimle.Forseti
+public import Gimle.Asgard.Streams.Laws
+public import Gimle.Asgard.Streams.Named
+public import Gimle.Asgard.Streams.Reindex
 
 /-! Total Hoare contracts over Asgard's formal streams.
 
@@ -26,6 +28,8 @@ equality never gives full equality (`Tests/Stream.lean`).
 This is exact formal coefficient reasoning. It says nothing about analytic
 functions, convergence, norms or numerical accuracy.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Stream
 

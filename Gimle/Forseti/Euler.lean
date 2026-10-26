@@ -1,7 +1,9 @@
-import Gimle.Forseti.Fourier
-import Gimle.Asgard.Streams.EulerRadius
-import Gimle.Asgard.Streams.EulerSolution
-import Gimle.Asgard.Streams.VorticityTable
+module
+
+public import Gimle.Forseti.Fourier
+public import Gimle.Asgard.Streams.EulerRadius
+public import Gimle.Asgard.Streams.EulerSolution
+public import Gimle.Asgard.Streams.VorticityTable
 
 /-! Classical Euler properties of Asgard's Fourier feedback circuit.
 
@@ -10,6 +12,9 @@ its real field is a classical solution on the explicitly certified interval.
 This does not assert uniqueness among arbitrary classical fields or a maximal
 existence interval. Certificate constants are premises, never part of admission.
 -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Euler
 
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Torus

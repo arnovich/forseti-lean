@@ -1,11 +1,16 @@
-import Mathlib.Analysis.Calculus.Deriv.Pow
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.Pow
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-! Elementary periodic integration identities used by a physical-space
 vorticity comparison. Endpoint cancellation is proved, never assumed as an
 energy identity. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set MeasureTheory
 open scoped Interval

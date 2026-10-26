@@ -1,5 +1,9 @@
-import Gimle.Forseti.Algebraic
-import Gimle.Asgard.Examples.AlgebraicFeedback
+module
+
+public import Gimle.Forseti.Algebraic
+public import Gimle.Asgard.Examples.AlgebraicFeedback
+
+@[expose] public section
 
 namespace Gimle.Forseti.AlgebraicFeedback
 open Gimle.Asgard.Algebraic Gimle.Asgard.Algebraic.Examples

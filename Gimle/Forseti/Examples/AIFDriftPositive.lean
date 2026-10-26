@@ -1,6 +1,11 @@
-import Gimle.Forseti.Examples.AIFDriftModel
+module
+
+public import Gimle.Forseti.Examples.AIFDriftModel
 
 /-! Generated exact proposals; every target identity and square is checked. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFDriftPositive
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open Gimle.Forseti.Examples.AIFDriftModel

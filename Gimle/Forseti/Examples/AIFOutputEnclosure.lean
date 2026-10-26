@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.AIFSlabContainment
+module
+
+public import Gimle.Forseti.Examples.AIFSlabContainment
 
 /-! An output bound on one AIF slab from its moving metric tube and cubic center
 bounds: when the margin matrices have checked certificates, every error vector in
 the tube has its output coordinate `e₁` within `±gap` of the center. The certificates
 are hypotheses here. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFOutputEnclosure
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open AIFSlabModel AIFSlabContainment

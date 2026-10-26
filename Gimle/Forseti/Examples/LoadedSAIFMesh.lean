@@ -1,10 +1,15 @@
-import Gimle.Forseti.Examples.LoadedSAIFMoving
-import Gimle.Forseti.Examples.AIFMeshComposition
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFMoving
+public import Gimle.Forseti.Examples.AIFMeshComposition
 
 /-! Continuous coverage by a finite chain of certified rational moving regions.
 Exact endpoint times, centers, metrics and levels are part of the mesh. The
 chain propagates every enclosed state; nominal samples cannot fill a gap or
 replace an endpoint transfer. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFMesh
 open Set LoadedSAIFModel LoadedSAIFCertificates
 

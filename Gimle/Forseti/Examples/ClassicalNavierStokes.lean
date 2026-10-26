@@ -1,8 +1,13 @@
-import Gimle.Forseti.ClassicalVorticity.MildComparison
-import Gimle.Asgard.Examples.MildBand
+module
+
+public import Gimle.Forseti.ClassicalVorticity.MildComparison
+public import Gimle.Asgard.Examples.MildBand
 
 /-! The three-mode Navier–Stokes example's bounds for every independent classical solution
 of its periodic initial-value problem, with velocity `(-ψ_y, ψ_x)`. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.ClassicalNavierStokes
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Mild
 open Gimle.Forseti.ClassicalVorticity

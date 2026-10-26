@@ -1,9 +1,14 @@
-import Gimle.Forseti.ClassicalVorticity.IntervalEstimates
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.MeasureTheory.Integral.Prod
+module
+
+public import Gimle.Forseti.ClassicalVorticity.IntervalEstimates
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+public import Mathlib.MeasureTheory.Integral.Prod
 
 /-! Square averages and a coarse two-dimensional Poincare estimate. The
 estimates apply to arbitrary continuously differentiable fields. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.ClassicalVorticity
 open Set MeasureTheory
 open scoped Interval

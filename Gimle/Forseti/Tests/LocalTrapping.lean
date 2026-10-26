@@ -1,5 +1,7 @@
-import Gimle.Forseti.LocalTrapping
-import Gimle.Forseti.Examples.GalerkinNS.T3Below12
+module
+
+public import Gimle.Forseti.LocalTrapping
+public import Gimle.Forseti.Examples.GalerkinNS.T3Below12
 
 /-! Coverage for trapping with a decrease local to the sublevel set.
 
@@ -7,6 +9,8 @@ Each `example` restates one of `LocalTrapping`'s exported theorems with its
 exact statement, so a change to the trusted shape fails here rather than in a
 consumer; the T3 instance below the laminar level is pinned by its data, and
 the axiom policy is asserted with `#guard_msgs`. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.LocalTrapping
 

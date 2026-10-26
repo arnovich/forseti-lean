@@ -1,4 +1,6 @@
-import Gimle.Forseti.Stepped
+module
+
+public import Gimle.Forseti.Stepped
 
 /-! Coverage for the stepped path semantics.
 
@@ -16,6 +18,8 @@ lower bounds on `Real.exp`; Bernoulli's inequality at `x = 1/10`; the refutation
 at Bernoulli's and at the exact threshold, on the scalar chain under
 `threePoint (1/8) 8`; and the axiom policy, asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Stepped
 

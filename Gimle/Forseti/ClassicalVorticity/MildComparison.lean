@@ -1,7 +1,12 @@
-import Gimle.Forseti.ClassicalVorticity.Uniqueness
-import Gimle.Forseti.MildVorticity
+module
+
+public import Gimle.Forseti.ClassicalVorticity.Uniqueness
+public import Gimle.Forseti.MildVorticity
 
 /-! Classical uniqueness as a consequence of the certified mild Hoare contract. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.MildVorticity
 open Gimle.Asgard.Streams Gimle.Asgard.Streams.Mild
 open Gimle.Forseti.ClassicalVorticity

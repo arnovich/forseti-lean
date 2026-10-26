@@ -1,9 +1,14 @@
-import Gimle.Forseti.Examples.Oscillator
-import Gimle.Asgard.Examples.LinearDiagram
+module
+
+public import Gimle.Forseti.Examples.Oscillator
+public import Gimle.Asgard.Examples.LinearDiagram
 
 /-! Energy bounds for every trajectory of the compiled initial-value problem.
 The existing all-real energy theorem is applied only to its explicit solution;
 forward-domain uniqueness transports its conclusion to the circuit trajectory. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.LinearOscillator
 open Gimle.Asgard
 

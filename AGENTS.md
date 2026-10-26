@@ -10,6 +10,12 @@ transitive-axiom policies. Never add `sorry`, unchecked axioms, or treat simulat
 as mathematical authority. Building optional modules does not admit them to the
 checker. External consumers must enroll any changed checking environment separately.
 
+Every file is a Lean `module`. Imports are `public import`, and declarations sit
+in an `@[expose] public section` so that importing modules can compute with,
+unfold and `decide` the definitions. A helper that an exposed definition or a
+public statement uses must itself be public. Commands that run code, such as
+`#eval` and `#guard`, need a `meta import` of the modules they run.
+
 Run `lake build` for all libraries, examples, regression proofs, and `Checker`.
 Inspect axiom reports: only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
 Review substantial changes for mathematical correctness and integration.

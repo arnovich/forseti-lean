@@ -1,5 +1,7 @@
-import Gimle.Forseti.LinearEnergyContract
-import Gimle.Forseti.Dissipative
+module
+
+public import Gimle.Forseti.LinearEnergyContract
+public import Gimle.Forseti.Dissipative
 
 /-! # Trapping contracts for compiled nonlinear models
 
@@ -30,6 +32,8 @@ Then, from any start with `V ≤ C`:
 The data is a `Trapping`; the model-specific work is the inequality
 `decrease` (an `nlinarith` or a checked certificate) and the observation's
 closed form. `Examples/Lorenz.lean` is the first instance. -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Nonlinear
 

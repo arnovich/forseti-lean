@@ -1,6 +1,8 @@
-import Gimle.Forseti.LinearEnergyContract
-import Gimle.Asgard.Model.Linear
-import Gimle.Asgard.Model.SourceSyntax
+module
+
+public import Gimle.Forseti.LinearEnergyContract
+public import Gimle.Asgard.Model.Linear
+public import Gimle.Asgard.Model.SourceSyntax
 
 /-! Exact properties of the damped oscillator compiled from its source equations.
 
@@ -17,6 +19,9 @@ Along every solution `dE/dt = 4xv + 2v(−3v − 2x) = −6v² ≤ 0`, so
 `0 ≤ E ≤ E(0) = 2` for `t ≥ 0`. `compiled_energy_bound` proves this with
 `LinearEnergy.certificate_energy_bound` and an exact weighted-square certificate
 for `P = diag(2, 1)` and its dissipation `diag(0, 6)`. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.DampedOscillator
 open Gimle.Asgard Gimle.Asgard.Model Polynomial
 open Gimle.Forseti.LinearEnergy

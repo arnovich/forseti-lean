@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax
+module
+
+public import Gimle.Forseti.Syntax
 
 /-! Coverage for the semi-algebraic predicate syntax.
 
@@ -12,6 +14,8 @@ Three things are pinned here, in order of importance.
 * The fattening's existential is not interchangeable with a distance test. The
   discriminating case needs an **open** core; a closed one cannot separate them.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Syntax
 

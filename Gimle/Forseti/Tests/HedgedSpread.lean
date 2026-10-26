@@ -1,4 +1,6 @@
-import Gimle.Forseti.Examples.HedgedSpreadContract
+module
+
+public import Gimle.Forseti.Examples.HedgedSpreadContract
 
 /-! Coverage for the hedged exposure's driven trajectory contract.
 
@@ -8,6 +10,8 @@ time, the coordinates); the precondition's shape, which binds the driver and is
 not `True`; that the band is the contract's own assumption and not asgard's;
 and the axiom policy, asserted with `#guard_msgs`.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.HedgedSpread
 

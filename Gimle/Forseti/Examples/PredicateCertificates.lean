@@ -1,4 +1,6 @@
-import Gimle.Forseti.Syntax.Certificate
+module
+
+public import Gimle.Forseti.Syntax.Certificate
 
 /-! The shared predicate-certificate corpus, checked in Lean.
 
@@ -12,6 +14,8 @@ solver had produced it instead.
 The unit-disk entailment is then used as a Hoare postcondition weakening, so a
 certificate-checked fact ends up in a theorem about a named circuit.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Examples.PredicateCertificates
 

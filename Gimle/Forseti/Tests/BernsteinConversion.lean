@@ -1,7 +1,12 @@
-import Gimle.Forseti.BernsteinConversion
+module
+
+public import Gimle.Forseti.BernsteinConversion
 
 /-! Small exact conversions: monomials, constants, duplicate terms, both axes and
 the degree check. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.BernsteinConversion
 open Gimle.Forseti.RationalPolynomial Gimle.Forseti.BernsteinConversion
 

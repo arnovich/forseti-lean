@@ -1,7 +1,9 @@
-import Gimle.Forseti.Examples.AIFCertifiedCellData
-import Gimle.Forseti.Examples.AIFGlobalSolution
-import Gimle.Forseti.Examples.AIFPhysicalCoordinates
-import Gimle.Forseti.Examples.AIFSlabDrift
+module
+
+public import Gimle.Forseti.Examples.AIFCertifiedCellData
+public import Gimle.Forseti.Examples.AIFGlobalSolution
+public import Gimle.Forseti.Examples.AIFPhysicalCoordinates
+public import Gimle.Forseti.Examples.AIFSlabDrift
 
 /-! One AIF tube cell with its drift inequality discharged by checked certificates:
 physical time `t ∈ [0, 1/200]` and every fixed `η ∈ [8, 17/2]`. The tube is the
@@ -11,6 +13,9 @@ on the whole cell. The only coordinate bound this gives is on the error coordina
 `e₂`, within `±3/200` of the center; nothing here shows the metric is positive
 definite inside the cell, so the other coordinates are not enclosed. This is one
 cell only; no later time and no output bound are claimed. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFCertifiedCell
 open Gimle.Forseti.BernsteinMatrix AIFSlabModel
 open AIFCertifiedCellData (slab certificates)

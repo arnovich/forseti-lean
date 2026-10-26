@@ -1,6 +1,8 @@
-import Gimle.Forseti.Stream
-import Gimle.Forseti.Syntax.Certificate
-import Gimle.Asgard.Streams.Lowering
+module
+
+public import Gimle.Forseti.Stream
+public import Gimle.Forseti.Syntax.Certificate
+public import Gimle.Asgard.Streams.Lowering
 
 /-! Finite coefficient observations of stream circuits, checked by polynomial
 certificates.
@@ -39,6 +41,8 @@ turns one into `¬ StreamHoare` only given a full input stream that is admitted
 by the original precondition and whose dependency coefficients are the
 counterexample's values.
 -/
+
+@[expose] public section
 
 namespace Gimle.Forseti.Syntax
 

@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.AIFSlabModel
-import Gimle.Forseti.RationalLDL
+module
+
+public import Gimle.Forseti.Examples.AIFSlabModel
+public import Gimle.Forseti.RationalLDL
 
 /-! Physical scaling and closed-boundary regressions for the mesh widths 1/200, 1/50
 and 1/10. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.AIFSlab
 open Gimle.Forseti.Examples.AIFSlabModel
 

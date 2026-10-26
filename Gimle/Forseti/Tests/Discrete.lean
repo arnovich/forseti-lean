@@ -1,4 +1,8 @@
-import Gimle.Forseti.Discrete
+module
+
+public import Gimle.Forseti.Discrete
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.Discrete
 open Gimle.Asgard Gimle.Forseti.Discrete

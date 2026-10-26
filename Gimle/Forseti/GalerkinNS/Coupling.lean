@@ -1,5 +1,7 @@
-import Gimle.Forseti.GalerkinNS.Family
-import Gimle.Asgard.Streams.Torus
+module
+
+public import Gimle.Forseti.GalerkinNS.Family
+public import Gimle.Asgard.Streams.Torus
 
 /-! # The family's coupling is asgard-lean's cosine coupling
 
@@ -11,6 +13,9 @@ amplitudes. This file closes the loop the two repositories cannot close on
 their own: the real coupling of the family is the cast of the rational
 coupling of the stream, definitionally in each of its three factors. With it,
 `NS.rhs_eq_family` is a statement about *this* family's field. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.GalerkinNS.Family
 
 open Gimle.Asgard.Streams

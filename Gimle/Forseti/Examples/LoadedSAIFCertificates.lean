@@ -1,11 +1,16 @@
-import Gimle.Forseti.BernsteinConversion
-import Gimle.Forseti.Examples.AIFMeshComposition
-import Gimle.Forseti.Examples.LoadedSAIFModel
-import Gimle.Forseti.RationalLDL
+module
+
+public import Gimle.Forseti.BernsteinConversion
+public import Gimle.Forseti.Examples.AIFMeshComposition
+public import Gimle.Forseti.Examples.LoadedSAIFModel
+public import Gimle.Forseti.RationalLDL
 
 /-! Exact quadratic certificates for the five-species rational feedback field.
 The positive denominator is cleared only in inequalities. All derivatives remain
 physical-time derivatives; no trajectory membership or existence is implicit. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.LoadedSAIFCertificates
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix
 open LoadedSAIFModel

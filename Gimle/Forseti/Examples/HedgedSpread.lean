@@ -1,5 +1,7 @@
-import Gimle.Asgard.Model.DrivenSource
-import Gimle.Asgard.Model.SourceSyntax
+module
+
+public import Gimle.Asgard.Model.DrivenSource
+public import Gimle.Asgard.Model.SourceSyntax
 
 /-! A hedged, mean-reverting exposure under a bounded disturbance, compiled from
 its source equations, with two observations.
@@ -18,6 +20,9 @@ contract module ties its analytic operator to the compiled rates.
 
 The runtime coordinates are `[d, s, h]`: the driver port, then the states in
 declaration order. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.HedgedSpread
 open Gimle.Asgard Gimle.Asgard.Model Polynomial
 

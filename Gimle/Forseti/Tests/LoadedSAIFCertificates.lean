@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.LoadedSAIFPolynomial
-import Gimle.Forseti.Examples.LoadedSAIFTransfer
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFPolynomial
+public import Gimle.Forseti.Examples.LoadedSAIFTransfer
 
 /-! Guard and exact-identity regressions for the rational feedback certificates. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.LoadedSAIFCertificates
 open Gimle.Forseti.Examples.LoadedSAIFModel
 open Gimle.Forseti.Examples.LoadedSAIFCertificates

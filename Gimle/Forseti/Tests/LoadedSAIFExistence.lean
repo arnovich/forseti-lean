@@ -1,7 +1,12 @@
-import Gimle.Forseti.Examples.LoadedSAIFExistence
+module
+
+public import Gimle.Forseti.Examples.LoadedSAIFExistence
 
 /-! Existence includes the zero-capacity phase, exact denominator guards, and
 uniqueness across the load jump without imposing a two-sided derivative there. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Tests.LoadedSAIFExistence
 open Gimle.Forseti.Examples.LoadedSAIFModel
 open Gimle.Forseti.Examples.LoadedSAIFExistence

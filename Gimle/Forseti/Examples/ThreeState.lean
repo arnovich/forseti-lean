@@ -1,5 +1,7 @@
-import Gimle.Forseti.LinearEnergyContract
-import Gimle.Asgard.Examples.ThreeState
+module
+
+public import Gimle.Forseti.LinearEnergyContract
+public import Gimle.Asgard.Examples.ThreeState
 
 /-! Exact properties of the accepted three-state Asgard model.
 
@@ -13,6 +15,9 @@ Both halves rest on one `LinearEnergy.Certificate`: `P = I` as three unit
 squares, and its dissipation `diag(2a, 2b, 2c)` as three weighted unit squares.
 `spec` hands the compiled instance to `LinearEnergyContract`, which derives
 `compiled_energy_bound` here and every contract in `ThreeStateContract`. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.ThreeState
 open Gimle.Asgard Gimle.Asgard.Model
 open Gimle.Asgard.Examples.ThreeState

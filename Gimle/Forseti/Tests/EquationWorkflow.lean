@@ -1,4 +1,8 @@
-import Gimle.Forseti.Examples.EquationWorkflow
+module
+
+public import Gimle.Forseti.Examples.EquationWorkflow
+
+@[expose] public section
 
 namespace Gimle.Forseti.Tests.EquationWorkflow
 open Gimle.Asgard.Examples.EquationModels

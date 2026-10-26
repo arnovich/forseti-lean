@@ -1,8 +1,13 @@
-import Gimle.Forseti.Examples.AIFSlabModel
+module
+
+public import Gimle.Forseti.Examples.AIFSlabModel
 
 /-! A finite time-by-parameter mesh of AIF slabs whose adjacent slabs share exact
 endpoint centers, slopes and metrics, and whose time intervals cover the mesh span.
 Coverage and joins do not imply any matrix positivity or trajectory theorem. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.AIFMesh
 open Gimle.Forseti.LinearEnergy Gimle.Forseti.BernsteinMatrix AIFSlabModel
 

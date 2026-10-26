@@ -1,5 +1,9 @@
-import Gimle.Forseti.PolynomialTrapping
-import Gimle.Forseti.Examples.GalerkinNS.K5
+module
+
+public import Gimle.Forseti.PolynomialTrapping
+public import Gimle.Forseti.Examples.GalerkinNS.K5
+
+@[expose] public section
 
 -- the closed forms below have hundreds of rational terms; elaborating them needs room
 set_option maxHeartbeats 4000000

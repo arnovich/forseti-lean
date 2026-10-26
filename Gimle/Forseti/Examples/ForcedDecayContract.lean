@@ -1,9 +1,11 @@
-import Gimle.Forseti.Driven
-import Gimle.Forseti.Trajectory
-import Gimle.Forseti.Examples.ForcedDecay
-import Mathlib.Analysis.Calculus.MeanValue
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+module
+
+public import Gimle.Forseti.Driven
+public import Gimle.Forseti.Trajectory
+public import Gimle.Forseti.Examples.ForcedDecay
+public import Mathlib.Analysis.Calculus.MeanValue
+public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 
 /-! The driven model of `Examples/ForcedDecay.lean` as one well-posed contract.
 
@@ -25,6 +27,9 @@ binds the drivers — admitted, and bounded — and the initial wire; it is neve
 that `1` is not a bound (under `u = cos` the output reaches `−1 − e^(−π)` at
 `t = π`); and `bound_needed` that the driver bound cannot be dropped: an
 admitted `u = 3` takes the output past `2`. -/
+
+@[expose] public section
+
 namespace Gimle.Forseti.Examples.ForcedDecayContract
 
 open Gimle.Forseti
