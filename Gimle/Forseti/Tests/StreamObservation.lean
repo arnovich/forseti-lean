@@ -1,6 +1,10 @@
 module
 
 public import Gimle.Forseti.Examples.StreamObservation
+-- `decide` reads slot names that `toString` and `String.intercalate` build;
+-- core does not expose them.
+import all Init.Data.Repr
+import all Init.Data.String.Defs
 
 /-! Hostile cases for the coefficient observation adapter.
 
