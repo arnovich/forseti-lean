@@ -155,13 +155,36 @@ theorem eval_neg (polynomial : Sparse n) (point : Point n) :
       rw [ih]
       ring
 
-/-- Put a monomial's coordinates in order, so equal monomials are equal lists. -/
+/-- Insert a coordinate into an ordered monomial. This is `List.orderedInsert`
+(`insertOrdered_eq`), restated because Mathlib does not expose that body:
+checks that importing modules decide must reduce it. -/
+def insertOrdered (coordinate : Fin n) : Monomial n → Monomial n
+  | [] => [coordinate]
+  | head :: rest =>
+      if coordinate ≤ head then coordinate :: head :: rest
+      else head :: insertOrdered coordinate rest
+
+theorem insertOrdered_eq (coordinate : Fin n) (monomial : Monomial n) :
+    insertOrdered coordinate monomial = monomial.orderedInsert (· ≤ ·) coordinate := by
+  induction monomial with
+  | nil => simp [insertOrdered]
+  | cons head rest ih => simp [insertOrdered, ih]
+
+/-- Put a monomial's coordinates in order, so equal monomials are equal lists.
+This is insertion sort (`normalizeMonomial_eq`). -/
 def normalizeMonomial (monomial : Monomial n) : Monomial n :=
-  monomial.insertionSort (· ≤ ·)
+  monomial.foldr insertOrdered []
+
+theorem normalizeMonomial_eq (monomial : Monomial n) :
+    normalizeMonomial monomial = monomial.insertionSort (· ≤ ·) := by
+  induction monomial with
+  | nil => simp [normalizeMonomial]
+  | cons head rest ih => simp [normalizeMonomial, insertOrdered_eq, ← ih]
 
 theorem monomialValue_normalize (monomial : Monomial n) (point : Point n) :
-    monomialValue (normalizeMonomial monomial) point = monomialValue monomial point :=
-  ((List.perm_insertionSort _ monomial).map point).prod_eq
+    monomialValue (normalizeMonomial monomial) point = monomialValue monomial point := by
+  rw [normalizeMonomial_eq]
+  exact ((List.perm_insertionSort _ monomial).map point).prod_eq
 
 theorem monomialValue_append (left right : Monomial n) (point : Point n) :
     monomialValue (left ++ right) point =
