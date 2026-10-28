@@ -1,6 +1,5 @@
 module
 
-public import Gimle.Forseti.Stepped
 public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Analysis.Convex.Function
 public import Mathlib.Basic.Real.Basic
@@ -13,22 +12,25 @@ public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.LinearCombination
 public import Mathlib.Tactic.Ring
 
-/-! Model-free super-hedging of a convex payoff under a per-step move band.
+/-! Pathwise super-hedging of a convex payoff under a per-step move band, with no probability
+model.
 
 A `Band` with up-move `u` and down-move `d` (`0 < u`, `0 < d < 1`) constrains one step of a
-spot path: from `S` the next spot `S'` lies in `[S (1 - d), S (1 + u)]` (`Band.InBand`). No
+spot path: from `S` the next spot `S'` lies in `[S (1 - d), S (1 + u)]` (`Band.InBand`), so
+from a positive spot the simple return `S'/S - 1` of the step lies in `[-d, u]`. No
 probability is attached to the path. The weight `q = d / (u + d)` (`Band.q`) makes the two
-ends of the band a fair bet, `q (1 + u) + (1 - q) (1 - d) = 1` (`Band.fair`); it is a
-coefficient of the recursion below and is not the probability of anything.
+ends of the band a fair bet, `q (1 + u) + (1 - q) (1 - d) = 1` (`Band.fair`). `q` is the
+risk-neutral weight of the binomial tree on the band's ends; no statement here reads it as
+how often the spot rises, and none depends on a probability.
 
 `price b g n S` is the backward recursion of the payoff `g` over `n` steps: it is `g S` at
 `n = 0`, and `q * price b g n (S (1 + u)) + (1 - q) * price b g n (S (1 - d))` at `n + 1`.
-`delta b g n S` is the slope of the chord of `price b g n` between the two ends of the band
-at `S`, the number of units held over a step with `n + 1` steps still to go. A spot-feedback
-strategy is a function `δ k S` of the step `k` and the current spot `S` alone, and
-`wealth δ w S k` is the wealth after `k` steps along the spot path `S` from initial wealth
-`w`, holding `δ j (S j)` units over step `j`, with no interest and no cost.
-`Covers b g N δ w S₀` says that the wealth ends at least at the payoff,
+`delta b g n S`, the binomial hedge ratio, is the slope of the chord of `price b g n` between
+the two ends of the band at `S`, the number of units held over a step with `n + 1` steps
+still to go. A spot-feedback strategy is a function `δ k S` of the step `k` and the current
+spot `S` alone, and `wealth δ w S k` is the wealth after `k` steps along the spot path `S`
+from initial wealth `w`, holding `δ j (S j)` units over step `j`, with no interest and no
+cost. `Covers b g N δ w S₀` says that the wealth ends at least at the payoff,
 `g (S N) ≤ wealth δ w S N`, on every path with `S 0 = S₀` whose first `N` steps stay in the
 band.
 
@@ -38,10 +40,10 @@ band.
   the whole real line, at a positive spot and for every move in the band, one hedged step
   dominates the next price,
   `price b g n S' ≤ price b g (n + 1) S + delta b g n S * (S' - S)`. Along any path in the
-  band the wealth of the strategy `hedge b g N`, which holds `delta b g (N - 1 - k)` units
-  over step `k`, started from `price b g N S₀`, never falls below the price with the steps
-  still to go; at the end it covers the payoff. `Covers.mono` extends this to any larger
-  initial wealth.
+  band the wealth of the strategy `hedge b g N`, which holds the binomial hedge ratio
+  `delta b g (N - 1 - k)` over step `k`, started from `price b g N S₀`, never falls below the
+  price with the steps still to go; at the end it covers the payoff. `Covers.mono` extends
+  this to any larger initial wealth.
 * The lower bound (`exists_extreme_shortfall`, `not_covers_of_lt`): for any payoff, any
   spot-feedback strategy and any initial wealth `w < price b g N S₀`, there is a path whose
   every step is to one end of the band (`Extreme`) and on which the wealth ends strictly
@@ -55,36 +57,36 @@ band.
   `put_convexOn`, `straddle_convexOn`), so the upper bound applies to them. `price_eq_sum`
   writes the price as a binomial sum over the number `j` of up-moves among the `n` steps.
 * The exact layer (`Band.ofRat`, `priceQ`, `deltaQ`, `wealthQ`, `spotQ`): the same price,
-  hedge ratio and hedged wealth over `ℚ`, on a band with rational ends and along a path of
-  rational returns, defined so that the kernel evaluates them (`decide +kernel`). The cast
-  lemmas `price_cast`, `delta_cast` and `wealth_hedge_cast` say that, for a payoff that agrees
-  with its rational twin on rationals (`call_cast`, `put_cast` and `straddle_cast` give this
-  for the three payoffs), the real definitions take the values of the rational ones, so a
-  value computed over `ℚ` is a value of the real price, hedge ratio and wealth.
-  `inBand_of_return` and `spotQ_inBand` turn returns inside `[-d, u]` into moves inside the
-  band; both need a positive spot (`spotQ_inBand` a positive starting spot, which the returns
-  then keep positive).
-* The stepped bridge (`book`, `spotOf`, `run_book`, `covers_run`): the hedged book is a
-  stepped system driven by its returns. Its state is the step, the spot and the wealth; its
-  input is the step return `r`; one step of `book δ` multiplies the spot by `1 + r` and adds
-  `δ k S * (S * r)` to the wealth, the position held over the step times the move. So
-  `Stepped.run (book δ) (0, S₀, w) ω`, the iteration of `Gimle.Forseti.Stepped`, is the book
-  along the return path `ω` (`run_book`), and `Covers` implies a safety statement about
-  this driven iteration (`covers_run`): from a positive spot, if the first `N` returns lie
-  in `[-d, u]`, the payoff of the final spot is at most the final wealth. The return path is
-  a given sequence: no probability and no law is attached to it.
+  binomial hedge ratio and hedged wealth over `ℚ`, on a band with rational ends and along a
+  path of rational simple returns, defined so that the kernel evaluates them
+  (`decide +kernel`). The cast lemmas `price_cast`, `delta_cast` and `wealth_hedge_cast` say
+  that, for a payoff that agrees with its rational twin on rationals (`call_cast`, `put_cast`
+  and `straddle_cast` give this for the three payoffs), the real definitions take the values
+  of the rational ones, so a value computed over `ℚ` is a value of the real price, hedge
+  ratio and wealth. `inBand_of_return` and `spotQ_inBand` turn returns inside `[-d, u]` into
+  moves inside the band; both need a positive spot (`spotQ_inBand` a positive starting spot,
+  which the returns then keep positive).
+* The stepped bridge, in `Gimle.Forseti.HedgingStepped` (`book`, `spotOf`, `run_book`,
+  `covers_run`): the hedged book read as a stepped system of `Gimle.Forseti.Stepped` driven
+  by its simple returns, with `Covers` turned into a safety statement about that driven
+  iteration. It is a module of its own, so that this one imports no measure theory.
 
-Together, for a payoff convex on the whole real line and a positive spot, `price b g N S₀` is
-the least initial wealth from which some spot-feedback strategy covers the payoff on every
-path in the band.
+Together (`covers_hedge`, `not_covers_of_lt`), for a payoff convex on the whole real line and
+a positive spot, `price b g N S₀` is the least initial wealth from which some spot-feedback
+strategy covers the payoff on every path in the band (`isLeast_price`). This is the seller's
+price: the least capital from which a short position in the payoff is hedged on every path
+in the band. It is not a fair value, and nothing here prices the payoff for a buyer.
 
 What is not claimed. The rate is zero: there is no interest, discounting or financing cost,
-and trading is free. The upper bound is for payoffs convex on the whole real line; the lower
-bound uses no convexity. The spot-feedback strategies of the lower bound are functions of the
-step and the current spot, not of the path so far. The band is the same at every step and is
-a hypothesis of each claim, never fitted to data; nothing is claimed about a path that leaves
-it. Nothing here has a probability, a volatility or continuous trading: the spot moves in
-discrete steps and the position changes once a step.
+and trading is free. The asset pays no dividend and costs nothing to borrow; holdings are any
+real number, short or fractional, and cash is borrowed without limit at the zero rate. The
+payoff is paid on the final spot only: no early exercise and no path-dependent payoff. The
+upper bound is for payoffs convex on the whole real line; the lower bound uses no convexity.
+The spot-feedback strategies of the lower bound are functions of the step and the current
+spot, not of the path so far. The band is the same at every step and is a hypothesis of each
+claim, never fitted to data; nothing is claimed about a path that leaves it. Nothing here has
+a probability, a volatility or continuous trading: the spot moves in discrete steps and the
+position changes once a step.
 -/
 
 @[expose] public section
@@ -236,7 +238,8 @@ noncomputable def hedge (b : Band) (g : ℝ → ℝ) (N k : ℕ) (S : ℝ) : ℝ
 
 /-- The strategy `δ`, started from wealth `w` at spot `S₀`, covers the payoff `g` over `N`
 steps: on every path from `S₀` whose first `N` steps stay in the band, the wealth ends at
-least at the payoff. -/
+least at the payoff. Read as a sale: a seller who takes in `w` for the payoff and runs `δ`
+never ends below zero on such a path. -/
 def Covers (b : Band) (g : ℝ → ℝ) (N : ℕ) (δ : ℕ → ℝ → ℝ) (w S₀ : ℝ) : Prop :=
   ∀ S : ℕ → ℝ, S 0 = S₀ → (∀ k < N, b.InBand (S k) (S (k + 1))) → g (S N) ≤ wealth δ w S N
 
@@ -380,6 +383,14 @@ theorem not_covers_of_lt (b : Band) (g : ℝ → ℝ) (N : ℕ) {S₀ w : ℝ} (
   obtain ⟨S, h0, hext, hshort⟩ := exists_extreme_shortfall b g N δ S₀ w hw
   have hcover := hc S h0 (hext.inBand (by rw [h0]; exact hS₀))
   linarith
+
+/-- For a payoff convex on the whole real line and a positive spot, the price is the least
+initial wealth from which some spot-feedback strategy covers the payoff: the hedge covers from
+it (`covers_hedge`), and no spot-feedback strategy covers from less (`not_covers_of_lt`). -/
+theorem isLeast_price (b : Band) {g : ℝ → ℝ} (hg : ConvexOn ℝ Set.univ g) (N : ℕ) {S₀ : ℝ}
+    (hS₀ : 0 < S₀) : IsLeast {w | ∃ δ, Covers b g N δ w S₀} (price b g N S₀) :=
+  ⟨⟨hedge b g N, covers_hedge b hg N hS₀⟩,
+    fun _ ⟨δ, h⟩ => not_lt.mp fun hlt => not_covers_of_lt b g N hS₀ hlt δ h⟩
 
 /-! ### Payoffs -/
 
@@ -591,51 +602,5 @@ theorem spotQ_inBand (u d : ℚ) (hu : 0 < u) (hd : 0 < d) (hd1 : d < 1) {S₀ :
     (r := (r k : ℝ)) ⟨by simpa [Band.ofRat] using (by exact_mod_cast h.1 : (-d : ℝ) ≤ r k),
       by simpa [Band.ofRat] using (by exact_mod_cast h.2 : (r k : ℝ) ≤ u)⟩
   simpa [spotQ] using key
-
-/-! ### The hedged book as a stepped system -/
-
-/-- One step of the hedged book. The state is `(step, spot, wealth)` and the input is the step
-return `r`: the spot is multiplied by `1 + r`, and the wealth gains the units `δ k S` held over
-step `k` at spot `S` times the move `S * r`. -/
-def book (δ : ℕ → ℝ → ℝ) : ℕ × ℝ × ℝ → ℝ → ℕ × ℝ × ℝ :=
-  fun x r => (x.1 + 1, x.2.1 * (1 + r), x.2.2 + δ x.1 x.2.1 * (x.2.1 * r))
-
-/-- The spot after `k` steps from `S₀` with the step returns `ω`. -/
-noncomputable def spotOf (S₀ : ℝ) (ω : ℕ → ℝ) : ℕ → ℝ
-  | 0 => S₀
-  | k + 1 => spotOf S₀ ω k * (1 + ω k)
-
-/-- The stepped run of the book along the returns `ω` is the step count, the spot path
-`spotOf S₀ ω` and the wealth of the strategy `δ` along that path. -/
-theorem run_book (δ : ℕ → ℝ → ℝ) (S₀ w : ℝ) (ω : ℕ → ℝ) (n : ℕ) :
-    Stepped.run (book δ) (0, S₀, w) ω n
-      = (n, spotOf S₀ ω n, wealth δ w (spotOf S₀ ω) n) := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-    rw [Stepped.run_succ, ih]
-    simp only [book, spotOf, wealth, Prod.mk.injEq, true_and]
-    ring
-
-/-- A covering strategy is safe for the driven book: from a positive spot, along returns that
-stay in `[-d, u]` for the first `N` steps, the payoff of the final spot of the stepped run is
-at most its final wealth. -/
-theorem covers_run {b : Band} {g : ℝ → ℝ} {N : ℕ} {δ : ℕ → ℝ → ℝ} {w S₀ : ℝ}
-    (h : Covers b g N δ w S₀) (hS₀ : 0 < S₀) (ω : ℕ → ℝ)
-    (hω : ∀ k < N, -b.d ≤ ω k ∧ ω k ≤ b.u) :
-    g (Stepped.run (book δ) (0, S₀, w) ω N).2.1 ≤ (Stepped.run (book δ) (0, S₀, w) ω N).2.2 := by
-  have hpos : ∀ k ≤ N, 0 < spotOf S₀ ω k := by
-    intro k
-    induction k with
-    | zero => intro _; exact hS₀
-    | succ k ih =>
-      intro hk
-      have hd := b.d_lt_one
-      have hr := (hω k (by omega)).1
-      exact mul_pos (ih (by omega)) (by linarith)
-  have hband : ∀ k < N, b.InBand (spotOf S₀ ω k) (spotOf S₀ ω (k + 1)) :=
-    fun k hk => inBand_of_return b (hpos k hk.le) (hω k hk)
-  rw [run_book]
-  exact h (spotOf S₀ ω) rfl hband
 
 end Gimle.Forseti.Hedging

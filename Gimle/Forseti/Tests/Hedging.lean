@@ -2,20 +2,21 @@ module
 
 public import Gimle.Forseti.Hedging
 
-/-! Coverage for model-free super-hedging under a per-step move band.
+/-! Coverage for pathwise super-hedging of a convex payoff under a per-step move band, with no
+probability model.
 
-Pinned here: the defining equations of the binomial price and of the wealth recursion, by
-`rfl`; the claim forms `Band.InBand`, `Covers` and `Extreme`, unfolded; the band
-`[S (1 - 1/4), S (1 + 1/2)]`, whose up-weight is `1/3` and for which the fair-bet identity
-holds; the identity `price b id 2 S = S`, the fair bet applied twice; the super-hedge
-`covers_hedge` on the call payoff `max (S - 1) 0` at spot `1` over three steps; the
-monotonicity of `Covers` in the initial wealth, for any strategy; the lower bound
-`not_covers_of_lt` on a one-step identity payoff started below its price; the payoffs
-`call`, `put` and `straddle` with their convexity; the closed form `price_eq_sum` at one
-step; the exact layer over `ℚ`, evaluated by the kernel, and its agreement with the real
-definitions; the stepped bridge, where the hedged book is the iteration `Stepped.run` of a
-step map along a path of returns and `Covers` becomes a safety statement about it; and the
-axiom policy, asserted with `#guard_msgs`.
+Pinned here: the defining equations of the binomial price, of the binomial hedge ratio and of
+the wealth recursion, by `rfl`; the claim forms `Band.InBand`, `Covers` and `Extreme`,
+unfolded; the band `[S (1 - 1/4), S (1 + 1/2)]`, whose up-weight is `1/3` and for which the
+fair-bet identity holds; the identity `price b id 2 S = S`, the fair bet applied twice; the
+super-hedge `covers_hedge` on the call payoff `max (S - 1) 0` at spot `1` over three steps;
+the monotonicity of `Covers` in the initial wealth, for every spot-feedback strategy; the lower
+bound `not_covers_of_lt` on a one-step identity payoff started below its price; the price as
+the least covering initial wealth (`isLeast_price`); the payoffs `call`, `put` and `straddle`
+with their convexity; the closed form `price_eq_sum` at one step; the exact layer over `ℚ`,
+evaluated by the kernel, and its agreement with the real definitions; and the axiom policy of
+every public theorem of `Hedging`, asserted with `#guard_msgs`. The stepped bridge is covered
+in `Tests/HedgingStepped.lean`.
 -/
 
 @[expose] public section
@@ -102,8 +103,8 @@ theorem convexOn_call_one : ConvexOn ℝ Set.univ (fun S : ℝ => max (S - 1) 0)
     ((convexOn_id convex_univ).add_const (-1)).congr (fun x _ => by simp [sub_eq_add_neg])
   exact h1.sup (convexOn_const 0 convex_univ)
 
-/-- Re-hedging a call at the binomial ratio once a step, from the binomial price, covers it on
-every three-step path whose moves stay in the band. -/
+/-- Re-hedging a call at the binomial hedge ratio once a step, from the binomial price, covers
+it on every three-step path whose moves stay in the band. -/
 example : Covers band (fun S : ℝ => max (S - 1) 0) 3
     (hedge band (fun S : ℝ => max (S - 1) 0) 3)
     (price band (fun S : ℝ => max (S - 1) 0) 3 1) 1 :=
@@ -138,6 +139,12 @@ example (δ : ℕ → ℝ → ℝ) :
   refine exists_extreme_shortfall band (fun S : ℝ => S) 1 δ 1 0 ?_
   norm_num [price, Band.q, band]
 
+/-- The price is the least initial wealth from which some spot-feedback strategy covers the
+call: the upper and the lower bound together. -/
+example : IsLeast {w | ∃ δ, Covers band (fun S : ℝ => max (S - 1) 0) 3 δ w 1}
+    (price band (fun S : ℝ => max (S - 1) 0) 3 1) :=
+  isLeast_price band convexOn_call_one 3 one_pos
+
 /-! ### Payoffs and the closed form -/
 
 section Payoffs
@@ -162,7 +169,8 @@ example : Covers band (straddle 1) 3 (hedge band (straddle 1) 3)
 example (b : Band) (g : ℝ → ℝ) (S : ℝ) :
     price b g 1 S = b.q * g (S * (1 + b.u)) + (1 - b.q) * g (S * (1 - b.d)) := by
   rw [price_eq_sum]
-  simp [Finset.sum_range_succ]
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.choose_zero_right,
+    Nat.choose_self, Nat.cast_one, Nat.sub_zero, Nat.sub_self, pow_zero, pow_one, mul_one]
   ring
 
 end Payoffs
@@ -246,50 +254,31 @@ example :
 
 end Exact
 
-/-! ### The stepped bridge -/
-
-section SteppedBridge
-
-variable (δ : ℕ → ℝ → ℝ) (S₀ w : ℝ) (ω : ℕ → ℝ)
-
-example : book δ (3, S₀, w) 0 = (4, S₀, w) := by simp [book]
-
-example (x : ℕ × ℝ × ℝ) (r : ℝ) :
-    book δ x r = (x.1 + 1, x.2.1 * (1 + r), x.2.2 + δ x.1 x.2.1 * (x.2.1 * r)) := rfl
-
-example : spotOf S₀ ω 0 = S₀ := rfl
-example (k : ℕ) : spotOf S₀ ω (k + 1) = spotOf S₀ ω k * (1 + ω k) := rfl
-
-/-- The run at mark `0` is the start. -/
-example : Stepped.run (book δ) (0, S₀, w) ω 0
-    = (0, spotOf S₀ ω 0, wealth δ w (spotOf S₀ ω) 0) := by
-  simp [Stepped.run, spotOf, wealth]
-
-/-- The run at mark `1` is the first hedged step. -/
-example : Stepped.run (book δ) (0, S₀, w) ω 1
-    = (1, spotOf S₀ ω 1, wealth δ w (spotOf S₀ ω) 1) := by
-  simp [Stepped.run, book, spotOf, wealth]
-  left
-  ring
-
-/-- The run is the spot and the wealth along the path of returns, at every mark. -/
-example (n : ℕ) : Stepped.run (book δ) (0, S₀, w) ω n
-    = (n, spotOf S₀ ω n, wealth δ w (spotOf S₀ ω) n) := run_book δ S₀ w ω n
-
-end SteppedBridge
-
-/-- The super-hedge of the call, read as a safety statement about a driven iteration: along
-the zero-return path, which is inside the band, the book ends at least at the payoff. -/
-example : (fun S : ℝ => max (S - 1) 0)
-      (Stepped.run (book (hedge band (fun S : ℝ => max (S - 1) 0) 3)) (0, 1,
-        price band (fun S : ℝ => max (S - 1) 0) 3 1) (fun _ => 0) 3).2.1
-    ≤ (Stepped.run (book (hedge band (fun S : ℝ => max (S - 1) 0) 3)) (0, 1,
-        price band (fun S : ℝ => max (S - 1) 0) 3 1) (fun _ => 0) 3).2.2 :=
-  covers_run (covers_hedge band convexOn_call_one 3 one_pos) one_pos (fun _ => 0)
-    (fun _ _ => ⟨by linarith [band.d_pos], by linarith [band.u_pos]⟩)
-
 /-! ### Axiom policy -/
 
+/--
+info: 'Gimle.Forseti.Hedging.Band.ud_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Band.ud_pos
+/--
+info: 'Gimle.Forseti.Hedging.Band.q_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Band.q_pos
+/--
+info: 'Gimle.Forseti.Hedging.Band.q_lt_one'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Band.q_lt_one
+/--
+info: 'Gimle.Forseti.Hedging.Band.q_nonneg'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Band.q_nonneg
+/--
+info: 'Gimle.Forseti.Hedging.Band.one_sub_q_nonneg'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Band.one_sub_q_nonneg
 /--
 info: 'Gimle.Forseti.Hedging.Band.q_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
@@ -298,6 +287,11 @@ info: 'Gimle.Forseti.Hedging.Band.q_mul' depends on axioms: [propext, Classical.
 info: 'Gimle.Forseti.Hedging.Band.fair' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms Band.fair
+/--
+info: 'Gimle.Forseti.Hedging.Band.pos_of_inBand'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Band.pos_of_inBand
 /--
 info: 'Gimle.Forseti.Hedging.price_convexOn'
   depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -314,6 +308,10 @@ info: 'Gimle.Forseti.Hedging.step_dominates'
 -/
 #guard_msgs (whitespace := lax) in #print axioms step_dominates
 /--
+info: 'Gimle.Forseti.Hedging.Covers.mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms Covers.mono
+/--
 info: 'Gimle.Forseti.Hedging.wealth_ge_price'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
@@ -323,10 +321,6 @@ info: 'Gimle.Forseti.Hedging.covers_hedge'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms covers_hedge
-/--
-info: 'Gimle.Forseti.Hedging.Covers.mono' depends on axioms: [propext, Classical.choice, Quot.sound]
--/
-#guard_msgs (whitespace := lax) in #print axioms Covers.mono
 /--
 info: 'Gimle.Forseti.Hedging.Extreme.inBand'
   depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -347,30 +341,70 @@ info: 'Gimle.Forseti.Hedging.not_covers_of_lt'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms not_covers_of_lt
-
+/--
+info: 'Gimle.Forseti.Hedging.isLeast_price'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms isLeast_price
+/--
+info: 'Gimle.Forseti.Hedging.call_convexOn'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms call_convexOn
+/--
+info: 'Gimle.Forseti.Hedging.put_convexOn'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms put_convexOn
+/--
+info: 'Gimle.Forseti.Hedging.straddle_convexOn'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms straddle_convexOn
 /--
 info: 'Gimle.Forseti.Hedging.price_eq_sum'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms price_eq_sum
 /--
+info: 'Gimle.Forseti.Hedging.sumQ_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms sumQ_eq
+/--
+info: 'Gimle.Forseti.Hedging.call_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms call_cast
+/--
+info: 'Gimle.Forseti.Hedging.put_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms put_cast
+/--
+info: 'Gimle.Forseti.Hedging.straddle_cast'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms straddle_cast
+/--
 info: 'Gimle.Forseti.Hedging.price_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms price_cast
+/--
+info: 'Gimle.Forseti.Hedging.delta_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms delta_cast
 /--
 info: 'Gimle.Forseti.Hedging.wealth_hedge_cast'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms wealth_hedge_cast
 /--
-info: 'Gimle.Forseti.Hedging.run_book'
+info: 'Gimle.Forseti.Hedging.inBand_of_return'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
-#guard_msgs (whitespace := lax) in #print axioms run_book
+#guard_msgs (whitespace := lax) in #print axioms inBand_of_return
 /--
-info: 'Gimle.Forseti.Hedging.covers_run'
+info: 'Gimle.Forseti.Hedging.spotQ_inBand'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
-#guard_msgs (whitespace := lax) in #print axioms covers_run
+#guard_msgs (whitespace := lax) in #print axioms spotQ_inBand
 
 end Gimle.Forseti.Tests.Hedging

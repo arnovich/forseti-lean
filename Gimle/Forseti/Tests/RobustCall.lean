@@ -6,13 +6,14 @@ public import Gimle.Forseti.Examples.RobustCall
 
 Pinned here: the data of the example, the two bands and the up-weight `1/2` of both; the
 claim forms `covered`, `covered_from_premium` and `not_from_seven_halves` unfolded to their
-`Covers` statements, with the premium `7/2` below the price and `3555/1000` above it; the
-put and the straddle covered like the call, and the straddle's price twice the call's; the
-zigzag returns, inside the wide band and outside the narrow one, and the recursion of the
-zigzag spot; the two sides of the narrow hedge, its price and its shortfall on the zigzag
-path, with the refutation `narrow_hedge_not_within_four` as a claim form; the price tables,
-each as the shape of its theorem and bracketed by decimals; and the axiom policy, asserted
-with `#guard_msgs`.
+`Covers` statements, with the initial wealth `7/2` below the price and the premium
+`3555/1000` above it; the opening hedge ratio as the first position of the hedge, bracketed
+by decimals; the put and the straddle covered like the call, and the straddle's price twice
+the call's; the zigzag returns, inside the wide band and outside the narrow one, and the
+recursion of the zigzag spot; the two sides of the narrow hedge, its price and its shortfall
+on the zigzag path, with the refutation `narrow_hedge_not_within_four` as a claim form; the
+price tables, each as the shape of its theorem and bracketed by decimals; and the axiom
+policy, asserted with `#guard_msgs`.
 -/
 
 @[expose] public section
@@ -26,7 +27,7 @@ open Gimle.Forseti.Examples.RobustCall
 
 example : strike = 100 := rfl
 example : spot = 100 := rfl
-example : days = 20 := rfl
+example : steps = 20 := rfl
 
 example : wide = Band.ofRat (1 / 50) (1 / 50) (by norm_num) (by norm_num) (by norm_num) := rfl
 example : narrow = Band.ofRat (1 / 100) (1 / 100) (by norm_num) (by norm_num) (by norm_num) :=
@@ -40,8 +41,8 @@ example : wide.q = 1 / 2 := by norm_num [Band.q, wide, Band.ofRat]
 example : narrow.q = 1 / 2 := by norm_num [Band.q, narrow, Band.ofRat]
 
 /-- The named data is the data of the stated theorems. -/
-example : price wide (call strike) days spot = price wide (call 100) 20 100 := by
-  norm_num [strike, spot, days]
+example : price wide (call strike) steps spot = price wide (call 100) 20 100 := by
+  norm_num [strike, spot, steps]
 
 /-! ### The call is covered from its price -/
 
@@ -55,14 +56,24 @@ example : Covers wide (call 100) 20 (hedge wide (call 100) 20) (3555 / 1000) 100
 
 example : ∀ δ : ℕ → ℝ → ℝ, ¬ Covers wide (call 100) 20 δ (7 / 2) 100 := not_from_seven_halves
 
-/-- The premium that no spot-feedback strategy covers from lies below the price, the one that
-the hedge covers from lies above it: the hedge covers from the rounded premium `3.555`, and no
-spot-feedback strategy covers from `3.5`. -/
+/-- The initial wealth `3.5`, from which no spot-feedback strategy covers, lies below the price,
+and the premium `3.555`, the price rounded up to three places, from which the hedge covers,
+lies above it. -/
 example : (7 / 2 : ℝ) < price wide (call 100) 20 100 := by
   rw [price_wide]; norm_num
 
 example : price wide (call 100) 20 100 < (3555 / 1000 : ℝ) := by
   rw [price_wide]; norm_num
+
+/-- The hedge opens with the binomial hedge ratio with `20` steps to go, about `0.5176`. -/
+example : hedge wide (call 100) 20 0 100 = delta wide (call 100) 19 100 := rfl
+
+example := (opening_ratio : delta wide (call 100) 19 100 = _)
+
+example : 0.5176 < hedge wide (call 100) 20 0 100 ∧ hedge wide (call 100) 20 0 100 < 0.5177 := by
+  rw [show hedge wide (call 100) 20 0 100 = delta wide (call 100) 19 100 from rfl,
+    opening_ratio]
+  norm_num
 
 /-- The hedge covers the call from any larger initial wealth too. -/
 example : Covers wide (call 100) 20 (hedge wide (call 100) 20) 4 100 :=
@@ -190,6 +201,11 @@ info: 'Gimle.Forseti.Examples.RobustCall.not_from_seven_halves'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms not_from_seven_halves
+/--
+info: 'Gimle.Forseti.Examples.RobustCall.opening_ratio'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms opening_ratio
 /--
 info: 'Gimle.Forseti.Examples.RobustCall.zigzag_shortfall'
   depends on axioms: [propext, Classical.choice, Quot.sound]

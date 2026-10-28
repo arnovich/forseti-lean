@@ -9,14 +9,18 @@ What this module proves, for a call struck at `100`, started at the spot `100`, 
 steps. A step is read as one trading day in the showcase; the statements are about steps and
 prove nothing about days.
 
-* The binomial price of the call in the band of two percent is
+* The binomial super-hedging price of the call in the band of two percent is
   `177744620736998422379605070486628497811 / 50000000000000000000000000000000000000`,
   about `3.5548924` (`price_wide`): an exact rational, which the kernel evaluates and the cast
   lemmas of `Hedging` carry to the real price.
-* Started from that price and re-hedged once a step at the binomial ratio, the book ends at
-  least at the payoff of the call on every path whose steps stay in the band (`covered`), and
-  so from any larger initial wealth, such as `3.555` (`covered_from_premium`).
-* From `3.5` no spot-feedback strategy covers the call on every such path
+* Started from that price and re-hedged once a step at the binomial hedge ratio, the book ends
+  at least at the payoff of the call on every path whose steps stay in the band (`covered`),
+  and so from any larger initial wealth, such as a premium of `3.555`, the price rounded up to
+  three places (`covered_from_premium`).
+* The hedge opens holding about `0.5176` units of the underlying (`opening_ratio`): the
+  binomial hedge ratio with `20` steps to go, `hedge wide (call 100) 20 0 100`, is
+  `51760914013966027142514864134024172569 / 100000000000000000000000000000000000000`.
+* From an initial wealth of `3.5` no spot-feedback strategy covers the call on every such path
   (`not_from_seven_halves`), whatever units it holds as a function of the step and the spot.
   The price is the exact threshold: `not_covers_of_lt` rules out every initial wealth below
   it, and `covered` covers from it.
@@ -24,21 +28,30 @@ prove nothing about days.
   (`price_narrow`), falls more than `4` short of the payoff on one path of the band of two
   percent (`narrow_hedge_not_within_four`): on the zigzag path, whose steps are inside the
   wider band, it ends `4.1129056` below the payoff, the exact rational of `zigzag_shortfall`.
+  That is more than the gap of about `1.78` between the two prices. The zigzag ends at about
+  `99.6007` (`zigzag_ends`), below the strike, so the call expires worthless and all of the
+  shortfall is hedging loss. The ratios of the narrow hedge are wrong for moves of two
+  percent, not merely under-funded: the wealth of a fixed strategy moves one for one with its
+  initial wealth, so the same hedge started from the wide price would still end about `2.33`
+  short on that path. That figure is arithmetic on `zigzag_shortfall` and the two prices, not
+  a theorem of this module.
 * The price tables, each an exact rational checked by the kernel and quoted here rounded to
   four places. By band at `20` steps: `1.7702` at one percent, `3.5549` at two (`price_wide`)
   and `5.3506` at three (`price_three_percent`). By horizon in the band of two percent:
   `1.8745` at `5` steps (`price_five_days`), `3.5549` at `20`, `6.1922` at `60`
   (`price_sixty_days`) and `12.5705` at `250` (`price_year`). The put at the money costs what
-  the call does (`put_eq_call`), and the straddle at the money, `7.1098` (`price_straddle`),
-  twice that.
+  the call does (`put_eq_call`, put–call parity), and the straddle at the money, `7.1098`
+  (`price_straddle`), twice that.
 
-The model. A `Band` says that from the spot `S` the next spot lies in `[S (1 - d), S (1 + u)]`;
-`wide` has `u = d = 1/50` and `narrow` has `u = d = 1/100`; `strike`, `spot` and `days` name the
-data of the statements, which are written with their values. The rate is zero, trading is free,
-and the position is changed once a step: a strategy holds `δ k S` units over step `k` at the
-spot `S`. The price is the backward recursion `price` of `Hedging`, which weights each end of a
-symmetric band by `1/2`; the weight is a coefficient of the recursion and not the probability
-of anything. The call is convex on the whole real line, so `covers_hedge` applies to it.
+The model. A `Band` says that from the spot `S` the next spot `S'` lies in
+`[S (1 - d), S (1 + u)]`, so the simple return `S'/S - 1` of a step lies in `[-d, u]`; `wide`
+has `u = d = 1/50` and `narrow` has `u = d = 1/100`; `strike`, `spot` and `steps` name the
+data of the statements, which are written with their values. The rate is zero, trading is
+free, and the position is changed once a step: a strategy holds `δ k S` units over step `k`
+at the spot `S`. The price is the backward recursion `price` of `Hedging`, which weights each
+end of a symmetric band by `1/2`. `q` is the risk-neutral weight of the binomial tree on the
+band's ends; no statement here reads it as how often the spot rises, and none depends on a
+probability. The call is convex on the whole real line, so `covers_hedge` applies to it.
 `zigzag k` is the return `+1/50` at an even step and `-1/50` at an odd one, so the zigzag path
 `zigzagSpot` moves the spot by the full two percent, up and down in turn; after `20` steps it
 is at about `99.6007` (`zigzag_ends`). Its returns are inside `[-1/50, 1/50]`
@@ -51,17 +64,18 @@ What is not claimed. Nothing about markets: the band is a hypothesis of each cla
 fitted to prices, and the module attaches no probability, volatility or distribution to a
 path. The zigzag is one path chosen to refute a hedge, not a typical one. There is no
 interest, financing, dividend or transaction cost, and no bid-offer spread: the rate is zero
-and trading is free. The lower bound `not_from_seven_halves` is for strategies that are
-functions of the step and the current spot, and says nothing about a strategy that also reads
-the path so far. Nothing is continuous: the position changes once a step, and a path that
-leaves the band is outside every claim.
+and trading is free. The call is European: it is paid on the final spot only and cannot be
+exercised early. The lower bound `not_from_seven_halves` is for strategies that are functions
+of the step and the current spot, and says nothing about a strategy that also reads the path
+so far. Nothing is continuous: the position changes once a step, and a path that leaves the
+band is outside every claim.
 
 Kernel time. `lake build Gimle.Forseti.Examples.RobustCall` takes about 6 s of wall time from a
-clean module on the development machine. The two slowest theorems are `price_year`, the
-`251`-term binomial sum of the `250` steps over `ℚ`, at about 3 s of kernel time, and
-`zigzag_shortfall`, the hedged wealth over the `20` zigzag steps, at about 0.5 s; every other
-theorem is checked in well under a second. No `maxRecDepth` option is needed, and the module
-elaborates under Lean's default options.
+clean module. The two slowest theorems are `price_year`, the `251`-term binomial sum of the
+`250` steps over `ℚ`, at about 3 s of kernel time, and `zigzag_shortfall`, the hedged wealth
+over the `20` zigzag steps, at about 0.5 s; every other theorem is checked in well under a
+second. No `maxRecDepth` option is needed, and the module elaborates under Lean's default
+options.
 -/
 
 @[expose] public section
@@ -85,7 +99,7 @@ def strike : ℚ := 100
 def spot : ℚ := 100
 
 /-- The number of steps. -/
-def days : ℕ := 20
+def steps : ℕ := 20
 
 /-- A price of the call at spot `100` computed over `ℚ`, which the kernel evaluates, is the
 price of the real recursion on the rational band. -/
@@ -108,22 +122,37 @@ theorem price_wide : price wide (call 100) 20 100
   push_cast at h
   exact h
 
-/-- Re-hedged at the binomial ratio once a step and started from the price, the call is covered
-on every path whose twenty steps stay in the wide band. -/
+/-- Re-hedged at the binomial hedge ratio once a step and started from the price, the call is
+covered on every path whose twenty steps stay in the wide band. -/
 theorem covered : Covers wide (call 100) 20 (hedge wide (call 100) 20)
     (price wide (call 100) 20 100) 100 :=
   covers_hedge wide (call_convexOn 100) 20 (by norm_num)
 
-/-- The same hedge covers the call from `3.555`, which is above the price. -/
+/-- The same hedge covers the call from a premium of `3.555`, the price rounded up to three
+places, which is above the price. -/
 theorem covered_from_premium : Covers wide (call 100) 20 (hedge wide (call 100) 20)
     (3555 / 1000) 100 :=
   covered.mono (by rw [price_wide]; norm_num)
 
-/-- From `3.5`, which is below the price, no spot-feedback strategy covers the call on every
-path of the wide band. -/
+/-- From an initial wealth of `3.5`, which is below the price, no spot-feedback strategy covers
+the call on every path of the wide band. -/
 theorem not_from_seven_halves : ∀ δ, ¬ Covers wide (call 100) 20 δ (7 / 2) 100 :=
   fun δ => not_covers_of_lt wide (call 100) 20 (by norm_num)
     (by rw [price_wide]; norm_num) δ
+
+/-- The binomial hedge ratio with `20` steps to go at the spot `100` in the wide band, about
+`0.5176`: the units of the underlying that the hedge holds over the first step,
+`hedge wide (call 100) 20 0 100`. -/
+theorem opening_ratio : delta wide (call 100) 19 100
+    = 51760914013966027142514864134024172569 / 100000000000000000000000000000000000000 := by
+  have h := delta_cast (fun S => call_cast 100 S) (1 / 50) (1 / 50) (by norm_num) (by norm_num)
+    (by norm_num) 19 100
+  have k : deltaQ (callQ 100) (1 / 50) (1 / 50) 19 100
+      = 51760914013966027142514864134024172569 / 100000000000000000000000000000000000000 := by
+    decide +kernel
+  rw [k] at h
+  push_cast at h
+  exact h
 
 /-! ### The hedge built for the narrow band -/
 
@@ -238,7 +267,11 @@ theorem price_year : price wide (call 100) 250 100
   push_cast at h
   exact h
 
-/-- The put at the money is priced like the call at the money: the band is symmetric. -/
+/-- The put at the money is priced like the call at the money. The reason is put–call parity at
+the zero rate under the fair weight: the call minus the put is `S - K`, and the fair weight
+prices the spot at itself (`price b id n S = S`), so the two prices differ by `S₀ - K`, which
+is zero at the money, on any band. This theorem checks it on the wide band by evaluating both
+prices exactly. -/
 theorem put_eq_call : price wide (put 100) 20 100 = price wide (call 100) 20 100 := by
   have h := price_cast (fun S => put_cast 100 S) (1 / 50) (1 / 50) (by norm_num) (by norm_num)
     (by norm_num) 20 100
