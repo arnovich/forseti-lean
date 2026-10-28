@@ -1,5 +1,6 @@
 module
 
+public import Gimle.Forseti.Stepped
 public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Analysis.Convex.Function
 public import Mathlib.Basic.Real.Basic
@@ -60,7 +61,17 @@ band.
   `straddle_cast` for the payoffs) say that the real definitions take the values of the
   rational ones, so a value computed over `ℚ` is a value of the real price, hedge ratio and
   wealth. `inBand_of_return` and `spotQ_inBand` turn returns inside `[-d, u]` into moves
-  inside the band.
+  inside the band; both need a positive spot (`spotQ_inBand` a positive starting spot, which
+  the returns then keep positive).
+* The stepped bridge (`book`, `spotOf`, `run_book`, `covers_run`): the hedged book is a
+  stepped system driven by its returns. Its state is the step, the spot and the wealth; its
+  input is the step return `r`; one step of `book δ` multiplies the spot by `1 + r` and adds
+  `δ k S * (S * r)` to the wealth, the position held over the step times the move. So
+  `Stepped.run (book δ) (0, S₀, w) ω`, the iteration of `Gimle.Forseti.Stepped`, is the book
+  along the return path `ω` (`run_book`), and `Covers` reads as a safety statement about
+  this driven iteration (`covers_run`): from a positive spot, if the first `N` returns lie
+  in `[-d, u]`, the payoff of the final spot is at most the final wealth. The return path is
+  a given sequence: no probability and no law is attached to it.
 
 Together, for a payoff convex on the whole real line and a positive spot, `price b g N S₀` is
 the least initial wealth from which some spot-feedback strategy covers the payoff on every
@@ -491,25 +502,29 @@ theorem sumQ_eq (g : ℚ → ℚ) (u d : ℚ) (n : ℕ) (S : ℚ) (m : ℕ) :
   | zero => simp [sumQ]
   | succ m ih => rw [sumQ, ih, Finset.sum_range_succ]
 
-/-- The call payoff agrees with its rational version. -/
+/-- The real call payoff at a rational strike and a rational point is the rational call
+payoff. -/
 theorem call_cast (K S : ℚ) : call K S = callQ K S := by
   unfold call callQ
   push_cast
   rfl
 
-/-- The put payoff agrees with its rational version. -/
+/-- The real put payoff at a rational strike and a rational point is the rational put
+payoff. -/
 theorem put_cast (K S : ℚ) : put K S = putQ K S := by
   unfold put putQ
   push_cast
   rfl
 
-/-- The straddle payoff agrees with its rational version. -/
+/-- The real straddle payoff at a rational strike and a rational point is the rational
+straddle payoff. -/
 theorem straddle_cast (K S : ℚ) : straddle K S = straddleQ K S := by
   unfold straddle straddleQ
   push_cast
   rfl
 
-/-- The real price on a rational band at a rational spot is the rational price. -/
+/-- For a payoff `g` that agrees with `gQ` on rationals, the real price on a rational band at
+a rational spot is the rational price. -/
 theorem price_cast {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x = gQ x) (u d : ℚ) (hu : 0 < u)
     (hd : 0 < d) (hd1 : d < 1) (n : ℕ) (S : ℚ) :
     price (Band.ofRat u d hu hd hd1) g n S = priceQ gQ u d n S := by
@@ -520,7 +535,8 @@ theorem price_cast {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x =
   simp only [Band.ofRat, Band.q]
   rw [h]
 
-/-- The hedge ratio on a rational band at a rational spot is the rational hedge ratio. -/
+/-- For a payoff `g` that agrees with `gQ` on rationals, the real hedge ratio on a rational
+band at a rational spot is the rational hedge ratio. -/
 theorem delta_cast {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x = gQ x) (u d : ℚ) (hu : 0 < u)
     (hd : 0 < d) (hd1 : d < 1) (n : ℕ) (S : ℚ) :
     delta (Band.ofRat u d hu hd hd1) g n S = deltaQ gQ u d n S := by
@@ -534,7 +550,8 @@ theorem delta_cast {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x =
   push_cast
   rfl
 
-/-- The hedged wealth on a rational band along a rational path is the rational wealth. -/
+/-- For a payoff `g` that agrees with `gQ` on rationals, the real hedged wealth on a rational
+band along a rational path is the rational wealth. -/
 theorem wealth_hedge_cast {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x = gQ x) (u d : ℚ)
     (hu : 0 < u) (hd : 0 < d) (hd1 : d < 1) (N : ℕ) (S₀ : ℚ) (r : ℕ → ℚ) (k : ℕ) :
     wealth (hedge (Band.ofRat u d hu hd hd1) g N) (price (Band.ofRat u d hu hd hd1) g N S₀)
@@ -573,5 +590,51 @@ theorem spotQ_inBand (u d : ℚ) (hu : 0 < u) (hd : 0 < d) (hd1 : d < 1) {S₀ :
     (r := (r k : ℝ)) ⟨by simpa [Band.ofRat] using (by exact_mod_cast h.1 : (-d : ℝ) ≤ r k),
       by simpa [Band.ofRat] using (by exact_mod_cast h.2 : (r k : ℝ) ≤ u)⟩
   simpa [spotQ] using key
+
+/-! ### The hedged book as a stepped system -/
+
+/-- One step of the hedged book. The state is `(step, spot, wealth)` and the input is the step
+return `r`: the spot is multiplied by `1 + r`, and the wealth gains the units `δ k S` held over
+step `k` at spot `S` times the move `S * r`. -/
+def book (δ : ℕ → ℝ → ℝ) : ℕ × ℝ × ℝ → ℝ → ℕ × ℝ × ℝ :=
+  fun x r => (x.1 + 1, x.2.1 * (1 + r), x.2.2 + δ x.1 x.2.1 * (x.2.1 * r))
+
+/-- The spot after `k` steps from `S₀` with the step returns `ω`. -/
+noncomputable def spotOf (S₀ : ℝ) (ω : ℕ → ℝ) : ℕ → ℝ
+  | 0 => S₀
+  | k + 1 => spotOf S₀ ω k * (1 + ω k)
+
+/-- The stepped run of the book along the returns `ω` is the step count, the spot path
+`spotOf S₀ ω` and the wealth of the strategy `δ` along that path. -/
+theorem run_book (δ : ℕ → ℝ → ℝ) (S₀ w : ℝ) (ω : ℕ → ℝ) (n : ℕ) :
+    Stepped.run (book δ) (0, S₀, w) ω n
+      = (n, spotOf S₀ ω n, wealth δ w (spotOf S₀ ω) n) := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    rw [Stepped.run_succ, ih]
+    simp only [book, spotOf, wealth, Prod.mk.injEq, true_and]
+    ring
+
+/-- A covering strategy is safe for the driven book: from a positive spot, along returns that
+stay in `[-d, u]` for the first `N` steps, the payoff of the final spot of the stepped run is
+at most its final wealth. -/
+theorem covers_run {b : Band} {g : ℝ → ℝ} {N : ℕ} {δ : ℕ → ℝ → ℝ} {w S₀ : ℝ}
+    (h : Covers b g N δ w S₀) (hS₀ : 0 < S₀) (ω : ℕ → ℝ)
+    (hω : ∀ k < N, -b.d ≤ ω k ∧ ω k ≤ b.u) :
+    g (Stepped.run (book δ) (0, S₀, w) ω N).2.1 ≤ (Stepped.run (book δ) (0, S₀, w) ω N).2.2 := by
+  have hpos : ∀ k ≤ N, 0 < spotOf S₀ ω k := by
+    intro k
+    induction k with
+    | zero => intro _; exact hS₀
+    | succ k ih =>
+      intro hk
+      have hd := b.d_lt_one
+      have hr := (hω k (by omega)).1
+      exact mul_pos (ih (by omega)) (by linarith)
+  have hband : ∀ k < N, b.InBand (spotOf S₀ ω k) (spotOf S₀ ω (k + 1)) :=
+    fun k hk => inBand_of_return b (hpos k hk.le) (hω k hk)
+  rw [run_book]
+  exact h (spotOf S₀ ω) rfl hband
 
 end Gimle.Forseti.Hedging

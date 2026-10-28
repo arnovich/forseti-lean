@@ -13,7 +13,9 @@ monotonicity of `Covers` in the initial wealth, for any strategy; the lower boun
 `not_covers_of_lt` on a one-step identity payoff started below its price; the payoffs
 `call`, `put` and `straddle` with their convexity; the closed form `price_eq_sum` at one
 step; the exact layer over `ℚ`, evaluated by the kernel, and its agreement with the real
-definitions; and the axiom policy, asserted with `#guard_msgs`.
+definitions; the stepped bridge, where the hedged book is the iteration `Stepped.run` of a
+step map along a path of returns and `Covers` becomes a safety statement about it; and the
+axiom policy, asserted with `#guard_msgs`.
 -/
 
 @[expose] public section
@@ -177,6 +179,10 @@ example : straddleQ 100 70 = 30 := by decide +kernel
 `100` from spot `100` is worth `1/2 * 2 + 1/2 * 0 = 1`. -/
 example : priceQ (callQ 100) (1 / 50) (1 / 50) 1 100 = 1 := by decide +kernel
 
+/-- The hedge ratio of the same call at the same spot: the two ends of the band price at `2`
+and `0`, so the chord has slope `2 / (100 * (1/25)) = 1/2`. -/
+example : deltaQ (callQ 100) (1 / 50) (1 / 50) 0 100 = 1 / 2 := by decide +kernel
+
 example : spotQ 100 (fun _ => 1 / 50) 0 = 100 := rfl
 example (S₀ : ℚ) (r : ℕ → ℚ) (k : ℕ) : spotQ S₀ r (k + 1) = spotQ S₀ r k * (1 + r k) := rfl
 example : spotQ 100 (fun _ => 1 / 50) 2 = 100 * (51 / 50) ^ 2 := by decide +kernel
@@ -208,6 +214,15 @@ example :
   rw [price_cast (fun S => call_cast 100 S)]
   exact_mod_cast (by decide +kernel : priceQ (callQ 100) (1 / 50) (1 / 50) 1 100 = 1)
 
+/-- The real hedge ratio of the call on a rational band is the rational one, which the kernel
+evaluates. -/
+example :
+    delta (Band.ofRat (1 / 50) (1 / 50) (by norm_num) (by norm_num) (by norm_num))
+        (call ((100 : ℚ) : ℝ)) 0 ((100 : ℚ) : ℝ)
+      = ((1 / 2 : ℚ) : ℝ) := by
+  rw [delta_cast (fun S => call_cast 100 S)]
+  exact_mod_cast (by decide +kernel : deltaQ (callQ 100) (1 / 50) (1 / 50) 0 100 = 1 / 2)
+
 /-- The hedged wealth on a rational band along a rational path is the rational wealth. -/
 example {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x = gQ x) (r : ℕ → ℚ) :
     wealth (hedge (Band.ofRat (1 / 50) (1 / 50) (by norm_num) (by norm_num) (by norm_num)) g 2)
@@ -221,14 +236,57 @@ example {g : ℝ → ℝ} {gQ : ℚ → ℚ} (hg : ∀ x : ℚ, g x = gQ x) (r :
 example : band.InBand 1 (1 * (1 + 1 / 4)) :=
   inBand_of_return band one_pos ⟨by norm_num [band], by norm_num [band]⟩
 
-/-- Rational returns inside `[-d, u]` keep the rational spot in the band, step by step. -/
-example (hr : ∀ k < 2, -(1 / 50 : ℚ) ≤ (fun _ : ℕ => (1 / 50 : ℚ)) k
-      ∧ (fun _ : ℕ => (1 / 50 : ℚ)) k ≤ 1 / 50) :
+/-- Rational returns inside `[-d, u]` keep the rational spot in the band, step by step; here
+the constant return `1/50` on the band `[-1/50, 1/50]`. -/
+example :
     ∀ k < 2, (Band.ofRat (1 / 50) (1 / 50) (by norm_num) (by norm_num) (by norm_num)).InBand
       ((spotQ 100 (fun _ => 1 / 50) k : ℚ) : ℝ) ((spotQ 100 (fun _ => 1 / 50) (k + 1) : ℚ) : ℝ) :=
-  spotQ_inBand (1 / 50) (1 / 50) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hr
+  spotQ_inBand (1 / 50) (1 / 50) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    (fun k _ => ⟨by norm_num, le_rfl⟩)
 
 end Exact
+
+/-! ### The stepped bridge -/
+
+section SteppedBridge
+
+variable (δ : ℕ → ℝ → ℝ) (S₀ w : ℝ) (ω : ℕ → ℝ)
+
+example : book δ (3, S₀, w) 0 = (4, S₀, w) := by simp [book]
+
+example (x : ℕ × ℝ × ℝ) (r : ℝ) :
+    book δ x r = (x.1 + 1, x.2.1 * (1 + r), x.2.2 + δ x.1 x.2.1 * (x.2.1 * r)) := rfl
+
+example : spotOf S₀ ω 0 = S₀ := rfl
+example (k : ℕ) : spotOf S₀ ω (k + 1) = spotOf S₀ ω k * (1 + ω k) := rfl
+
+/-- The run at mark `0` is the start. -/
+example : Stepped.run (book δ) (0, S₀, w) ω 0
+    = (0, spotOf S₀ ω 0, wealth δ w (spotOf S₀ ω) 0) := by
+  simp [Stepped.run, spotOf, wealth]
+
+/-- The run at mark `1` is the first hedged step. -/
+example : Stepped.run (book δ) (0, S₀, w) ω 1
+    = (1, spotOf S₀ ω 1, wealth δ w (spotOf S₀ ω) 1) := by
+  simp [Stepped.run, book, spotOf, wealth]
+  left
+  ring
+
+/-- The run is the spot and the wealth along the path of returns, at every mark. -/
+example (n : ℕ) : Stepped.run (book δ) (0, S₀, w) ω n
+    = (n, spotOf S₀ ω n, wealth δ w (spotOf S₀ ω) n) := run_book δ S₀ w ω n
+
+end SteppedBridge
+
+/-- The super-hedge of the call, read as a safety statement about a driven iteration: along
+the zero-return path, which is inside the band, the book ends at least at the payoff. -/
+example : (fun S : ℝ => max (S - 1) 0)
+      (Stepped.run (book (hedge band (fun S : ℝ => max (S - 1) 0) 3)) (0, 1,
+        price band (fun S : ℝ => max (S - 1) 0) 3 1) (fun _ => 0) 3).2.1
+    ≤ (Stepped.run (book (hedge band (fun S : ℝ => max (S - 1) 0) 3)) (0, 1,
+        price band (fun S : ℝ => max (S - 1) 0) 3 1) (fun _ => 0) 3).2.2 :=
+  covers_run (covers_hedge band convexOn_call_one 3 one_pos) one_pos (fun _ => 0)
+    (fun _ _ => ⟨by linarith [band.d_pos], by linarith [band.u_pos]⟩)
 
 /-! ### Axiom policy -/
 
@@ -304,5 +362,15 @@ info: 'Gimle.Forseti.Hedging.wealth_hedge_cast'
   depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs (whitespace := lax) in #print axioms wealth_hedge_cast
+/--
+info: 'Gimle.Forseti.Hedging.run_book'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms run_book
+/--
+info: 'Gimle.Forseti.Hedging.covers_run'
+  depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs (whitespace := lax) in #print axioms covers_run
 
 end Gimle.Forseti.Tests.Hedging
