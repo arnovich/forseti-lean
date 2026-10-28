@@ -15,6 +15,9 @@ proves it.
   - invariants for discrete iteration.
 - **Stepped probability:** breach, fixed-date and expectation bounds for iterations
   under independent random inputs ([`Stepped`](Gimle/Forseti/Stepped.lean)).
+- **Pathwise hedging:** a convex payoff is covered from its binomial price on every path
+  within a per-step band, and by no spot-feedback strategy from less
+  ([`Hedging`](Gimle/Forseti/Hedging.lean)).
 - **Certificates:** exact evidence that Lean checks, whether a solver, a search
   or a person found it. The kinds are:
   - sum-of-squares and Positivstellensatz entailment certificates;
@@ -56,6 +59,8 @@ states what it proves and what it does not.
 | [Forced decay](Gimle/Forseti/Examples/ForcedDecayContract.lean) | `\|x\| ≤ 2` for the driven `x' + x = u' + u` under `\|u\| ≤ 1` |
 | [Hedged spread](Gimle/Forseti/Examples/HedgedSpreadContract.lean) | `\|s\| ≤ B` for the driven `s' = -s - h + d`, `h' = s - h` from `s(0) = h(0) = 0` under every continuous `\|d\| ≤ B`, from the invariant `s² + h² ≤ B²` |
 | [Hedged spread, stepped](Gimle/Forseti/Examples/HedgedSpreadStepped.lean) | The same system as an Euler chain of 256 steps a year under i.i.d. shocks: a breach of `\|s\| ≤ 1` within the year has probability `≤ 1/4` under every centred shock law of variance 64 and above `1/5` under one such law with rare large jumps; on each fixed date of the year `P(\|s\| > 1) ≤ 1/100` under every law sub-Gaussian with proxy 64; `E[s² + h²] ≤ 32/255` at every mark; through the generic [`Stepped`](Gimle/Forseti/Stepped.lean) semantics |
+| [Robust hedging](Gimle/Forseti/Hedging.lean) | A convex payoff re-hedged once a step at the binomial ratio is covered from the binomial price on every path whose step returns stay in a band, and no spot-feedback strategy covers it from less |
+| [Robust call](Gimle/Forseti/Examples/RobustCall.lean) | The at-the-money call over 20 steps under moves of at most ±2 % a step: covered from 3555/1000, just above the exact kernel-checked price (≈ 3.5549), and by no spot-feedback strategy from 3.5; the ±1 % hedge loses 4.11 on one ±2 % path; price tables by band and horizon, all kernel-checked |
 | [Harmonic oscillator](Gimle/Forseti/Examples/HarmonicOscillator.lean) | A conserved energy, through the generic [`LinearEnergyContract`](Gimle/Forseti/LinearEnergyContract.lean) |
 | [Lorenz](Gimle/Forseti/Examples/Lorenz.lean) | A trapping region for all forward time, by the general nonlinear theorem in [`Nonlinear.lean`](Gimle/Forseti/Nonlinear.lean) |
 | [Galerkin Navier–Stokes](Gimle/Forseti/GalerkinNS/Family.lean) | Energy and enstrophy trapping for every cosine Galerkin truncation of 2D Navier–Stokes, and laminar attraction under small forcing; [members](Gimle/Forseti/Examples/GalerkinNS/) |

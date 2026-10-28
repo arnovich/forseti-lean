@@ -57,18 +57,19 @@ band.
 * The exact layer (`Band.ofRat`, `priceQ`, `deltaQ`, `wealthQ`, `spotQ`): the same price,
   hedge ratio and hedged wealth over `ℚ`, on a band with rational ends and along a path of
   rational returns, defined so that the kernel evaluates them (`decide +kernel`). The cast
-  lemmas (`price_cast`, `delta_cast`, `wealth_hedge_cast`, and `call_cast`, `put_cast`,
-  `straddle_cast` for the payoffs) say that the real definitions take the values of the
-  rational ones, so a value computed over `ℚ` is a value of the real price, hedge ratio and
-  wealth. `inBand_of_return` and `spotQ_inBand` turn returns inside `[-d, u]` into moves
-  inside the band; both need a positive spot (`spotQ_inBand` a positive starting spot, which
-  the returns then keep positive).
+  lemmas `price_cast`, `delta_cast` and `wealth_hedge_cast` say that, for a payoff that agrees
+  with its rational twin on rationals (`call_cast`, `put_cast` and `straddle_cast` give this
+  for the three payoffs), the real definitions take the values of the rational ones, so a
+  value computed over `ℚ` is a value of the real price, hedge ratio and wealth.
+  `inBand_of_return` and `spotQ_inBand` turn returns inside `[-d, u]` into moves inside the
+  band; both need a positive spot (`spotQ_inBand` a positive starting spot, which the returns
+  then keep positive).
 * The stepped bridge (`book`, `spotOf`, `run_book`, `covers_run`): the hedged book is a
   stepped system driven by its returns. Its state is the step, the spot and the wealth; its
   input is the step return `r`; one step of `book δ` multiplies the spot by `1 + r` and adds
   `δ k S * (S * r)` to the wealth, the position held over the step times the move. So
   `Stepped.run (book δ) (0, S₀, w) ω`, the iteration of `Gimle.Forseti.Stepped`, is the book
-  along the return path `ω` (`run_book`), and `Covers` reads as a safety statement about
+  along the return path `ω` (`run_book`), and `Covers` implies a safety statement about
   this driven iteration (`covers_run`): from a positive spot, if the first `N` returns lie
   in `[-d, u]`, the payoff of the final spot is at most the final wealth. The return path is
   a given sequence: no probability and no law is attached to it.

@@ -35,6 +35,7 @@ public import Gimle.Forseti.Tests.GalerkinNSFamily
 public import Gimle.Forseti.Tests.LocalTrapping
 public import Gimle.Forseti.Tests.PolynomialTrapping
 public import Gimle.Forseti.Tests.Hedging
+public import Gimle.Forseti.Tests.RobustCall
 
 @[expose] public section
 
