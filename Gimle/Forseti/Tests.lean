@@ -20,6 +20,9 @@ public import Gimle.Forseti.Tests.ForcedDecay
 public import Gimle.Forseti.Tests.HedgedSpread
 public import Gimle.Forseti.Tests.Stepped
 public import Gimle.Forseti.Tests.HedgedSpreadStepped
+public import Gimle.Forseti.Tests.Hedging
+public import Gimle.Forseti.Tests.HedgingStepped
+public import Gimle.Forseti.Tests.RobustCall
 public import Gimle.Forseti.Tests.LinearEnergyContract
 public import Gimle.Forseti.Tests.Stream
 public import Gimle.Forseti.Tests.SequentialHoare

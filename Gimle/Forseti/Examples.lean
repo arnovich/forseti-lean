@@ -23,6 +23,7 @@ public import Gimle.Forseti.Examples.ForcedDecayContract
 public import Gimle.Forseti.Examples.HedgedSpread
 public import Gimle.Forseti.Examples.HedgedSpreadContract
 public import Gimle.Forseti.Examples.HedgedSpreadStepped
+public import Gimle.Forseti.Examples.RobustCall
 public import Gimle.Forseti.Examples.HarmonicOscillator
 public import Gimle.Forseti.Examples.FormalHeatContract
 public import Gimle.Forseti.Examples.StreamObservation
