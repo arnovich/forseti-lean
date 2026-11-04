@@ -90,7 +90,8 @@ states what it proves and what it does not.
 | [Algebraic counterexamples](Gimle/Forseti/Examples/AlgebraicCounterexamples.lean) | Entailments refuted only at irrational points, such as `x² = 2 ⊨ x < 0` |
 | [Positivstellensatz certificates](Gimle/Forseti/Examples/PositivstellensatzCertificates.lean) | Entailments that need a product of constraints, such as `x ≥ 0 ∧ y ≥ 0 ⊨ x·y ≥ 0` |
 
-Check one directly with `lake env lean Gimle/Forseti/Examples/EnergyDemo.lean`.
+Check one directly with `lake lean Gimle/Forseti/Examples/EnergyDemo.lean`, which
+builds the file's imports and then elaborates it.
 
 ## Checker
 
